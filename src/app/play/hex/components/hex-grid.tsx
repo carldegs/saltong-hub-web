@@ -1,0 +1,94 @@
+import { cn } from "@/lib/utils";
+import { cva } from "class-variance-authority";
+import React from "react";
+
+const hexVariants = cva(
+  "w-[80px] md:w-[100px] cursor-pointer text-saltong-purple-200 dark:text-saltong-purple/30 hover:text-saltong-purple-600 dark:hover:text-saltong-purple/60 transition-colors",
+  {
+    variants: {
+      center: {
+        true: "text-saltong-purple dark:text-saltong-purple",
+      },
+    },
+    defaultVariants: {
+      center: false,
+    },
+  }
+);
+
+const Hex = ({
+  value,
+  onClick,
+  center,
+  ...props
+}: Omit<React.ComponentProps<"svg">, "children" | "onClick" | "center"> & {
+  value: string;
+  onClick: (value: string) => void;
+  center?: boolean;
+}) => (
+  <div
+    className="relative flex items-center justify-center"
+    onClick={() => {
+      onClick(value);
+    }}
+  >
+    <svg
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 173.20508075688772 200"
+      className={cn(hexVariants({ center }))}
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M79.67433714816835 3.9999999999999996Q86.60254037844386 0 93.53074360871938 3.9999999999999996L166.27687752661222 46Q173.20508075688772 50 173.20508075688772 58L173.20508075688772 142Q173.20508075688772 150 166.27687752661222 154L93.53074360871938 196Q86.60254037844386 200 79.67433714816835 196L6.92820323027551 154Q0 150 0 142L0 58Q0 50 6.92820323027551 46Z"
+      ></path>
+    </svg>
+    <span className="absolute mt-0 cursor-pointer select-none text-4xl font-bold opacity-80">
+      {value?.toUpperCase()}
+    </span>
+  </div>
+);
+
+const rowVariants = cva("flex justify-center gap-2", {
+  variants: {
+    center: {
+      true: "my-[-17px] md:my-[-22px]",
+    },
+  },
+  defaultVariants: {
+    center: false,
+  },
+});
+
+export default function HexGrid({
+  letters,
+  centerLetter,
+  onClick,
+}: {
+  letters: string[];
+  centerLetter: string;
+  onClick: (_letter: string) => void;
+}) {
+  return (
+    <div className="flex flex-col">
+      <div className={cn(rowVariants())}>
+        <Hex value={letters?.[0]?.toUpperCase()} onClick={onClick} />
+        <Hex value={letters?.[1]?.toUpperCase()} onClick={onClick} />
+      </div>
+      <div className={cn(rowVariants({ center: true }))}>
+        <Hex value={letters?.[2]?.toUpperCase()} onClick={onClick} />
+        <Hex
+          value={centerLetter?.toUpperCase()}
+          onClick={onClick}
+          center={true}
+        />
+        <Hex value={letters?.[3]?.toUpperCase()} onClick={onClick} />
+      </div>
+      <div className={cn(rowVariants())}>
+        <Hex value={letters?.[4]?.toUpperCase()} onClick={onClick} />
+        <Hex value={letters?.[5]?.toUpperCase()} onClick={onClick} />
+      </div>
+    </div>
+  );
+}
