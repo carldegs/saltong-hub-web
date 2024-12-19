@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
 
 import getRound from "../api/getRound";
-import { Navbar, NavbarBrand } from "../components/navbar";
-import NavbarDrawerButton from "../components/navbar-drawer-button";
+import { Navbar, NavbarBrand } from "../../../components/shared/navbar";
 import { getHexDateInPh } from "@/utils/time";
 import GameWrapper from "./components/game-wrapper";
 import { HexStoreProvider } from "./providers/hex-store-provider";
@@ -31,16 +30,13 @@ export default async function SaltongHexPage({
 
   return (
     <div className="grid min-h-screen w-full grid-rows-[auto_1fr]">
-      <Navbar>
+      <Navbar colorScheme={COLOR_SCHEME}>
         <NavbarBrand
           colorScheme={COLOR_SCHEME}
           title="Saltong"
           subtitle={SUBTITLE}
           boxed={`#${round.gameId}`}
         />
-        <div className="flex gap-2">
-          <NavbarDrawerButton />
-        </div>
       </Navbar>
       <HexStoreProvider
         initialState={{

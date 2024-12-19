@@ -4,7 +4,6 @@ import { getDateInPh, getPrevDateInPh } from "@/utils/time";
 import { add } from "date-fns";
 import useRoundAnswers from "./useRoundAnswers";
 
-// deprecate. save stats in db instead
 /** @deprecated Refactor to save stats in db
  */
 export default function usePlayerStats(mode: GameMode): PlayerStats {

@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import getRound from "../../api/getRound";
-import { Navbar, NavbarBrand } from "../../components/navbar";
-import NavbarDrawerButton from "../../components/navbar-drawer-button";
+import { Navbar, NavbarBrand } from "../../../../components/shared/navbar";
 import GameWrapper from "../components/game-wrapper";
 import { ResultsButton } from "../components/results-button";
 import { getDateInPh } from "@/utils/time";
@@ -23,7 +22,7 @@ export default async function SaltongPage() {
 
   return (
     <>
-      <Navbar>
+      <Navbar colorScheme={COLOR_SCHEME}>
         <NavbarBrand
           colorScheme={COLOR_SCHEME}
           title="Saltong"
@@ -32,7 +31,6 @@ export default async function SaltongPage() {
         />
         <div className="flex gap-2">
           <ResultsButton mode={MODE} gameDate={round.date} />
-          <NavbarDrawerButton />
         </div>
       </Navbar>
       <GameWrapper
