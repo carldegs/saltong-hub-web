@@ -32,6 +32,7 @@ export default async function SaltongPage({
           title="Saltong"
           subtitle={SUBTITLE}
           boxed={`#${round.gameId}`}
+          icon="/max.svg"
         />
         <div className="flex gap-2">
           <ResultsButton mode={MODE} gameDate={round.date} />

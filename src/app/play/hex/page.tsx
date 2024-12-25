@@ -36,6 +36,7 @@ export default async function SaltongHexPage({
           title="Saltong"
           subtitle={SUBTITLE}
           boxed={`#${round.gameId}`}
+          icon="/hex.svg"
         />
       </Navbar>
       <HexStoreProvider

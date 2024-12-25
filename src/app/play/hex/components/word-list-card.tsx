@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import useHexAnswer from "../hooks/useHexAnswer";
 import { HexRound } from "../types";
 import { Skeleton } from "@/components/ui/skeleton";

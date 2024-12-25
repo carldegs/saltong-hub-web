@@ -27,10 +27,10 @@ export function OtherGamesSidebarMenu() {
               <Image
                 src={game.icon}
                 alt={`${game.name} Logo`}
-                width={27}
-                height={27}
+                width={32}
+                height={32}
               />
-              <span className="text-lg">{game.name}</span>
+              <span className="text-base">{game.name}</span>
             </a>
           </SidebarMenuButton>
         </SidebarMenuItem>

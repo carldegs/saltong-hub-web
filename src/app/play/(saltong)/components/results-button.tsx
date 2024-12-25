@@ -5,6 +5,7 @@ import { useModalStore } from "@/providers/modal/modal-provider";
 import { Award } from "lucide-react";
 import ResultsDialog from "./results-dialog";
 import { GameMode } from "../types";
+import usePlayerStats from "../hooks/usePlayerStats";
 
 export function ResultsButton({
   mode,
@@ -14,6 +15,7 @@ export function ResultsButton({
   gameDate: string;
 }) {
   const { isOpen, onOpenChange } = useModalStore((state) => state);
+  const [playerStats] = usePlayerStats();
 
   return (
     <>
@@ -30,6 +32,12 @@ export function ResultsButton({
         }}
         size="icon"
         className="gap-1.5 font-bold md:h-auto md:w-auto md:px-2"
+        disabled={!Object.keys(playerStats?.[mode] ?? {}).length}
+        title={
+          !Object.keys(playerStats?.[mode] ?? {}).length
+            ? "Play a game to view results"
+            : undefined
+        }
       >
         <Award className="h-[1.2rem] w-[1.2rem]" />
         <span className="hidden md:inline-block">Results</span>

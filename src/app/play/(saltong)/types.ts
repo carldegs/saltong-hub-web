@@ -1,4 +1,4 @@
-import { Database, Tables } from "@/lib/supabase/types";
+import { Tables } from "@/lib/supabase/types";
 
 export enum LetterStatus {
   Correct = "O",
@@ -8,6 +8,16 @@ export enum LetterStatus {
 }
 
 export type GameMode = "main" | "mini" | "max";
+
+export interface GameConfig {
+  maxTries: number;
+  wordLen: number;
+  subtitle: string;
+  colorScheme: string;
+  mode: GameMode;
+  tableName: `saltong-${GameMode}-rounds`;
+  icon: string;
+}
 
 export type SaltongRound = Tables<"saltong-main-rounds">;
 
@@ -28,10 +38,15 @@ export interface RoundStats {
 }
 
 export interface PlayerStats {
-  numWins: number;
-  numWinsLive: number;
-  numLosses: number;
-  winRate: number;
-  winStreak: number;
+  gameMode: GameMode;
+  totalWins: number;
+  totalLosses: number;
+  currentWinStreak: number;
   longestWinStreak: number;
+  winTurns: number[];
+  lastGameDate: string;
+  lastGameId: number;
+
+  createdAt: number;
+  updatedAt: number;
 }

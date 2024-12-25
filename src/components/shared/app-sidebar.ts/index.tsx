@@ -3,20 +3,44 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { GamesSidebarMenu } from "./games";
 import { OtherGamesSidebarMenu } from "./other-games";
 import { NavUser } from "./nav-user";
 import { SettingsSidebarMenu } from "./settings";
+import { MoreSidebarMenu } from "./more";
+import { ChevronRightIcon } from "lucide-react";
+import Link from "next/link";
+import { NavbarBrand } from "../navbar";
 
 export function AppSidebar() {
   return (
     <Sidebar>
+      <SidebarHeader>
+        <Link href="/" className="flex items-center justify-center gap-2 py-2">
+          <NavbarBrand
+            title="Saltong"
+            subtitle="Hub"
+            icon="/hub-light.svg"
+            iconLight="/hub.svg"
+            hideMenu
+          />
+        </Link>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>GAMES</SidebarGroupLabel>
+          <Link href="/">
+            <SidebarGroupAction className="mr-4 whitespace-nowrap text-sm hover:underline">
+              <span>See All</span>
+              <ChevronRightIcon />
+            </SidebarGroupAction>
+          </Link>
+
           <GamesSidebarMenu />
         </SidebarGroup>
         <SidebarGroup>
@@ -30,6 +54,8 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
+        <MoreSidebarMenu />
+
         <NavUser
           user={{
             name: "carldegs",

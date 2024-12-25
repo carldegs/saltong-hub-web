@@ -1,6 +1,5 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import {
   PolarAngleAxis,
   PolarGrid,
@@ -9,14 +8,7 @@ import {
   RadarChart,
 } from "recharts";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -24,29 +16,30 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const chartData = [
-  { turn: "Turn 1", you: 18, avg: 8 },
-  { turn: "Turn 2", you: 30, avg: 20 },
-  { turn: "Turn 3", you: 23, avg: 12 },
-  { turn: "Turn 4", you: 7, avg: 19 },
-  { turn: "Turn 5", you: 20, avg: 13 },
-  { turn: "Turn 6", you: 15, avg: 15 },
-  { turn: "Turn 7", you: 10, avg: 10 },
-  { turn: "Turn 8", you: 5, avg: 5 },
-];
-
 const chartConfig = {
   you: {
     label: "You",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--chart-1))",
   },
   avg: {
     label: "Average",
-    color: "hsl(var(--chart-1))",
+    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
-export default function ResultsChart() {
+export default function ResultsChart({
+  playerStats,
+  totalStats,
+}: {
+  playerStats: number[];
+  totalStats?: number[];
+}) {
+  const chartData = playerStats.map((stat, idx) => ({
+    turn: `Turn ${idx + 1}`,
+    you: stat,
+    avg: totalStats ? totalStats[idx] : 0,
+  }));
+
   return (
     <Card>
       <CardContent className="px-2 pb-0">
@@ -61,17 +54,17 @@ export default function ResultsChart() {
             />
             <PolarAngleAxis dataKey="turn" />
             <PolarGrid />
-            {/* <Radar
+            <Radar
               dataKey="avg"
               fill="var(--color-avg)"
-              fillOpacity={0.6}
               stroke="var(--color-avg)"
               strokeWidth={2}
               dot={{
                 r: 4,
                 fillOpacity: 1,
               }}
-            /> */}
+              opacity={0.5}
+            />
             <Radar
               dataKey="you"
               fill="var(--color-you)"

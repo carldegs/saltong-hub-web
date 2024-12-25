@@ -20,6 +20,7 @@ export function createClient() {
             // The `set` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
             // user sessions.
+            console.error(error);
           }
         },
         remove(name: string, options: CookieOptions) {
@@ -29,6 +30,7 @@ export function createClient() {
             // The `delete` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
             // user sessions.
+            console.error(error);
           }
         },
       },

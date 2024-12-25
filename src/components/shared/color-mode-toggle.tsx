@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, SunMoon } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
@@ -18,9 +18,21 @@ export function ColorModeToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        <Button
+          variant="outline"
+          className="relative w-[100px] px-2 text-sm capitalize"
+        >
+          <Sun
+            suppressHydrationWarning
+            className="mr-1.5 block size-4 dark:hidden"
+          />
+          <Moon
+            suppressHydrationWarning
+            className="mr-1.5 hidden size-4 dark:block"
+          />
+          <span className="capitalize" suppressHydrationWarning>
+            {theme ?? "System"}
+          </span>
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
@@ -29,18 +41,21 @@ export function ColorModeToggle() {
           onClick={() => setTheme("light")}
           disabled={theme === "light"}
         >
+          <Sun className="mr-1.5 size-4" />
           Light
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setTheme("dark")}
           disabled={theme === "dark"}
         >
+          <Moon className="mr-1.5 size-4" />
           Dark
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setTheme("system")}
           disabled={theme === "system"}
         >
+          <SunMoon className="mr-1.5 size-4" />
           System
         </DropdownMenuItem>
       </DropdownMenuContent>

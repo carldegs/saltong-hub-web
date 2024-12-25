@@ -23,13 +23,30 @@ function ResultsDialogComponent({
   open,
   onOpenChange,
   roundStats,
-  playerStats,
+  playerStats = {
+    totalWins: 0,
+    totalLosses: 0,
+    currentWinStreak: 0,
+    longestWinStreak: 0,
+    winTurns: [],
+    lastGameDate: "",
+    lastGameId: 0,
+    createdAt: Date.now(),
+    updatedAt: 0,
+    gameMode: "main",
+  },
 }: Omit<RootCredenzaProps, "children"> & {
   roundStats: RoundStats;
-  playerStats: PlayerStats;
+  playerStats?: PlayerStats;
 }) {
   const { isCorrect, time } = roundStats;
-  const { numWins, winRate, winStreak, longestWinStreak } = playerStats;
+  const {
+    totalWins,
+    totalLosses,
+    currentWinStreak,
+    longestWinStreak,
+    winTurns,
+  } = playerStats;
 
   const statBarData = useMemo(() => {
     const interval = { start: 0, end: time };
@@ -50,15 +67,16 @@ function ResultsDialogComponent({
     return [
       {
         title: "Total Wins",
-        value: numWins,
+        value: totalWins,
       },
       {
         title: "Win Rate",
-        value: (winRate * 100).toFixed(0) + "%",
+        value:
+          ((totalWins / (totalWins + totalLosses)) * 100).toPrecision(3) + "%",
       },
       {
         title: "Win Streak",
-        value: winStreak,
+        value: currentWinStreak,
       },
       {
         title: "Max Streak",
@@ -69,7 +87,7 @@ function ResultsDialogComponent({
         value: timeStr || "0s",
       },
     ];
-  }, [longestWinStreak, numWins, time, winRate, winStreak]);
+  }, [currentWinStreak, longestWinStreak, time, totalLosses, totalWins]);
 
   return (
     <Credenza open={open} onOpenChange={onOpenChange}>
@@ -93,7 +111,7 @@ function ResultsDialogComponent({
               </Card>
             ))}
           </div>
-          <ResultsChart />
+          <ResultsChart playerStats={winTurns} />
         </CredenzaBody>
       </CredenzaContent>
     </Credenza>
@@ -109,7 +127,8 @@ export default function ResultsDialog({
   mode: GameMode;
   gameDate: string;
 }) {
-  const playerStats = usePlayerStats(mode);
+  const [playerStats] = usePlayerStats();
+  const stats = useMemo(() => playerStats[mode], [mode, playerStats]);
   const roundStats = useRoundStats(mode, gameDate);
 
   if (open) {
@@ -118,7 +137,7 @@ export default function ResultsDialog({
         open={open}
         onOpenChange={onOpenChange}
         roundStats={roundStats}
-        playerStats={playerStats}
+        playerStats={stats}
       />
     );
   }

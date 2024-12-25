@@ -30,7 +30,11 @@ export default function GameWrapper({
   isLive?: boolean;
 }) {
   const { dict, isLoading: isFetchingDict } = useDictionary(wordLen);
-  const [playerAnswer, setPlayerAnswer] = useRoundAnswer(mode, roundData.date);
+  const [playerAnswer, setPlayerAnswer] = useRoundAnswer(
+    mode,
+    roundData.date,
+    roundData.gameId
+  );
   const [inputData, setInputData] = useState<string>("");
   const isMounted = useIsMounted();
 
@@ -43,7 +47,7 @@ export default function GameWrapper({
 
     for (let i = 0; i < guessList.length; i++) {
       const guess = guessList[i];
-      let result = Array(wordLen).fill(LetterStatus.Incorrect);
+      const result = Array(wordLen).fill(LetterStatus.Incorrect);
 
       const answerLetters: (string | null)[] = roundData.word.split("");
       const guessLetters: (string | null)[] = guess.split("");

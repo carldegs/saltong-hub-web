@@ -39,7 +39,7 @@ export default function SocialButton({
       </HoverCardTrigger>
       <HoverCardContent>
         <div className="flex flex-col gap-0">
-          <h4 className="text-md font-bold">{title}</h4>
+          <h4 className="text-base font-bold">{title}</h4>
           <p className="text-sm">{description}</p>
         </div>
       </HoverCardContent>

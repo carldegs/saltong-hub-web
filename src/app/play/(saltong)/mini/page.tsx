@@ -12,8 +12,12 @@ const COLOR_SCHEME = "blue";
 const MODE = "mini";
 const TABLE_NAME = "saltong-mini-rounds";
 
-export default async function SaltongPage() {
-  const round = await getRound(TABLE_NAME);
+export default async function SaltongPage({
+  searchParams,
+}: {
+  searchParams: { d?: string };
+}) {
+  const round = await getRound(TABLE_NAME, searchParams?.d);
   const isLive = getDateInPh() === round?.date;
 
   if (!round) {
@@ -28,6 +32,7 @@ export default async function SaltongPage() {
           title="Saltong"
           subtitle={SUBTITLE}
           boxed={`#${round.gameId}`}
+          icon="/mini.svg"
         />
         <div className="flex gap-2">
           <ResultsButton mode={MODE} gameDate={round.date} />

@@ -1,6 +1,7 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
+import Image from "next/image";
 import React from "react";
 
 const navbarBrandTitleVariants = cva("", {
@@ -10,7 +11,7 @@ const navbarBrandTitleVariants = cva("", {
       purple: "text-saltong-purple",
       blue: "text-saltong-blue",
       red: "text-saltong-red",
-      default: "text-black",
+      default: "text-[#252827] dark:text-[#EFFFF7]",
     },
   },
   defaultVariants: {
@@ -79,24 +80,58 @@ export interface NavbarBrandProps
   title?: string;
   subtitle?: string;
   boxed?: string;
+  icon?: string;
+  iconLight?: string;
+  hideMenu?: boolean;
 }
 
 const NavbarBrand = React.forwardRef<HTMLDivElement, NavbarBrandProps>(
   (
-    { className, children, colorScheme, title, subtitle, boxed, ...props },
+    {
+      className,
+      children,
+      colorScheme,
+      title,
+      subtitle,
+      boxed,
+      icon,
+      iconLight,
+      hideMenu,
+      ...props
+    },
     ref
   ) => {
     return (
       <div
         ref={ref}
         className={cn(
-          "flex items-center justify-center gap-0 lg:gap-1",
+          "flex items-center justify-center gap-1.5",
           className,
           navbarBrandTitleVariants({ colorScheme })
         )}
         {...props}
       >
-        <SidebarTrigger />
+        {!hideMenu && <SidebarTrigger />}
+        {icon && (
+          <Image
+            src={icon}
+            alt={`${title} Logo`}
+            width={30}
+            height={30}
+            className={cn({
+              "hidden dark:block": !!iconLight,
+            })}
+          />
+        )}
+        {iconLight && (
+          <Image
+            src={iconLight}
+            alt={`${title} Logo`}
+            width={30}
+            height={30}
+            className="block dark:hidden"
+          />
+        )}
         <h3 className="select-none tracking-tighter">
           {title && (
             <span

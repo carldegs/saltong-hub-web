@@ -5,7 +5,6 @@ import {
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import Link from "next/link";
-import { ColorModeToggle } from "@/components/shared/color-mode-toggle"; // Import ColorModeToggle
 
 export const GAMES = [
   { href: "/play", icon: "/main.svg", name: "Saltong" },
@@ -16,18 +15,20 @@ export const GAMES = [
 
 export function GamesSidebarMenu() {
   return (
-    <SidebarMenu>
+    <SidebarMenu className="gap-0.5">
       {GAMES.map((game) => (
         <SidebarMenuItem key={game.name}>
           <SidebarMenuButton className="h-auto">
             <Link href={game.href} className="flex w-full items-center gap-3">
-              <Image
-                src={game.icon}
-                alt={`${game.name} Logo`}
-                width={30}
-                height={30}
-              />
-              <span className="text-lg">{game.name}</span>
+              {game.icon && (
+                <Image
+                  src={game.icon}
+                  alt={`${game.name} Logo`}
+                  width={32}
+                  height={32}
+                />
+              )}
+              <span className="text-base">{game.name}</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
