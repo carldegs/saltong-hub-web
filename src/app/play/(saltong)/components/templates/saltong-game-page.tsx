@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
-import getRound from "../../api/getRound";
+import getRound from "../../../api/getRound";
 import { getDateInPh } from "@/utils/time";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
-import GameWrapper from "./game-wrapper";
-import { ResultsButton } from "./results-button";
-import { GameConfig } from "../types";
+import GameWrapper from "../game-wrapper";
+import { ResultsButton } from "../results-button";
+import { GameConfig } from "../../types";
 import { ComponentProps } from "react";
 
-export default async function SaltongPage({
+export default async function SaltongGamePage({
   searchParams,
   tableName,
   colorScheme,
