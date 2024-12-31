@@ -33,14 +33,16 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>GAMES</SidebarGroupLabel>
-          <Link href="/">
-            <SidebarGroupAction className="mr-4 whitespace-nowrap text-sm hover:underline">
+          <SidebarGroupLabel>GAMES</SidebarGroupLabel>{" "}
+          <SidebarGroupAction
+            className="mr-4 whitespace-nowrap text-sm hover:underline"
+            asChild
+          >
+            <Link href="/">
               <span>See All</span>
               <ChevronRightIcon />
-            </SidebarGroupAction>
-          </Link>
-
+            </Link>
+          </SidebarGroupAction>
           <GamesSidebarMenu />
         </SidebarGroup>
         <SidebarGroup>

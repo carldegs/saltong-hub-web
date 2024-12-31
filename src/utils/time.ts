@@ -16,24 +16,30 @@ export const PH_TIMEZONE = "Asia/Manila";
 export const DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 export const DATE_FORMAT = "yyyy-MM-dd";
 
-// use date-fns and/or date-fns-tz
 export const getDateInPh = (date = new Date()) => {
+  return toZonedTime(date, PH_TIMEZONE);
+};
+
+/** DAILY GAME UTILS */
+export const getFormattedDateInPh = (date = new Date()) => {
   return formatInTimeZone(date, PH_TIMEZONE, DATE_FORMAT);
 };
 
-export const getNextDateInPh = (date = new Date()) => {
+export const getNextFormattedDateInPh = (date = new Date()) => {
   const nextDate = add(date, { days: 1 });
   return formatInTimeZone(nextDate, PH_TIMEZONE, DATE_FORMAT);
 };
 
-export const getPrevDateInPh = (date = new Date()) => {
+export const getPrevFormattedDateInPh = (date = new Date()) => {
   const prevDate = add(date, { days: -1 });
   return formatInTimeZone(prevDate, PH_TIMEZONE, DATE_FORMAT);
 };
 
 export const getDailyGameCountdown = (date = new Date()) => {
-  const midnightInPh = new Date(`${getNextDateInPh()} 00:00:00 GMT+0800`);
-  const currDateInPh = toZonedTime(date, PH_TIMEZONE);
+  const midnightInPh = new Date(
+    `${getNextFormattedDateInPh()} 00:00:00 GMT+0800`
+  );
+  const currDateInPh = getDateInPh(date);
 
   return intervalToDuration({
     start: currDateInPh,
@@ -43,8 +49,8 @@ export const getDailyGameCountdown = (date = new Date()) => {
 
 /** SALTONG HEX UTILS */
 
-export const getHexDateInPh = (date = new Date()) => {
-  const dateInPh = toZonedTime(date, PH_TIMEZONE);
+export const getFormattedHexDateInPh = (date = new Date()) => {
+  const dateInPh = getDateInPh(date);
 
   // get the closest occured Tuesday or Friday in the PH timezone
 
@@ -60,8 +66,8 @@ export const getHexDateInPh = (date = new Date()) => {
   );
 };
 
-export const getNextHexDateInPh = (date = new Date()) => {
-  const currDateInPh = toZonedTime(date, PH_TIMEZONE);
+export const getNextFormattedHexDateInPh = (date = new Date()) => {
+  const currDateInPh = getDateInPh();
 
   if (isTuesday(currDateInPh)) {
     return formatInTimeZone(nextFriday(date), PH_TIMEZONE, DATE_FORMAT);
@@ -79,7 +85,9 @@ export const getNextHexDateInPh = (date = new Date()) => {
 };
 
 export const getHexGameCountdown = (date = new Date()) => {
-  const nextHexDate = new Date(`${getNextHexDateInPh()} 00:00:00 GMT+0800`);
+  const nextHexDate = new Date(
+    `${getNextFormattedHexDateInPh()} 00:00:00 GMT+0800`
+  );
   const currDateInPh = toZonedTime(date, PH_TIMEZONE);
 
   return intervalToDuration({

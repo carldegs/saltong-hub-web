@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { Database } from "@/lib/supabase/types";
-import { getDateInPh, getHexDateInPh } from "@/utils/time";
+import { getFormattedDateInPh, getFormattedHexDateInPh } from "@/utils/time";
 import { cache } from "react";
 
 const getRound = cache(
@@ -10,7 +10,9 @@ const getRound = cache(
   ) => {
     const date =
       gameDate ??
-      (table === "saltong-hex-rounds" ? getHexDateInPh() : getDateInPh());
+      (table === "saltong-hex-rounds"
+        ? getFormattedHexDateInPh()
+        : getFormattedDateInPh());
 
     const supabase = createClient();
     const { data: round } = await supabase

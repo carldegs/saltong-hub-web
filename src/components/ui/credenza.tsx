@@ -75,7 +75,12 @@ const CredenzaContent = ({ className, children, ...props }: CredenzaProps) => {
   const CredenzaContent = isDesktop ? DialogContent : DrawerContent;
 
   return (
-    <CredenzaContent className={className} {...props}>
+    <CredenzaContent
+      className={cn(className, {
+        "overflow-y-scroll": isDesktop,
+      })}
+      {...props}
+    >
       {children}
     </CredenzaContent>
   );

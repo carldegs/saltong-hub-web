@@ -18,7 +18,7 @@ export function GamesSidebarMenu() {
     <SidebarMenu className="gap-0.5">
       {GAMES.map((game) => (
         <SidebarMenuItem key={game.name}>
-          <SidebarMenuButton className="h-auto">
+          <SidebarMenuButton className="h-auto" asChild>
             <Link href={game.href} className="flex w-full items-center gap-3">
               {game.icon && (
                 <Image

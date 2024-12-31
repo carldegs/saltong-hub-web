@@ -17,6 +17,7 @@ export interface GameConfig {
   mode: GameMode;
   tableName: `saltong-${GameMode}-rounds`;
   icon: string;
+  startDate: string;
 }
 
 export type SaltongRound = Tables<"saltong-main-rounds">;

@@ -9,6 +9,7 @@ export const SALTONG_CONFIGS = {
     mode: "main",
     tableName: "saltong-main-rounds",
     icon: "/main.svg",
+    startDate: "2022-01-14",
   },
   mini: {
     maxTries: 5,
@@ -18,6 +19,7 @@ export const SALTONG_CONFIGS = {
     mode: "mini",
     tableName: "saltong-mini-rounds",
     icon: "/mini.svg",
+    startDate: "2022-01-16",
   },
   max: {
     maxTries: 8,
@@ -27,5 +29,6 @@ export const SALTONG_CONFIGS = {
     mode: "max",
     tableName: "saltong-max-rounds",
     icon: "/max.svg",
+    startDate: "2022-01-16",
   },
 } satisfies Record<GameMode, GameConfig>;

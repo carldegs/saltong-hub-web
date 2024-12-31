@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import getRound from "../api/getRound";
 import { Navbar, NavbarBrand } from "../../../components/shared/navbar";
-import { getHexDateInPh } from "@/utils/time";
+import { getFormattedHexDateInPh } from "@/utils/time";
 import GameWrapper from "./components/game-wrapper";
 import { HexStoreProvider } from "./providers/hex-store-provider";
 
@@ -16,7 +16,7 @@ export default async function SaltongHexPage({
   searchParams: { d?: string };
 }) {
   const round = await getRound(TABLE_NAME, searchParams?.d);
-  const isLive = round?.date === getHexDateInPh();
+  const isLive = round?.date === getFormattedHexDateInPh();
 
   if (!round) {
     return notFound();

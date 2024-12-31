@@ -13,7 +13,7 @@ export function SettingsSidebarMenu() {
         Color Mode <ColorModeToggle />
       </SidebarMenuItem>
       <SidebarMenuItem>
-        <SidebarMenuButton className="h-auto">
+        <SidebarMenuButton className="h-auto" asChild>
           <Link
             href="/privacy"
             className="flex w-full items-center gap-3 text-base"
@@ -24,7 +24,7 @@ export function SettingsSidebarMenu() {
       </SidebarMenuItem>
 
       <SidebarMenuItem>
-        <SidebarMenuButton className="h-auto">
+        <SidebarMenuButton className="h-auto" asChild>
           <Link
             href="/about"
             className="flex w-full items-center gap-3 text-base"

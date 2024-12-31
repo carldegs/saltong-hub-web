@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import getRound from "../../../api/getRound";
-import { getDateInPh } from "@/utils/time";
+import { getFormattedDateInPh } from "@/utils/time";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import GameWrapper from "../game-wrapper";
 import { ResultsButton } from "../results-button";
@@ -20,7 +20,7 @@ export default async function SaltongGamePage({
   searchParams: { d?: string };
 } & GameConfig) {
   const round = await getRound(tableName, searchParams?.d);
-  const isLive = getDateInPh() === round?.date;
+  const isLive = getFormattedDateInPh() === round?.date;
 
   if (!round) {
     return notFound();

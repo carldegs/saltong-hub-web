@@ -18,7 +18,7 @@ export function OtherGamesSidebarMenu() {
     <SidebarMenu>
       {OTHER_GAMES.map((game) => (
         <SidebarMenuItem key={game.name}>
-          <SidebarMenuButton className="h-auto">
+          <SidebarMenuButton className="h-auto" asChild>
             <a
               href={game.href}
               className="flex w-full items-center gap-3"
