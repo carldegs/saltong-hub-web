@@ -1,20 +1,16 @@
-import { Navbar, NavbarBrand } from "@/components/shared/navbar";
+import { Navbar } from "@/components/shared/navbar";
 import DailyGamesCard from "./components/daily-games-card";
 import HexGamesCard from "./components/hex-games-card";
 import GameCard from "./components/game-card";
 import { SALTONG_CONFIGS } from "./play/(saltong)/constants";
 import { HEX_CONFIG } from "./play/hex/constants";
+import HomeNavbarBrand from "./components/home-navbar-brand";
 
 export default async function HomePage() {
   return (
     <div className="grid min-h-screen w-full grid-rows-[auto_1fr]">
       <Navbar>
-        <NavbarBrand
-          title="Saltong"
-          subtitle="Hub"
-          icon="/hub-light.svg"
-          iconLight="/hub.svg"
-        />
+        <HomeNavbarBrand />
       </Navbar>
       <main className="h-full w-full">
         <div className="h-fit w-full border-b px-4 py-8">

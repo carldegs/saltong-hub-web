@@ -1,7 +1,7 @@
 import { Metadata } from "next";
-import SaltongGamePage from "../components/templates/saltong-game-page";
 import { SALTONG_CONFIGS } from "../constants";
 import getRound from "../../api/getRound";
+import SaltongMainPageWithSuspense from "../components/templates/saltong-game-page";
 
 interface Props {
   searchParams: Promise<{ d?: string }>;
@@ -29,5 +29,10 @@ export async function generateMetadata({
 export default async function SaltongMainPage(props: {
   searchParams: Promise<{ d?: string }>;
 }) {
-  return <SaltongGamePage searchParams={props.searchParams} {...CONFIG} />;
+  return (
+    <SaltongMainPageWithSuspense
+      searchParams={props.searchParams}
+      {...CONFIG}
+    />
+  );
 }

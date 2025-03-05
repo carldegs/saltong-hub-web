@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
 import Image from "next/image";
 import React from "react";
+import { Skeleton } from "../ui/skeleton";
 
 const navbarBrandTitleVariants = cva("", {
   variants: {
@@ -83,6 +84,8 @@ export interface NavbarBrandProps
   icon?: string;
   iconLight?: string;
   hideMenu?: boolean;
+  hideBrand?: boolean;
+  isLoading?: boolean;
 }
 
 const NavbarBrand = React.forwardRef<HTMLDivElement, NavbarBrandProps>(
@@ -97,6 +100,8 @@ const NavbarBrand = React.forwardRef<HTMLDivElement, NavbarBrandProps>(
       icon,
       iconLight,
       hideMenu,
+      hideBrand,
+      isLoading,
       ...props
     },
     ref
@@ -112,60 +117,72 @@ const NavbarBrand = React.forwardRef<HTMLDivElement, NavbarBrandProps>(
         {...props}
       >
         {!hideMenu && <SidebarTrigger />}
-        {icon && (
-          <Image
-            src={icon}
-            alt={`${title} Logo`}
-            width={30}
-            height={30}
-            className={cn({
-              "hidden dark:block": !!iconLight,
-            })}
-          />
+        {!hideBrand && (
+          <>
+            {icon && (
+              <Image
+                src={icon}
+                alt={`${title} Logo`}
+                width={30}
+                height={30}
+                className={cn({
+                  "hidden dark:block": !!iconLight,
+                })}
+              />
+            )}
+            {iconLight && (
+              <Image
+                src={iconLight}
+                alt={`${title} Logo`}
+                width={30}
+                height={30}
+                className="block dark:hidden"
+              />
+            )}
+            <h3 className="select-none tracking-tighter">
+              {title && (
+                <span
+                  className={cn(
+                    navbarBrandTitleVariants({ colorScheme }),
+                    "font-[700]"
+                  )}
+                >
+                  {title}
+                  {!subtitle && " "}
+                </span>
+              )}
+              {!!subtitle && (
+                <span
+                  className={cn(
+                    navbarBrandTitleVariants({ colorScheme }),
+                    "font-[300]"
+                  )}
+                >
+                  {subtitle}{" "}
+                </span>
+              )}
+              {isLoading && (
+                <Skeleton
+                  className={cn(
+                    navbarBrandBoxedVariants({ colorScheme }),
+                    "inline-block h-[23.5] w-12 rounded-lg px-2 text-lg font-[300]"
+                  )}
+                />
+              )}
+              {!!boxed && !isLoading && (
+                <span
+                  className={cn(
+                    navbarBrandBoxedVariants({ colorScheme }),
+                    "rounded-lg px-2 text-lg font-[300]"
+                  )}
+                >
+                  {boxed}
+                </span>
+              )}
+              {children}
+            </h3>
+          </>
         )}
-        {iconLight && (
-          <Image
-            src={iconLight}
-            alt={`${title} Logo`}
-            width={30}
-            height={30}
-            className="block dark:hidden"
-          />
-        )}
-        <h3 className="select-none tracking-tighter">
-          {title && (
-            <span
-              className={cn(
-                navbarBrandTitleVariants({ colorScheme }),
-                "font-[700]"
-              )}
-            >
-              {title}
-              {!subtitle && " "}
-            </span>
-          )}
-          {subtitle && (
-            <span
-              className={cn(
-                navbarBrandTitleVariants({ colorScheme }),
-                "font-[300]"
-              )}
-            >
-              {subtitle}{" "}
-            </span>
-          )}
-          {boxed && (
-            <span
-              className={cn(
-                navbarBrandBoxedVariants({ colorScheme }),
-                "rounded-lg px-2 text-lg font-[300]"
-              )}
-            >
-              {boxed}
-            </span>
-          )}
-          {children}
-        </h3>
       </div>
     );
   }

@@ -5,11 +5,12 @@ import GameWrapper from "../game-wrapper";
 import { ResultsButton } from "../results-button";
 import { GameConfig } from "../../types";
 import { notFound } from "next/navigation";
-import { ComponentProps } from "react";
+import { ComponentProps, Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import UnauthorizedErrorPage from "@/app/play/(saltong)/components/archives/unauthorized-error-page";
+import GameWrapperLoading from "../game-wrapper-loading";
 
-export default async function SaltongGamePage({
+async function SaltongGamePage({
   searchParams: _searchParams,
   ...gameConfig
 }: {
@@ -69,5 +70,45 @@ export default async function SaltongGamePage({
         isLive={isLive}
       />
     </>
+  );
+}
+
+function SaltongGamePageLoading(gameConfig: GameConfig) {
+  const { colorScheme, subtitle, maxTries, wordLen, icon } = gameConfig;
+
+  return (
+    <>
+      <Navbar
+        colorScheme={
+          colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
+        }
+      >
+        <div className="flex items-center gap-2">
+          <NavbarBrand
+            colorScheme={
+              colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
+            }
+            title="Saltong"
+            subtitle={subtitle}
+            icon={icon}
+            isLoading
+          />
+        </div>
+      </Navbar>
+      <GameWrapperLoading maxTries={maxTries} wordLen={wordLen} />
+    </>
+  );
+}
+
+export default async function SaltongMainPageWithSuspense({
+  searchParams,
+  ...gameConfig
+}: {
+  searchParams: Promise<{ d?: string }>;
+} & GameConfig) {
+  return (
+    <Suspense fallback={<SaltongGamePageLoading {...gameConfig} />}>
+      <SaltongGamePage searchParams={searchParams} {...gameConfig} />
+    </Suspense>
   );
 }
