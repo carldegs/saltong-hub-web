@@ -32,12 +32,15 @@ export default function HexKeyboard({
           }}
         >
           <DeleteIcon size={16} />
+          <span className="sr-only">Delete</span>
         </Button>
         <Button size="icon" className="rounded-full" onClick={shuffleLetters}>
           <ShuffleIcon size={16} />
+          <span className="sr-only">Shuffle</span>
         </Button>
         <Button size="icon" className="rounded-full" onClick={onSubmit}>
           <PlayIcon size={16} />
+          <span className="sr-only">Submit</span>
         </Button>
       </div>
     </div>

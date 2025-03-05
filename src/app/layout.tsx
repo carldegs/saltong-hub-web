@@ -12,10 +12,15 @@ const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
 });
+import { VercelToolbar } from "@vercel/toolbar/next";
 
 export const metadata: Metadata = {
   title: "Saltong Hub",
   description: "Filipino clone of Wordle",
+  openGraph: {
+    siteName: "Saltong Hub",
+    url: "https://saltong.com",
+  },
 };
 
 export default async function RootLayout({
@@ -23,6 +28,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const shouldInjectToolbar = process.env.NODE_ENV === "development";
+
   const cookieStore = await cookies();
   const sidebarState = cookieStore.get("sidebar:state")?.value;
   const defaultOpen =
@@ -45,6 +52,7 @@ export default async function RootLayout({
           </SidebarProvider>
           <Toaster richColors />
         </ThemeProvider>
+        {shouldInjectToolbar && <VercelToolbar />}
       </body>
     </html>
   );
