@@ -6,7 +6,6 @@ import { createClient } from "@/lib/supabase/server";
 import UnauthorizedErrorPage from "./unauthorized-error-page";
 
 export default async function SaltongArchivePage({
-  searchParams,
   ...gameConfig
 }: {
   searchParams: { d?: string };
@@ -40,14 +39,7 @@ export default async function SaltongArchivePage({
         />
       </Navbar>
       <div className="mx-auto w-full max-w-prose">
-        <ArchiveMonthlyCalendar
-          {...gameConfig}
-          focusedDate={
-            !isNaN(Number(searchParams?.d))
-              ? new Date(Number(searchParams.d) * 100000)
-              : new Date()
-          }
-        />
+        <ArchiveMonthlyCalendar />
       </div>
     </>
   );

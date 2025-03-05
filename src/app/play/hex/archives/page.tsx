@@ -10,11 +10,8 @@ export const metadata: Metadata = {
   title: "Saltong Hex Archives",
 };
 
-export default async function SaltongHexArchivePage(props: {
-  searchParams: Promise<{ d?: string }>;
-}) {
+export default async function SaltongHexArchivePage() {
   const gameConfig = HEX_CONFIG;
-  const searchParams = await props.searchParams;
   const { colorScheme, subtitle, icon } = gameConfig;
 
   const supabase = await createClient();
@@ -41,14 +38,7 @@ export default async function SaltongHexArchivePage(props: {
         />
       </Navbar>
       <div className="mx-auto w-full max-w-prose">
-        <ArchiveCalendar
-          {...gameConfig}
-          focusedDate={
-            !isNaN(Number(searchParams?.d))
-              ? new Date(Number(searchParams.d) * 100000)
-              : new Date()
-          }
-        />
+        <ArchiveCalendar />
       </div>
     </>
   );
