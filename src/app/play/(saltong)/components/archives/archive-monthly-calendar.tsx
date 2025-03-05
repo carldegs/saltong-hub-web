@@ -7,6 +7,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { DATE_FORMAT, getDateInPh } from "@/utils/time";
 import { differenceInCalendarDays, format } from "date-fns";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
 
@@ -52,9 +53,13 @@ export default function ArchiveMonthlyCalendar({
     <div>
       <Calendar
         mode="single"
-        captionLayout="dropdown-buttons"
-        fromDate={new Date(startDate)}
-        toDate={new Date()}
+        captionLayout="dropdown"
+        startMonth={new Date(startDate)}
+        endMonth={new Date()}
+        hidden={{
+          before: new Date(startDate),
+          after: new Date(),
+        }}
         onSelect={(date) => {
           if (!date) {
             return;
@@ -95,15 +100,20 @@ export default function ArchiveMonthlyCalendar({
         className="w-full"
         showOutsideDays={false}
         components={{
-          DayContent: ({ date }) => {
-            const gameCount = getGameCount(startDate, date);
+          DayButton: ({ day }) => {
+            const gameCount = getGameCount(startDate, day.date);
             return (
-              <div className="flex h-full w-full flex-col items-center justify-center">
-                <span>{date.getDate()}</span>
-                <span className="-mt-1 text-xs font-medium opacity-50">
-                  {gameCount > 0 ? gameCount : "."}
-                </span>
-              </div>
+              <Link
+                className="h-full w-full"
+                href={`/play/${mode !== "main" ? mode : ""}?d=${format(day.date, DATE_FORMAT)}`}
+              >
+                <div className="flex h-full w-full flex-col items-center justify-center">
+                  <span>{day.date.getDate()}</span>
+                  <span className="-mt-1 text-xs font-medium opacity-50">
+                    {gameCount > 0 ? gameCount : "."}
+                  </span>
+                </div>
+              </Link>
             );
           },
         }}

@@ -26,7 +26,7 @@ const navbarBrandBoxedVariants = cva("", {
       purple: "bg-saltong-purple text-saltong-purple-200",
       blue: "bg-saltong-blue text-saltong-blue-200",
       red: "bg-saltong-red text-saltong-red-200",
-      default: "bg-black text-white",
+      default: "bg-black text-white dark:bg-white dark:text-black",
     },
   },
   defaultVariants: {

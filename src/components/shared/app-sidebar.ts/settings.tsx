@@ -5,8 +5,12 @@ import {
 } from "@/components/ui/sidebar";
 import { ColorModeToggle } from "@/components/shared/color-mode-toggle";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 
-export function SettingsSidebarMenu() {
+export async function SettingsSidebarMenu() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+
   return (
     <SidebarMenu>
       <SidebarMenuItem className="flex items-center justify-between pl-2 pr-1">
@@ -33,6 +37,19 @@ export function SettingsSidebarMenu() {
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
+
+      {data.user && (
+        <SidebarMenuItem>
+          <SidebarMenuButton className="h-auto" asChild>
+            <Link
+              href="/account"
+              className="flex w-full items-center gap-3 text-base"
+            >
+              <span className="text-base">Account</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      )}
     </SidebarMenu>
   );
 }

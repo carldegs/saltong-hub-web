@@ -1,15 +1,27 @@
 import { GameConfig } from "@/app/play/(saltong)/types";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { ComponentProps } from "react";
-import ArchiveMonthlyCalendar from "./components/archive-monthly-calendar";
+import ArchiveMonthlyCalendar from "./archive-monthly-calendar";
+import { createClient } from "@/lib/supabase/server";
+import UnauthorizedErrorPage from "./unauthorized-error-page";
 
 export default async function SaltongArchivePage({
   searchParams,
   ...gameConfig
 }: {
   searchParams: { d?: string };
-} & GameConfig) {
+} & Pick<
+  GameConfig,
+  "colorScheme" | "subtitle" | "icon" | "startDate" | "mode"
+>) {
   const { colorScheme, subtitle, icon } = gameConfig;
+
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+
+  if (!data.user) {
+    return <UnauthorizedErrorPage {...gameConfig} />;
+  }
 
   return (
     <>

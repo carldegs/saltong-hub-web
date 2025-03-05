@@ -13,15 +13,28 @@ export default function useRoundStats(mode: GameMode, gameDate: string) {
     [rounds, gameDate]
   );
 
+  const status = useMemo(() => {
+    if (!round.startedAt) {
+      return "idle";
+    }
+
+    if (round.startedAt && !round.endedAt) {
+      return "partial";
+    }
+
+    if (round.isCorrect) {
+      return "correct";
+    }
+
+    return "incorrect";
+  }, [round.endedAt, round.isCorrect, round.startedAt]);
+
   return useMemo(
     () =>
       ({
         isCorrect: !!round.isCorrect,
-        time:
-          round.endedAt && round.startedAt
-            ? round.endedAt - round.startedAt
-            : -1,
+        status,
       }) satisfies RoundStats,
-    [round.endedAt, round.isCorrect, round.startedAt]
+    [round.isCorrect, status]
   );
 }

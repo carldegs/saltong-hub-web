@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { differenceInDays, intervalToDuration } from "date-fns";
 import usePlayerStats from "../hooks/usePlayerStats";
 import useRoundStats from "../hooks/useRoundStats";
@@ -22,6 +22,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useInterval } from "usehooks-ts";
+import useRoundAnswers from "../hooks/useRoundAnswers";
+import { getFormattedDateInPh } from "@/utils/time";
 
 const OTHER_GAMES_LIST = [
   {
@@ -50,6 +53,71 @@ const OTHER_GAMES_LIST = [
   },
 ];
 
+const STATUS_TEXT: Record<RoundStats["status"], string> = {
+  correct: "SOLVED!",
+  incorrect: "YOU LOSE",
+  partial: "Still Guessing...",
+  idle: "Start Guessing!",
+};
+
+function TimeCard({ mode, gameDate }: { mode: GameMode; gameDate: string }) {
+  const [rounds] = useRoundAnswers(mode);
+  const isLive = useMemo(() => getFormattedDateInPh() === gameDate, [gameDate]);
+
+  const round = useMemo(
+    () =>
+      rounds[gameDate] || {
+        grid: "",
+      },
+    [rounds, gameDate]
+  );
+
+  const [time, setTime] = useState(-1);
+
+  useInterval(
+    () => {
+      if (!isLive) {
+        return setTime(-1);
+      }
+
+      if (round.startedAt && round.endedAt) {
+        setTime(round.endedAt - round.startedAt);
+      }
+
+      if (round.startedAt) {
+        return setTime(Date.now() - round.startedAt);
+      }
+
+      return setTime(-1);
+    },
+    round.endedAt && round.startedAt && isLive ? null : 1000
+  );
+
+  const interval = { start: 0, end: time };
+  const baseDuration = intervalToDuration(interval);
+  const diffInDays = differenceInDays(interval.end, interval.start);
+  const duration = {
+    d: diffInDays,
+    h: baseDuration.hours,
+    m: baseDuration.minutes,
+    s: baseDuration.seconds,
+  };
+
+  const timeStr = Object.entries(duration)
+    .filter(([, value]) => value && value > 0)
+    .map(([key, value]) => `${value}${key}`)
+    .join(" ");
+
+  return (
+    <Card className="min-w-[90px] flex-grow p-0 shadow-none">
+      <CardHeader className="p-3">
+        <CardTitle>{time === -1 ? "-" : timeStr}</CardTitle>
+        <CardDescription>Time</CardDescription>
+      </CardHeader>
+    </Card>
+  );
+}
+
 function ResultsDialogComponent({
   open,
   onOpenChange,
@@ -66,12 +134,14 @@ function ResultsDialogComponent({
     updatedAt: 0,
     gameMode: "main",
   },
+  gameDate,
 }: Omit<RootCredenzaProps, "children"> & {
   roundStats: RoundStats;
   playerStats?: PlayerStats;
+  gameDate: string;
 }) {
   const gameModeConfig = SALTONG_CONFIGS[playerStats.gameMode];
-  const { isCorrect, time } = roundStats;
+  const { status } = roundStats;
   const {
     totalWins,
     totalLosses,
@@ -81,21 +151,6 @@ function ResultsDialogComponent({
   } = playerStats;
 
   const statBarData = useMemo(() => {
-    const interval = { start: 0, end: time };
-    const baseDuration = intervalToDuration(interval);
-    const diffInDays = differenceInDays(interval.end, interval.start);
-    const duration = {
-      d: diffInDays,
-      h: baseDuration.hours,
-      m: baseDuration.minutes,
-      s: baseDuration.seconds,
-    };
-
-    const timeStr = Object.entries(duration)
-      .filter(([, value]) => value && value > 0)
-      .map(([key, value]) => `${value}${key}`)
-      .join(" ");
-
     return [
       {
         title: "Total Wins",
@@ -114,12 +169,8 @@ function ResultsDialogComponent({
         title: "Max Streak",
         value: longestWinStreak,
       },
-      {
-        title: "Time",
-        value: timeStr || "-",
-      },
     ];
-  }, [currentWinStreak, longestWinStreak, time, totalLosses, totalWins]);
+  }, [currentWinStreak, longestWinStreak, totalLosses, totalWins]);
 
   const filteredGamesList = useMemo(
     () => [
@@ -139,7 +190,7 @@ function ResultsDialogComponent({
       <DialogContent className="max-h-full overflow-y-auto sm:max-h-[90dvh]">
         <DialogHeader className="px-0">
           <DialogTitle className="mb-2 border-0 font-bold">
-            {isCorrect ? "SOLVED!" : "YOU LOSE"}
+            {STATUS_TEXT[status]}
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-3 px-4 md:px-0">
@@ -155,6 +206,7 @@ function ResultsDialogComponent({
                 </CardHeader>
               </Card>
             ))}
+            <TimeCard mode={playerStats.gameMode} gameDate={gameDate} />
           </div>
           <ResultsChart playerStats={winTurns} />
           <span className="text-center text-sm font-bold tracking-wider">
@@ -162,7 +214,14 @@ function ResultsDialogComponent({
           </span>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {filteredGamesList.map(({ href, mode, name, icon }) => (
-              <Link href={href} key={mode} className="min-w-[90px] flex-grow">
+              <Link
+                href={href}
+                key={mode}
+                className="min-w-[90px] flex-grow"
+                onClick={() => {
+                  onOpenChange?.(false);
+                }}
+              >
                 <Card className="h-full p-0 shadow-none hover:bg-primary-foreground">
                   <CardContent className="flex flex-col items-center justify-center p-3">
                     <div className="relative mb-2 h-[36px] sm:mb-1">
@@ -207,6 +266,7 @@ export default function ResultsDialog({
         onOpenChange={onOpenChange}
         roundStats={roundStats}
         playerStats={stats}
+        gameDate={gameDate}
       />
     );
   }

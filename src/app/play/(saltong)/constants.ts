@@ -10,6 +10,7 @@ export const SALTONG_CONFIGS = {
     tableName: "saltong-main-rounds",
     icon: "/main.svg",
     startDate: "2022-01-14",
+    blurb: "The classic Saltong game, guess the five-letter word",
   },
   mini: {
     maxTries: 5,
@@ -20,6 +21,7 @@ export const SALTONG_CONFIGS = {
     tableName: "saltong-mini-rounds",
     icon: "/mini.svg",
     startDate: "2022-01-16",
+    blurb: "A shorter version of Saltong, try to guess the four-letter word",
   },
   max: {
     maxTries: 8,
@@ -30,5 +32,6 @@ export const SALTONG_CONFIGS = {
     tableName: "saltong-max-rounds",
     icon: "/max.svg",
     startDate: "2022-01-16",
+    blurb: "The longer version of Saltong, guess the seven-letter word",
   },
 } satisfies Record<GameMode, GameConfig>;

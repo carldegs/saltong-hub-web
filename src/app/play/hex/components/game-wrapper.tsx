@@ -12,6 +12,7 @@ import useHexAnswer from "../hooks/useHexAnswer";
 import { getWordScore } from "../utils";
 import WordListCard from "./word-list-card";
 import ScoreTracker from "./score-tracker";
+import WordListBar from "./word-list-bar";
 
 export default function GameWrapper({
   roundData,
@@ -135,6 +136,8 @@ export default function GameWrapper({
           wordList={parsedWords}
           guessedWords={playerAnswer.guessedWords}
         />
+
+        <WordListBar date={date} roundData={roundData} />
 
         <div className="relative mb-8 flex min-h-[60px] flex-col items-center justify-center gap-1 md:gap-16">
           {animate === "success" && (

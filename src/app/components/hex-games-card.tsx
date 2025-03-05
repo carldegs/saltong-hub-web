@@ -1,7 +1,7 @@
 "use client";
 
 import { getHexGameCountdown } from "@/utils/time";
-import GameCard from "./game-card";
+import GameCountdownCard from "./game-countdown-card";
 
 const HEX_GAMES = [
   {
@@ -14,7 +14,7 @@ const HEX_GAMES = [
 
 export default function HexGamesCard({ className }: { className?: string }) {
   return (
-    <GameCard
+    <GameCountdownCard
       games={HEX_GAMES}
       countdown={getHexGameCountdown}
       className={className}

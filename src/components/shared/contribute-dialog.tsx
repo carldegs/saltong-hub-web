@@ -24,7 +24,7 @@ export default function ContributeDialog({
   children?: ReactNode;
 }) {
   return (
-    <Credenza open={open} onOpenChange={onOpenChange} shouldScaleBackground>
+    <Credenza open={open} onOpenChange={onOpenChange}>
       {children && <CredenzaTrigger asChild>{children}</CredenzaTrigger>}
       <CredenzaContent>
         <CredenzaHeader className="px-0">

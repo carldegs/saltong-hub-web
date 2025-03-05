@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
+import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -25,17 +18,53 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { signOut } from "@/app/(auth-pages)/actions";
+import { usePathname } from "next/navigation";
 
 export function NavUser({
   user,
 }: {
-  user: {
+  user?: Partial<{
     name: string;
     email: string;
     avatar: string;
-  };
+  }>;
 }) {
-  const { isMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
+  const currPathname = usePathname();
+
+  if (!user?.email && !user?.name && !user?.avatar) {
+    // show Login/Signup button
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              size="lg"
+              onClick={() => {
+                setOpenMobile(false);
+              }}
+              asChild
+            >
+              <Link
+                href={{
+                  pathname: "/login",
+                  query: { f: currPathname },
+                }}
+              >
+                Log in
+              </Link>
+            </Button>
+            <Button size="lg" variant="secondary">
+              <Link href="/signup">Sign up</Link>
+            </Button>
+          </div>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
+  }
 
   return (
     <SidebarMenu>
@@ -48,11 +77,19 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {user.name?.charAt(0).toUpperCase() ??
+                    user.email?.charAt(0).toUpperCase() ??
+                    "?"}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">
+                  {user.name ?? user.email}
+                </span>
+                {user.name && (
+                  <span className="truncate text-xs">{user.email}</span>
+                )}
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -78,30 +115,16 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Sparkles className="mr-1" />
-                Upgrade to Pro
+                <Link href="/account" className="w-full">
+                  <BadgeCheck className="mr-4 inline size-5" />
+                  Account
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={signOut}>
+                <LogOut className="mr-4 size-5" />
+                Log out
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck className="mr-1" />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard className="mr-1" />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell className="mr-1" />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut className="mr-1" />
-              Log out
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

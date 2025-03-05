@@ -16,8 +16,12 @@ import { MoreSidebarMenu } from "./more";
 import { ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
 import { NavbarBrand } from "../navbar";
+import { createClient } from "@/lib/supabase/server";
 
-export function AppSidebar() {
+export async function AppSidebar() {
+  const supabase = await createClient();
+  const { data: userData } = await supabase.auth.getUser();
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -60,9 +64,7 @@ export function AppSidebar() {
 
         <NavUser
           user={{
-            name: "carldegs",
-            email: "carl.2795@gmail.com",
-            avatar: "https://avatars.githubusercontent.com/u/1792317?v=4",
+            email: userData?.user?.email,
           }}
         />
       </SidebarFooter>

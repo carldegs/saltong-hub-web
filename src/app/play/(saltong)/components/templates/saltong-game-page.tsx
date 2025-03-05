@@ -1,24 +1,39 @@
-import { notFound } from "next/navigation";
 import getRound from "../../../api/getRound";
-import { getFormattedDateInPh } from "@/utils/time";
+import { getFormattedDateInPh, isFormattedDateInFuture } from "@/utils/time";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import GameWrapper from "../game-wrapper";
 import { ResultsButton } from "../results-button";
 import { GameConfig } from "../../types";
+import { notFound } from "next/navigation";
 import { ComponentProps } from "react";
+import { createClient } from "@/lib/supabase/server";
+import UnauthorizedErrorPage from "@/app/play/(saltong)/components/archives/unauthorized-error-page";
 
 export default async function SaltongGamePage({
-  searchParams,
-  tableName,
-  colorScheme,
-  subtitle,
-  mode,
-  maxTries,
-  wordLen,
-  icon,
+  searchParams: _searchParams,
+  ...gameConfig
 }: {
-  searchParams: { d?: string };
+  searchParams: Promise<{ d?: string }>;
 } & GameConfig) {
+  const { tableName, colorScheme, subtitle, mode, maxTries, wordLen, icon } =
+    gameConfig;
+  const searchParams = await _searchParams;
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+
+  if (
+    !data?.user &&
+    searchParams?.d &&
+    searchParams?.d !== getFormattedDateInPh()
+  ) {
+    return <UnauthorizedErrorPage {...gameConfig} />;
+  }
+
+  // TODO: Test if it works on different timezones
+  if (searchParams?.d && isFormattedDateInFuture(searchParams.d)) {
+    return notFound();
+  }
+
   const round = await getRound(tableName, searchParams?.d);
   const isLive = getFormattedDateInPh() === round?.date;
 

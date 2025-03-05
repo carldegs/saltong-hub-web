@@ -14,7 +14,7 @@ const getRound = cache(
         ? getFormattedHexDateInPh()
         : getFormattedDateInPh());
 
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: round } = await supabase
       .from(table)
       .select()

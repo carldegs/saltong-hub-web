@@ -18,6 +18,7 @@ export interface GameConfig {
   tableName: `saltong-${GameMode}-rounds`;
   icon: string;
   startDate: string;
+  blurb: string;
 }
 
 export type SaltongRound = Tables<"saltong-main-rounds">;
@@ -35,7 +36,7 @@ export interface RoundAnswerData {
 
 export interface RoundStats {
   isCorrect: boolean;
-  time: number;
+  status: "correct" | "incorrect" | "partial" | "idle";
 }
 
 export interface PlayerStats {

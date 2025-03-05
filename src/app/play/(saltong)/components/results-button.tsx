@@ -43,6 +43,24 @@ export function ResultsButton({
         <span className="hidden md:inline-block">Results</span>
         <span className="sr-only">Open Results Button</span>
       </Button>
+      <Button
+        variant="outline"
+        onClick={() => {
+          onOpenChange(true);
+        }}
+        size="icon"
+        className="gap-1.5 font-bold md:h-auto md:w-auto md:px-2"
+        disabled={!Object.keys(playerStats?.[mode] ?? {}).length}
+        title={
+          !Object.keys(playerStats?.[mode] ?? {}).length
+            ? "Play a game to view results"
+            : undefined
+        }
+      >
+        <Award className="h-[1.2rem] w-[1.2rem]" />
+        <span className="hidden md:inline-block">Results</span>
+        <span className="sr-only">Open Results Button</span>
+      </Button>
     </>
   );
 }

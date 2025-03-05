@@ -5,16 +5,20 @@ import { Navbar, NavbarBrand } from "../../../components/shared/navbar";
 import { getFormattedHexDateInPh } from "@/utils/time";
 import GameWrapper from "./components/game-wrapper";
 import { HexStoreProvider } from "./providers/hex-store-provider";
+import { Metadata } from "next";
 
 const SUBTITLE = "Hex";
 const COLOR_SCHEME = "purple";
 const TABLE_NAME = "saltong-hex-rounds";
 
-export default async function SaltongHexPage({
-  searchParams,
-}: {
-  searchParams: { d?: string };
+export const metadata: Metadata = {
+  title: "Saltong Hex",
+};
+
+export default async function SaltongHexPage(props: {
+  searchParams: Promise<{ d?: string }>;
 }) {
+  const searchParams = await props.searchParams;
   const round = await getRound(TABLE_NAME, searchParams?.d);
   const isLive = round?.date === getFormattedHexDateInPh();
 

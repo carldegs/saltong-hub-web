@@ -1,0 +1,89 @@
+import { ChevronDownIcon } from "lucide-react";
+import useHexAnswer from "../hooks/useHexAnswer";
+import { HexRound } from "../types";
+import { useMemo, useState, useRef, RefObject } from "react";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import WordListContent from "./word-list-content";
+import { useDebounceCallback, useResizeObserver } from "usehooks-ts";
+
+export default function WordListBar({
+  date,
+  roundData,
+}: {
+  date: string;
+  roundData: HexRound;
+}) {
+  const { numWords } = roundData;
+  const [playerAnswer, , { isInit }] = useHexAnswer(date);
+  const wordList = useMemo(
+    () => [...playerAnswer.guessedWords.reverse()],
+    [playerAnswer.guessedWords]
+  );
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [{ width: containerWidth = 0 }, setSize] = useState<{ width: number }>({
+    width: 0,
+  });
+
+  const onResize = useDebounceCallback((size: { width: number }) => {
+    setSize(size);
+  }, 200);
+
+  useResizeObserver({
+    ref: containerRef as RefObject<HTMLElement>,
+    onResize: (size) => {
+      onResize({
+        width: size.width ?? 0,
+      });
+    },
+  });
+
+  const visibleWords = useMemo(() => {
+    let totalWidth = 0;
+    return wordList.filter((word) => {
+      const wordWidth = word.length * 13; // Approximate width calculation
+      if (totalWidth + wordWidth < containerWidth) {
+        totalWidth += wordWidth;
+        return true;
+      }
+      return false;
+    });
+  }, [wordList, containerWidth]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="word-list-bar mx-auto w-full max-w-[600px] overflow-hidden px-4 lg:hidden"
+    >
+      {isInit && (
+        <div className="relative mt-4 flex min-h-[50px] w-full flex-nowrap gap-2 overflow-hidden rounded-md border border-foreground px-4 py-3">
+          {visibleWords.map((word) => (
+            <span key={word} className="">
+              {word}
+            </span>
+          ))}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="absolute right-0 top-0 h-full w-8">
+                <ChevronDownIcon size={24} />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="block w-svw border-none bg-transparent p-2 shadow-none lg:hidden">
+              <div className="mx-auto max-w-[600px] border bg-background p-4 shadow-md">
+                <WordListContent
+                  isLoading={!isInit}
+                  words={playerAnswer.guessedWords}
+                  numWordsToGuess={numWords ?? 0}
+                />
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+      )}
+    </div>
+  );
+}
