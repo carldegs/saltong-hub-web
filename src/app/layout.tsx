@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/shared/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/shared/app-sidebar.ts";
+import { cookies } from "next/headers";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -17,11 +18,16 @@ export const metadata: Metadata = {
   description: "Filipino clone of Wordle",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const sidebarState = cookieStore.get("sidebar:state")?.value;
+  const defaultOpen =
+    sidebarState === undefined ? true : sidebarState === "true";
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -33,7 +39,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SidebarProvider defaultOpen={false}>
+          <SidebarProvider defaultOpen={defaultOpen}>
             <AppSidebar />
             <main className="flex min-h-dvh w-full flex-col">{children}</main>
           </SidebarProvider>
