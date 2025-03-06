@@ -22,7 +22,7 @@ function SubmitButton() {
       aria-disabled={pending}
       disabled={pending}
     >
-      {pending ? "Authenticating..." : "Login"}
+      {pending ? "Authenticating..." : "Log in"}
     </Button>
   );
 }
@@ -39,7 +39,7 @@ export default function LoginForm() {
   return (
     <Card className="mx-auto mt-10 w-full max-w-lg p-4">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
+        <CardTitle>Log in</CardTitle>
       </CardHeader>
       <CardContent>
         {state.error && (

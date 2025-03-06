@@ -21,7 +21,7 @@ function SubmitButton() {
       aria-disabled={pending}
       disabled={pending}
     >
-      {pending ? "Authenticating..." : "Login"}
+      {pending ? "Authenticating..." : "Sign up"}
     </Button>
   );
 }
@@ -39,12 +39,12 @@ export default function SignupForm() {
   });
 
   return (
-    <Card className="mx-auto mt-10 w-full max-w-lg p-4">
+    <Card className="mx-auto w-full max-w-lg p-4">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
+        <CardTitle>Sign up</CardTitle>
       </CardHeader>
       <CardContent>
-        {state?.errors?.main?.length && (
+        {!!state?.errors?.main?.length && (
           <Alert variant="destructive" className="mb-4 bg-red-100/90">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Error</AlertTitle>
@@ -85,7 +85,7 @@ export default function SignupForm() {
           <div className="flex flex-col items-center justify-between gap-4 pt-4">
             <SubmitButton />
             <Link href="/signup" className="text-saltong-blue-400 underline">
-              Don&apos;t have an account? Sign up
+              Already have an account? Log in
             </Link>
           </div>
         </form>

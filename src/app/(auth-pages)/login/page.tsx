@@ -5,7 +5,7 @@ import { redirect, RedirectType } from "next/navigation";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Saltong Hub | Login",
+  title: "Saltong Hub | Log in",
 };
 
 export default async function LoginPage() {

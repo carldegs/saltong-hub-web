@@ -1,9 +1,9 @@
 import { cn } from "@/lib/utils";
 import { GameConfig } from "../play/(saltong)/types";
 import { Button } from "@/components/ui/button";
-import { ArchiveIcon, LockKeyholeIcon } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { ArchiveIcon } from "lucide-react";
 
 export default async function GameCard({
   className,
@@ -34,7 +34,7 @@ export default async function GameCard({
         className
       )}
     >
-      <div className="flex">
+      <div className="flex flex-1">
         <img src={icon} className="size-16" />
         <div className="ml-4 flex flex-col">
           <span className="font-semibold">Saltong {subtitle}</span>
@@ -55,21 +55,12 @@ export default async function GameCard({
         >
           <Link href={`/play/${mode !== "main" ? mode : ""}`}>Play Game</Link>
         </Button>
-        {data.session ? (
+        {data.session && (
           <Button className="w-full" variant="outline" asChild>
             <Link href={`/play/${mode !== "main" ? mode : ""}/archives`}>
               <ArchiveIcon className="mr-1 size-5" />
               Archives
             </Link>
-          </Button>
-        ) : (
-          <Button disabled variant="outline" className="w-full">
-            <div className="flex w-full flex-col items-center">
-              <span className="flex items-center">
-                <LockKeyholeIcon className="mr-1 size-5" /> Archives
-              </span>
-              <span className="text-xs">(Login to Access)</span>
-            </div>
           </Button>
         )}
       </div>

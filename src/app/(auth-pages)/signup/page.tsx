@@ -1,8 +1,21 @@
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import SignupForm from "./signup-form";
+import { Metadata } from "next";
+import { redirect, RedirectType } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
-// TODO: Redirect to dynamic page after login
-export default function LoginPage() {
+export const metadata: Metadata = {
+  title: "Saltong Hub | Sign up",
+};
+
+export default async function SignupPage() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+
+  if (data?.user) {
+    redirect("/", RedirectType.replace);
+  }
+
   return (
     <div className="grid min-h-screen w-full grid-rows-[auto_1fr] bg-muted">
       <Navbar>

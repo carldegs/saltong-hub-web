@@ -36,7 +36,7 @@ export function NavUser({
   const currPathname = usePathname();
 
   if (!user?.email && !user?.name && !user?.avatar) {
-    // show Login/Signup button
+    // show Log in/Sign up button
     return (
       <SidebarMenu>
         <SidebarMenuItem>
