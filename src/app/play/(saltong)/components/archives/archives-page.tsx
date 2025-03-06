@@ -4,6 +4,8 @@ import { ComponentProps } from "react";
 import ArchiveMonthlyCalendar from "./archive-monthly-calendar";
 import { createClient } from "@/lib/supabase/server";
 import UnauthorizedErrorPage from "./unauthorized-error-page";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function SaltongArchivePage({
   searchParams,
@@ -38,6 +40,14 @@ export default async function SaltongArchivePage({
           subtitle={subtitle}
           icon={icon}
         />
+
+        <Button variant="outline" asChild>
+          <Link
+            href={`/play/${gameConfig.mode === "main" ? "" : `/${gameConfig.mode}`}`}
+          >
+            Play Latest Game
+          </Link>
+        </Button>
       </Navbar>
       <div className="mx-auto w-full max-w-prose">
         <ArchiveMonthlyCalendar

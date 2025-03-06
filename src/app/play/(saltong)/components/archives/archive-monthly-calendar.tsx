@@ -56,7 +56,7 @@ export default function ArchiveMonthlyCalendar({
         captionLayout="dropdown"
         startMonth={new Date(startDate)}
         endMonth={new Date()}
-        hidden={{
+        disabled={{
           before: new Date(startDate),
           after: new Date(),
         }}

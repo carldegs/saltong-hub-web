@@ -26,11 +26,11 @@ export const getDateInPh = (date = new Date()) => {
 };
 
 export const isInFuture = (date = new Date()) => {
-  return date > new Date();
+  return date > getDateInPh();
 };
 
 export const isFormattedDateInFuture = (formattedDate: string) => {
-  const date = new Date(formattedDate);
+  const date = new Date(`${formattedDate} 00:00:00 GMT+0800`);
   return isInFuture(date);
 };
 
