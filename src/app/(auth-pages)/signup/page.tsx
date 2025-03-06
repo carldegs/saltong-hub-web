@@ -17,7 +17,7 @@ export default async function SignupPage() {
   }
 
   return (
-    <div className="bg-muted grid min-h-screen w-full grid-rows-[auto_1fr]">
+    <div className="bg-accent grid min-h-screen w-full grid-rows-[auto_1fr]">
       <Navbar>
         <NavbarBrand
           title="Saltong"

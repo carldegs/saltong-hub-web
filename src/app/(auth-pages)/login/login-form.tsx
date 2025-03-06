@@ -37,9 +37,9 @@ export default function LoginForm() {
   });
 
   return (
-    <Card className="mx-auto mt-10 w-full max-w-lg p-4">
+    <Card className="mx-auto w-full max-w-lg">
       <CardHeader>
-        <CardTitle>Log in</CardTitle>
+        <CardTitle className="text-2xl">Log in</CardTitle>
       </CardHeader>
       <CardContent>
         {state.error && (

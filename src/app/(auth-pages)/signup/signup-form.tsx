@@ -39,9 +39,9 @@ export default function SignupForm() {
   });
 
   return (
-    <Card className="mx-auto w-full max-w-lg p-4">
+    <Card className="mx-auto w-full max-w-lg">
       <CardHeader>
-        <CardTitle>Sign up</CardTitle>
+        <CardTitle className="text-2xl">Sign up</CardTitle>
       </CardHeader>
       <CardContent>
         {!!state?.errors?.main?.length && (

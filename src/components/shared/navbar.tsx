@@ -108,7 +108,7 @@ const NavbarBrand = ({
   isLoading,
   ...props
 }: NavbarBrandProps & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.RefObject<HTMLDivElement>;
 }) => {
   return (
     <div
