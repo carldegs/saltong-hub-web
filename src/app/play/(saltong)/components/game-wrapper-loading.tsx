@@ -12,7 +12,7 @@ export default function GameWrapperLoading({
 }) {
   return (
     <>
-      <main className="my-6 flex h-full flex-grow flex-col items-center justify-center gap-8">
+      <main className="my-6 flex h-full grow flex-col items-center justify-center gap-8">
         <SaltongGrid maxTries={maxTries} wordLen={wordLen} isLoading />
       </main>
       <Keyboard status={{}} onKeyClick={() => {}} disabled />

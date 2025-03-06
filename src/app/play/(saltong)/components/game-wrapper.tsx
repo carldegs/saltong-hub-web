@@ -186,7 +186,7 @@ export default function GameWrapper({
 
   return (
     <>
-      <main className="my-6 flex h-full flex-grow flex-col items-center justify-center gap-8">
+      <main className="my-6 flex h-full grow flex-col items-center justify-center gap-8">
         {playerAnswer.answer && (
           <a
             href={`https://tagalog.pinoydictionary.com/search?q=${playerAnswer.answer}`}

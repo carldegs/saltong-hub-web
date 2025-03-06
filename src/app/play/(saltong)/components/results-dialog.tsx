@@ -109,7 +109,7 @@ function TimeCard({ mode, gameDate }: { mode: GameMode; gameDate: string }) {
     .join(" ");
 
   return (
-    <Card className="min-w-[90px] flex-grow p-0 shadow-none">
+    <Card className="min-w-[90px] grow p-0 shadow-none">
       <CardHeader className="p-3">
         <CardTitle>{time === -1 ? "-" : timeStr}</CardTitle>
         <CardDescription>Time</CardDescription>
@@ -198,7 +198,7 @@ function ResultsDialogComponent({
             {statBarData.map((data) => (
               <Card
                 key={data.title}
-                className="min-w-[90px] flex-grow p-0 shadow-none"
+                className="min-w-[90px] grow p-0 shadow-none"
               >
                 <CardHeader className="p-3">
                   <CardTitle>{data.value}</CardTitle>
@@ -217,22 +217,22 @@ function ResultsDialogComponent({
               <Link
                 href={href}
                 key={mode}
-                className="min-w-[90px] flex-grow"
+                className="min-w-[90px] grow"
                 onClick={() => {
                   onOpenChange?.(false);
                 }}
               >
-                <Card className="h-full p-0 shadow-none hover:bg-primary-foreground">
+                <Card className="hover:bg-primary-foreground h-full p-0 shadow-none">
                   <CardContent className="flex flex-col items-center justify-center p-3">
                     <div className="relative mb-2 h-[36px] sm:mb-1">
                       <Image src={icon} alt={mode} width={36} height={36} />
                       {mode === "archive" && (
-                        <div className="absolute -right-3 -top-2 rounded-full bg-teal-700 p-1">
+                        <div className="absolute -top-2 -right-3 rounded-full bg-teal-700 p-1">
                           <ArchiveIcon className="size-4 text-teal-50" />
                         </div>
                       )}
                     </div>
-                    <span className="w-full text-center text-sm font-bold uppercase tracking-wider">
+                    <span className="w-full text-center text-sm font-bold tracking-wider uppercase">
                       {name}
                     </span>
                   </CardContent>

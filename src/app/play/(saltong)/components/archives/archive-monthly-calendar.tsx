@@ -119,7 +119,7 @@ export default function ArchiveMonthlyCalendar({
         }}
       />
 
-      <div className="mx-auto !mt-8 flex max-w-[400px] justify-center gap-8 rounded-lg bg-primary-foreground py-2 text-sm font-bold text-primary/80">
+      <div className="bg-primary-foreground text-primary/80 mx-auto mt-8! flex max-w-[400px] justify-center gap-8 rounded-lg py-2 text-sm font-bold">
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-full bg-green-400 dark:bg-green-600" />
           <span>SOLVED</span>

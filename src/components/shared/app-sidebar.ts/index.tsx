@@ -39,7 +39,7 @@ export async function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>GAMES</SidebarGroupLabel>{" "}
           <SidebarGroupAction
-            className="mr-4 whitespace-nowrap text-sm hover:underline"
+            className="mr-4 text-sm whitespace-nowrap hover:underline"
             asChild
           >
             <Link href="/">

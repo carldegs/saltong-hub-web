@@ -14,9 +14,9 @@ export default function ScoreTracker({
   });
 
   return (
-    <div className="relative mx-auto flex w-full max-w-[600px] select-none flex-col gap-3 px-4">
+    <div className="relative mx-auto flex w-full max-w-[600px] flex-col gap-3 px-4 select-none">
       <div className="flex items-center justify-center">
-        <span className="text-center text-xl font-bold tracking-widest text-saltong-purple">
+        <span className="text-saltong-purple text-center text-xl font-bold tracking-widest">
           {rank?.icon ?? ""}
           {"  "}
           {rank?.name.toUpperCase() ?? ""}
@@ -38,18 +38,18 @@ export default function ScoreTracker({
             {rank?.name === name && (
               <>
                 <div
-                  className="relative h-full rounded-full bg-saltong-purple px-4 transition-all"
+                  className="bg-saltong-purple relative h-full rounded-full px-4 transition-all"
                   style={{
                     width: `${((score - rank.score) / ((nextRank?.score ?? 0) - rank.score)) * 100}%`,
                   }}
                 >
-                  <span className="z-1 absolute -top-1 right-0 h-6 rounded-full bg-saltong-purple px-2 text-center font-bold text-saltong-purple-200">
+                  <span className="bg-saltong-purple text-saltong-purple-200 absolute -top-1 right-0 z-1 h-6 rounded-full px-2 text-center font-bold">
                     {score}
                   </span>
                 </div>
 
                 {i < rankScoreMap.length - 1 && (
-                  <span className="z-1 absolute -bottom-6 -right-1 font-bold opacity-80">
+                  <span className="absolute -right-1 -bottom-6 z-1 font-bold opacity-80">
                     {nextRank?.score ?? 0}
                   </span>
                 )}

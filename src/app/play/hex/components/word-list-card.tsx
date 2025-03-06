@@ -13,7 +13,7 @@ export default function WordListCard({
   const [playerAnswer, , { isInit }] = useHexAnswer(date);
 
   return (
-    <div className="border-1 m-6 hidden h-full max-h-[calc(100dvh-108px)] w-full min-w-[350px] max-w-[400px] flex-col gap-4 overflow-hidden rounded-lg border border-saltong-purple/70 bg-saltong-purple-700/5 pt-6 lg:flex">
+    <div className="border-saltong-purple/70 bg-saltong-purple-700/5 m-6 hidden h-full max-h-[calc(100dvh-108px)] w-full max-w-[400px] min-w-[350px] flex-col gap-4 overflow-hidden rounded-lg border border-1 pt-6 lg:flex">
       <WordListContent
         isLoading={!isInit}
         words={playerAnswer.guessedWords}

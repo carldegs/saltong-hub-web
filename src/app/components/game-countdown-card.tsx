@@ -35,7 +35,7 @@ export default function GameCountdownCard({
   return (
     <div
       className={cn(
-        "flex flex-col rounded-lg border bg-gradient-to-br from-gray-200 to-background/50 p-4 text-xl backdrop-blur-md dark:from-gray-400/50",
+        "to-background/50 flex flex-col rounded-lg border bg-linear-to-br from-gray-200 p-4 text-xl backdrop-blur-md dark:from-gray-400/50",
         className
       )}
     >
@@ -55,7 +55,7 @@ export default function GameCountdownCard({
             <div className="h-[60px] w-[60px]">
               <Image src={icon} alt={`${name} Logo`} width={60} height={60} />
             </div>
-            <span className="text-center text-sm font-bold uppercase tracking-wider">
+            <span className="text-center text-sm font-bold tracking-wider uppercase">
               {name}
             </span>
           </Link>

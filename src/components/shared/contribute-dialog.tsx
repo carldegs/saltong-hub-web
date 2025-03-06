@@ -57,7 +57,7 @@ export default function ContributeDialog({
               rel="noreferrer"
               href={"/gcash.jpg"}
               title="Download QR Code"
-              className="flex-grow"
+              className="grow"
             >
               <Button variant="default" className="mt-4 w-full bg-blue-500">
                 <DownloadIcon className="mr-2" />

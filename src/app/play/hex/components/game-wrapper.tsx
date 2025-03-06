@@ -145,9 +145,9 @@ export default function GameWrapper({
               style={{
                 left: `${Math.floor(Math.random() * 30) + 30}%`,
               }}
-              className="absolute top-0 z-10 flex size-8 min-w-8 animate-slide-out items-center justify-center rounded-full bg-saltong-purple"
+              className="animate-slide-out bg-saltong-purple absolute top-0 z-10 flex size-8 min-w-8 items-center justify-center rounded-full"
             >
-              <span className="text-lg font-bold text-saltong-purple-200">
+              <span className="text-saltong-purple-200 text-lg font-bold">
                 +{lastScore}
               </span>
             </div>
@@ -155,7 +155,7 @@ export default function GameWrapper({
           {inputWord?.length >= 9 ? (
             <span
               className={cn(
-                "mx-auto flex w-fit items-center justify-center gap-0.5 rounded-md bg-saltong-purple-200 px-4 py-3 text-3xl font-bold dark:bg-saltong-purple/30",
+                "bg-saltong-purple-200 dark:bg-saltong-purple/30 mx-auto flex w-fit items-center justify-center gap-0.5 rounded-md px-4 py-3 text-3xl font-bold",
                 {
                   "text-2xl md:text-3xl": inputWord.length > 12,
                   "animate-wobble bg-red-400 transition-colors dark:bg-red-500":
@@ -181,7 +181,7 @@ export default function GameWrapper({
               {inputWord?.split("").map((letter, index) => (
                 <div
                   className={cn(
-                    "flex size-[40px] items-center justify-center rounded-lg bg-saltong-purple-200 dark:bg-saltong-purple/30 md:size-[45px]",
+                    "bg-saltong-purple-200 dark:bg-saltong-purple/30 flex size-[40px] items-center justify-center rounded-lg md:size-[45px]",
                     {
                       "bg-saltong-purple dark:bg-saltong-purple":
                         letter === centerLetter,
@@ -193,14 +193,14 @@ export default function GameWrapper({
                   )}
                   key={`${letter}-${index}`}
                 >
-                  <span className="select-none text-2xl font-bold md:text-3xl">
+                  <span className="text-2xl font-bold select-none md:text-3xl">
                     {letter.toUpperCase()}
                   </span>
                 </div>
               ))}
             </div>
           ) : (
-            <span className="animate-pulse select-none text-center text-4xl font-bold tracking-tight text-saltong-purple">
+            <span className="text-saltong-purple animate-pulse text-center text-4xl font-bold tracking-tight select-none">
               Type or Click
             </span>
           )}

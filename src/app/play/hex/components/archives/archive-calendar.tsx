@@ -181,12 +181,12 @@ export default function ArchiveCalendar() {
           <ChevronRight size={16} className="min-w-4" />
         </Button>
       </div>
-      <div className="mb-8 mt-4 grid grid-cols-1 gap-2 px-4 md:grid-cols-2 md:gap-4">
+      <div className="mt-4 mb-8 grid grid-cols-1 gap-2 px-4 md:grid-cols-2 md:gap-4">
         {dates.map(({ date, iteration }) => {
           const isStarted = answers[date]?.updatedAt;
 
           return (
-            <span key={date} className="rounded-lg border hover:bg-muted/50">
+            <span key={date} className="hover:bg-muted/50 rounded-lg border">
               <Link href={`/play/hex?d=${date}`}>
                 <div className="flex items-center gap-2 p-3">
                   <div
@@ -203,7 +203,7 @@ export default function ArchiveCalendar() {
                   </div>
                   <div className="flex w-full flex-col">
                     <span>{format(date, "MMM dd, yyyy")}</span>
-                    <span className="text-xs font-semibold uppercase tracking-tight">
+                    <span className="text-xs font-semibold tracking-tight uppercase">
                       {isStarted
                         ? `${answers[date].liveScore} POINTS | ${answers[date].guessedWords.length} GUESSED WORDS`
                         : "NOT STARTED"}

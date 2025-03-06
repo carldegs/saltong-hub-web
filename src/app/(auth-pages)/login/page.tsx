@@ -17,7 +17,7 @@ export default async function LoginPage() {
   }
 
   return (
-    <div className="grid min-h-screen w-full grid-rows-[auto_1fr] bg-muted">
+    <div className="bg-muted grid min-h-screen w-full grid-rows-[auto_1fr]">
       <Navbar>
         <NavbarBrand
           title="Saltong"

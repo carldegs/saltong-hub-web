@@ -52,27 +52,32 @@ const navbarBackgroundGradientVariants = cva("", {
   },
 });
 
-const Navbar = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> &
-    VariantProps<typeof navbarBackgroundGradientVariants>
->(({ className, children, colorScheme, ...props }, ref) => {
+const Navbar = ({
+  ref,
+  className,
+  children,
+  colorScheme,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> &
+  VariantProps<typeof navbarBackgroundGradientVariants> & {
+    ref?: React.RefObject<HTMLDivElement>;
+  }) => {
   return (
     <nav
       ref={ref}
       className={cn(
-        "sticky top-0 z-10 border-b bg-gradient-to-br backdrop-blur-md",
+        "sticky top-0 z-10 border-b bg-linear-to-br backdrop-blur-md",
         navbarBackgroundGradientVariants({ colorScheme }),
         className
       )}
       {...props}
     >
-      <div className="container flex max-w-[1800px] justify-between py-2 pl-1 pr-3 lg:pl-2 lg:pr-6">
+      <div className="container flex max-w-[1800px] justify-between py-2 pr-3 pl-1 lg:pr-6 lg:pl-2">
         {children}
       </div>
     </nav>
   );
-});
+};
 Navbar.displayName = "Navbar";
 
 export interface NavbarBrandProps
@@ -88,105 +93,103 @@ export interface NavbarBrandProps
   isLoading?: boolean;
 }
 
-const NavbarBrand = React.forwardRef<HTMLDivElement, NavbarBrandProps>(
-  (
-    {
-      className,
-      children,
-      colorScheme,
-      title,
-      subtitle,
-      boxed,
-      icon,
-      iconLight,
-      hideMenu,
-      hideBrand,
-      isLoading,
-      ...props
-    },
-    ref
-  ) => {
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          "flex items-center justify-center gap-1.5",
-          className,
-          navbarBrandTitleVariants({ colorScheme })
-        )}
-        {...props}
-      >
-        {!hideMenu && <SidebarTrigger />}
-        {!hideBrand && (
-          <>
-            {icon && (
-              <Image
-                src={icon}
-                alt={`${title} Logo`}
-                width={30}
-                height={30}
-                className={cn({
-                  "hidden dark:block": !!iconLight,
-                })}
+const NavbarBrand = ({
+  ref,
+  className,
+  children,
+  colorScheme,
+  title,
+  subtitle,
+  boxed,
+  icon,
+  iconLight,
+  hideMenu,
+  hideBrand,
+  isLoading,
+  ...props
+}: NavbarBrandProps & {
+  ref: React.RefObject<HTMLDivElement>;
+}) => {
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "flex min-h-[32px] items-center justify-center gap-1.5",
+        className,
+        navbarBrandTitleVariants({ colorScheme })
+      )}
+      {...props}
+    >
+      {!hideMenu && <SidebarTrigger />}
+      {!hideBrand && (
+        <>
+          {icon && (
+            <Image
+              src={icon}
+              alt={`${title} Logo`}
+              width={30}
+              height={30}
+              className={cn({
+                "hidden dark:block": !!iconLight,
+              })}
+            />
+          )}
+          {iconLight && (
+            <Image
+              src={iconLight}
+              alt={`${title} Logo`}
+              width={30}
+              height={30}
+              className="block dark:hidden"
+            />
+          )}
+          <h3 className="tracking-tighter select-none">
+            {title && (
+              <span
+                className={cn(
+                  navbarBrandTitleVariants({ colorScheme }),
+                  "font-[700]"
+                )}
+              >
+                {title}
+                {!subtitle && " "}
+              </span>
+            )}
+            {!!subtitle && (
+              <span
+                className={cn(
+                  navbarBrandTitleVariants({ colorScheme }),
+                  "font-[300]"
+                )}
+              >
+                {subtitle}{" "}
+              </span>
+            )}
+            {isLoading && (
+              <Skeleton
+                className={cn(
+                  navbarBrandBoxedVariants({ colorScheme }),
+                  "inline-block h-[23.5] w-12 rounded-lg px-2 text-lg font-[300]"
+                )}
               />
             )}
-            {iconLight && (
-              <Image
-                src={iconLight}
-                alt={`${title} Logo`}
-                width={30}
-                height={30}
-                className="block dark:hidden"
-              />
+            {!!boxed && !isLoading && (
+              <span
+                className={cn(
+                  navbarBrandBoxedVariants({ colorScheme }),
+                  "rounded-lg px-2 text-lg font-[300]"
+                )}
+              >
+                {boxed}
+              </span>
             )}
-            <h3 className="select-none tracking-tighter">
-              {title && (
-                <span
-                  className={cn(
-                    navbarBrandTitleVariants({ colorScheme }),
-                    "font-[700]"
-                  )}
-                >
-                  {title}
-                  {!subtitle && " "}
-                </span>
-              )}
-              {!!subtitle && (
-                <span
-                  className={cn(
-                    navbarBrandTitleVariants({ colorScheme }),
-                    "font-[300]"
-                  )}
-                >
-                  {subtitle}{" "}
-                </span>
-              )}
-              {isLoading && (
-                <Skeleton
-                  className={cn(
-                    navbarBrandBoxedVariants({ colorScheme }),
-                    "inline-block h-[23.5] w-12 rounded-lg px-2 text-lg font-[300]"
-                  )}
-                />
-              )}
-              {!!boxed && !isLoading && (
-                <span
-                  className={cn(
-                    navbarBrandBoxedVariants({ colorScheme }),
-                    "rounded-lg px-2 text-lg font-[300]"
-                  )}
-                >
-                  {boxed}
-                </span>
-              )}
-              {children}
-            </h3>
-          </>
-        )}
-      </div>
-    );
-  }
-);
+            {children}
+          </h3>
+        </>
+      )}
+    </div>
+  );
+};
 NavbarBrand.displayName = "NavbarBrand";
 
 export { Navbar, NavbarBrand };

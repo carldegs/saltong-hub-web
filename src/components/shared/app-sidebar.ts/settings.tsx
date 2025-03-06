@@ -13,7 +13,7 @@ export async function SettingsSidebarMenu() {
 
   return (
     <SidebarMenu>
-      <SidebarMenuItem className="flex items-center justify-between pl-2 pr-1">
+      <SidebarMenuItem className="flex items-center justify-between pr-1 pl-2">
         Color Mode <ColorModeToggle />
       </SidebarMenuItem>
       <SidebarMenuItem>

@@ -32,7 +32,7 @@ export default function UnauthorizedErrorPage(
       <div className="a flex h-[calc(100vh-4rem)] items-center justify-center">
         <div className="max-w-lg p-6 text-center">
           <h1 className="mb-1.5 text-3xl font-bold">Sorry po!</h1>
-          <div className="mb-8 text-lg text-muted-foreground">
+          <div className="text-muted-foreground mb-8 text-lg">
             An account is required to play past rounds of{" "}
             <b>Saltong{subtitle ? ` ${subtitle}` : ""}</b>. Sign up for free or
             login to continue.
