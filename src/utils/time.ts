@@ -13,6 +13,7 @@ import {
   parse,
   differenceInDays,
   endOfMonth,
+  format,
 } from "date-fns";
 import { formatInTimeZone, toZonedTime } from "date-fns-tz";
 import { HEX_CONFIG } from "../app/play/hex/constants";
@@ -77,7 +78,8 @@ export const getHexDateInPh = (date = new Date()) => {
 };
 
 export const getFormattedHexDateInPh = (date = new Date()) => {
-  return formatInTimeZone(getHexDateInPh(date), PH_TIMEZONE, DATE_FORMAT);
+  return format(getHexDateInPh(date), DATE_FORMAT);
+  // return formatInTimeZone(getHexDateInPh(date), PH_TIMEZONE, DATE_FORMAT);
 };
 
 export const getPrevFormattedHexDateInPh = (date = new Date()) => {
