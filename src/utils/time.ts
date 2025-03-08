@@ -93,6 +93,15 @@ export const getPrevFormattedHexDateInPh = (date = new Date()) => {
 export const getNextFormattedHexDateInPh = (date = new Date()) => {
   const currDateInPh = getDateInPh();
 
+  // eslint-disable-next-line no-console
+  console.log(
+    "currDateInPh",
+    currDateInPh,
+    isTuesday(currDateInPh),
+    isFriday(currDateInPh),
+    closestTo(currDateInPh, [nextTuesday(date), nextFriday(date)])
+  );
+
   if (isTuesday(currDateInPh)) {
     return formatInTimeZone(nextFriday(date), PH_TIMEZONE, DATE_FORMAT);
   }
