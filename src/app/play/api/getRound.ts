@@ -15,7 +15,7 @@ const getRound = cache(
         : getFormattedDateInPh());
 
     // eslint-disable-next-line no-console
-    console.log({ gameDate, date });
+    console.log({ gameDate, date, table, d: Date() });
 
     const supabase = await createClient();
     const { data: round } = await supabase
