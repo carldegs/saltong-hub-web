@@ -251,7 +251,7 @@ function ResultsDialogComponent({
                       {word}
                     </span>
                     {isPangram(word) && (
-                      <StarIcon className="size-4 text-yellow-400" />
+                      <StarIcon className="size-4 text-yellow-500 dark:text-yellow-400" />
                     )}
                   </div>
                 ))}

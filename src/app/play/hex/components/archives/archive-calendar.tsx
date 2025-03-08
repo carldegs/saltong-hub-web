@@ -244,7 +244,7 @@ export default function ArchiveCalendar() {
         })}
       </div>
 
-      <div className="bg-primary-foreground text-primary/80 mx-auto mt-8! flex max-w-[400px] flex-col items-center justify-center gap-2 rounded-lg pt-2 pb-8 text-sm font-bold md:flex-row md:gap-8">
+      <div className="bg-muted text-primary/80 mx-auto mt-8! mb-8 flex w-fit max-w-[500px] flex-col items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-bold md:w-auto md:flex-row md:gap-8">
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-full bg-green-400 dark:bg-green-600" />
           <span className="whitespace-nowrap">REACHED BATHALA</span>

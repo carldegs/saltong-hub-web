@@ -10,8 +10,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SortAscIcon, SortDescIcon } from "lucide-react";
+import { SortAscIcon, SortDescIcon, StarIcon } from "lucide-react";
 import { useMemo, useState } from "react";
+import { isPangram } from "../utils";
 
 const SORT_BY_VALUES = ["Guess Order", "Alphabetical", "Word Length"];
 const SORT_ORDER_VALUES = ["Ascending", "Descending"];
@@ -48,13 +49,18 @@ export default function WordListContent({
     return sortedWords;
   }, [sortBy, sortOrder, words]);
 
+  const pangramWordsInList = useMemo(
+    () => wordList.filter((word) => isPangram(word)),
+    [wordList]
+  );
+
   return (
     <>
       {!isLoading ? (
         <div className="grid grid-cols-[1fr_2fr_1fr] items-center px-2">
           <div></div>
           <span className="w-full text-center text-lg font-bold tracking-tight opacity-80">
-            {wordList.length}/{numWordsToGuess} words found
+            {wordList.length} of {numWordsToGuess} words found
           </span>
           <div className="flex justify-end">
             <DropdownMenu>
@@ -108,6 +114,9 @@ export default function WordListContent({
           ? wordList.map((word) => (
               <span key={word} className="h-fit opacity-80">
                 {word}
+                {pangramWordsInList.includes(word) && (
+                  <StarIcon className="-mt-[0.5] ml-1 inline-block size-4 text-yellow-500 dark:text-yellow-400" />
+                )}
               </span>
             ))
           : [...Array(10)].map((_, idx) => (
