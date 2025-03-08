@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   format,
@@ -129,6 +129,32 @@ export default function ArchiveCalendar() {
     selectedRange.year === getYear(endDate) &&
     selectedRange.month === getMonth(endDate);
 
+  const dateList = useMemo(
+    () =>
+      dates.map((data) => {
+        let status: "idle" | "unfinished" | "failed" | "solved" = "idle";
+        const answer = answers[data.date];
+
+        if (answer?.updatedAt) {
+          status = "unfinished";
+        }
+
+        if (answer?.isRevealed) {
+          status = "failed";
+        }
+
+        if (answer?.isTopRank) {
+          status = "solved";
+        }
+
+        return {
+          ...data,
+          status,
+        };
+      }),
+    [answers, dates]
+  );
+
   return (
     <div className="mt-8">
       <div className="flex w-full items-center justify-between space-x-2 px-3">
@@ -145,7 +171,7 @@ export default function ArchiveCalendar() {
             value={selectedRange.month.toString()}
             onValueChange={(value) => handleMonthChange(parseInt(value))}
           >
-            <SelectTrigger>
+            <SelectTrigger className="flex-1">
               <SelectValue placeholder="Select month" />
             </SelectTrigger>
             <SelectContent>
@@ -160,7 +186,7 @@ export default function ArchiveCalendar() {
             value={selectedRange.year.toString()}
             onValueChange={(value) => handleYearChange(parseInt(value))}
           >
-            <SelectTrigger>
+            <SelectTrigger className="flex-1">
               <SelectValue placeholder="Select year" />
             </SelectTrigger>
             <SelectContent>
@@ -182,9 +208,7 @@ export default function ArchiveCalendar() {
         </Button>
       </div>
       <div className="mt-4 mb-8 grid grid-cols-1 gap-2 px-4 md:grid-cols-2 md:gap-4">
-        {dates.map(({ date, iteration }) => {
-          const isStarted = answers[date]?.updatedAt;
-
+        {dateList.map(({ date, iteration, status }) => {
           return (
             <span key={date} className="hover:bg-muted/50 rounded-lg border">
               <Link href={`/play/hex?d=${date}`}>
@@ -193,9 +217,13 @@ export default function ArchiveCalendar() {
                     className={cn(
                       "leading-tightest flex size-9 min-w-9 items-center justify-center rounded-full font-semibold",
                       {
-                        "bg-muted text-muted-foreground": !isStarted,
-                        "bg-orange-400 text-orange-900 dark:bg-orange-600 dark:text-orange-100":
-                          isStarted,
+                        "bg-muted text-muted-foreground": status === "idle",
+                        "bg-yellow-400 text-yellow-900 dark:bg-yellow-600 dark:text-yellow-100":
+                          status === "unfinished",
+                        "bg-rose-400 text-rose-900 hover:bg-rose-500 dark:bg-rose-600 dark:text-rose-100 dark:hover:bg-rose-700":
+                          status === "failed",
+                        "bg-green-400 text-green-900 dark:bg-green-600 dark:text-green-100":
+                          status === "solved",
                       }
                     )}
                   >
@@ -204,8 +232,8 @@ export default function ArchiveCalendar() {
                   <div className="flex w-full flex-col">
                     <span>{format(date, "MMM dd, yyyy")}</span>
                     <span className="text-xs font-semibold tracking-tight uppercase">
-                      {isStarted
-                        ? `${answers[date].liveScore} POINTS | ${answers[date].guessedWords.length} GUESSED WORDS`
+                      {status !== "idle"
+                        ? `${answers[date].liveScore} POINTS | ${answers[date].guessedWords.length} WORDS`
                         : "NOT STARTED"}
                     </span>
                   </div>
@@ -214,6 +242,21 @@ export default function ArchiveCalendar() {
             </span>
           );
         })}
+      </div>
+
+      <div className="bg-primary-foreground text-primary/80 mx-auto mt-8! flex max-w-[400px] flex-col items-center justify-center gap-2 rounded-lg pt-2 pb-8 text-sm font-bold md:flex-row md:gap-8">
+        <div className="flex items-center gap-2">
+          <div className="h-3 w-3 rounded-full bg-green-400 dark:bg-green-600" />
+          <span className="whitespace-nowrap">REACHED BATHALA</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-3 w-3 rounded-full bg-rose-400 dark:bg-rose-600" />
+          <span>FAILED</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-3 w-3 rounded-full bg-yellow-400 dark:bg-yellow-600" />
+          <span>UNFINISHED</span>
+        </div>
       </div>
     </div>
   );

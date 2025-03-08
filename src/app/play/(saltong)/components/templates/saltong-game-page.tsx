@@ -58,7 +58,7 @@ async function SaltongGamePage({
           boxed={`#${round.gameId}`}
           icon={icon}
         />
-        <div className="flex gap-2">
+        <div className="flex gap-1.5">
           <ResultsButton mode={mode} gameDate={round.date} />
         </div>
       </Navbar>

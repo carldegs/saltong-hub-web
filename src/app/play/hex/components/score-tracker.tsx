@@ -4,14 +4,36 @@ import useHexScores from "../hooks/useHexScores";
 export default function ScoreTracker({
   guessedWords,
   wordList,
+  isGameOver,
 }: {
   guessedWords: string[];
   wordList: string[];
+  isGameOver?: boolean;
 }) {
   const { score, rank, nextRank, rankScoreMap } = useHexScores({
     guessedWords,
     wordList,
   });
+
+  if (isGameOver) {
+    return (
+      <div className="bg-saltong-purple/10 border-saltong-purple relative mx-auto flex w-[90%] max-w-[600px] flex-col gap-3 rounded-lg border select-none">
+        <div className="flex h-full flex-col items-center justify-center">
+          <span className="text-saltong-purple/80 leading-widest text-sm font-bold">
+            YOUR FINAL RANK
+          </span>
+          <span className="text-saltong-purple text-center text-2xl font-bold tracking-widest">
+            {rank?.icon ?? ""}
+            {"  "}
+            {rank?.name.toUpperCase() ?? ""}
+          </span>
+          <span className="text-saltong-purple/80 leading-widest text-sm font-bold">
+            {score} POINTS
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative mx-auto flex w-full max-w-[600px] flex-col gap-3 px-4 select-none">

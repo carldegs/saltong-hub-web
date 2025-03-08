@@ -6,6 +6,7 @@ import { getFormattedHexDateInPh } from "@/utils/time";
 import GameWrapper from "./components/game-wrapper";
 import { HexStoreProvider } from "./providers/hex-store-provider";
 import { Metadata } from "next";
+import { ResultsButton } from "./components/results-button";
 
 const SUBTITLE = "Hex";
 const COLOR_SCHEME = "purple";
@@ -42,6 +43,9 @@ export default async function SaltongHexPage(props: {
           boxed={`#${round.gameId}`}
           icon="/hex.svg"
         />
+        <div className="flex gap-1.5">
+          <ResultsButton gameDate={round.date} isLive={isLive} round={round} />
+        </div>
       </Navbar>
       <HexStoreProvider
         initialState={{

@@ -4,6 +4,7 @@ import {
   getRankScoreMap,
   getTotalScore,
   getWordScoreMap,
+  isPangram,
 } from "../utils";
 
 export default function useHexScores({
@@ -25,6 +26,12 @@ export default function useHexScores({
     () => getWordScoreMap(guessedWords),
     [guessedWords]
   );
+
+  const numPangrams = useMemo(
+    () => wordList.filter((word) => isPangram(word)).length,
+    [wordList]
+  );
+
   const nextRank = useMemo(
     () => rankScoreMap.find((rank) => score < rank.score),
     [score, rankScoreMap]
@@ -38,7 +45,8 @@ export default function useHexScores({
       rankScoreMap,
       wordScoreMap,
       maxScore,
+      numPangrams,
     }),
-    [score, rank, nextRank, rankScoreMap, wordScoreMap, maxScore]
+    [score, rank, nextRank, rankScoreMap, wordScoreMap, maxScore, numPangrams]
   );
 }

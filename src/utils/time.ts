@@ -63,21 +63,31 @@ export const getDailyGameCountdown = (date = new Date()) => {
 
 /** SALTONG HEX UTILS */
 
-export const getFormattedHexDateInPh = (date = new Date()) => {
+export const getHexDateInPh = (date = new Date()) => {
   const dateInPh = getDateInPh(date);
 
-  // get the closest occured Tuesday or Friday in the PH timezone
-
-  // if the date is Tuesday or Friday, return the date
   if (isTuesday(dateInPh) || isFriday(dateInPh)) {
-    return formatInTimeZone(dateInPh, PH_TIMEZONE, DATE_FORMAT);
+    return dateInPh;
   }
 
-  return formatInTimeZone(
-    closestTo(dateInPh, [previousTuesday(dateInPh), previousFriday(dateInPh)])!,
-    PH_TIMEZONE,
-    DATE_FORMAT
-  );
+  return closestTo(dateInPh, [
+    previousTuesday(dateInPh),
+    previousFriday(dateInPh),
+  ])!;
+};
+
+export const getFormattedHexDateInPh = (date = new Date()) => {
+  return formatInTimeZone(getHexDateInPh(date), PH_TIMEZONE, DATE_FORMAT);
+};
+
+export const getPrevFormattedHexDateInPh = (date = new Date()) => {
+  const currHexDate = getHexDateInPh(date);
+
+  if (isTuesday(currHexDate)) {
+    return formatInTimeZone(previousFriday(date), PH_TIMEZONE, DATE_FORMAT);
+  }
+
+  return formatInTimeZone(previousTuesday(date), PH_TIMEZONE, DATE_FORMAT);
 };
 
 export const getNextFormattedHexDateInPh = (date = new Date()) => {

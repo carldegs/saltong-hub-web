@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronDownIcon } from "lucide-react";
 import useHexAnswer from "../hooks/useHexAnswer";
 import { HexRound } from "../types";
@@ -60,29 +62,29 @@ export default function WordListBar({
       className="word-list-bar mx-auto w-full max-w-[600px] overflow-hidden px-4 lg:hidden"
     >
       {isInit && (
-        <div className="border-foreground relative mt-4 flex min-h-[50px] w-full flex-nowrap gap-2 overflow-hidden rounded-md border px-4 py-3">
-          {visibleWords.map((word) => (
-            <span key={word} className="">
-              {word}
-            </span>
-          ))}
-          <Popover>
-            <PopoverTrigger asChild>
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className="border-foreground relative mt-4 flex min-h-[50px] w-full cursor-pointer flex-nowrap gap-2 overflow-hidden rounded-md border px-4 py-3">
+              {visibleWords.map((word) => (
+                <span key={word} className="">
+                  {word}
+                </span>
+              ))}
               <button className="absolute top-0 right-0 h-full w-8">
                 <ChevronDownIcon size={24} />
               </button>
-            </PopoverTrigger>
-            <PopoverContent className="block w-svw border-none bg-transparent p-2 shadow-none lg:hidden">
-              <div className="bg-background mx-auto max-w-[600px] border p-4 shadow-md">
-                <WordListContent
-                  isLoading={!isInit}
-                  words={playerAnswer.guessedWords}
-                  numWordsToGuess={numWords ?? 0}
-                />
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="block w-full border-none bg-transparent p-2 shadow-none lg:hidden">
+            <div className="bg-background mx-auto w-full border p-4 shadow-md">
+              <WordListContent
+                isLoading={!isInit}
+                words={playerAnswer.guessedWords}
+                numWordsToGuess={numWords ?? 0}
+              />
+            </div>
+          </PopoverContent>
+        </Popover>
       )}
     </div>
   );

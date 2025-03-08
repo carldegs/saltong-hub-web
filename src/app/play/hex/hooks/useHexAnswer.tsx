@@ -38,10 +38,12 @@ export default function useHexAnswer(gameDate: string) {
                 }
               )
             : data;
+
         return {
           ...prev,
           [gameDate]: {
             ...newData,
+            startedAt: newData.startedAt || Date.now(),
             updatedAt: Date.now(),
           },
         };

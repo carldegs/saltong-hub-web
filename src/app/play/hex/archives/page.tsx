@@ -5,6 +5,8 @@ import UnauthorizedErrorPage from "../components/archives/unauthorized-error-pag
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { ComponentProps } from "react";
 import ArchiveCalendar from "../components/archives/archive-calendar";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Saltong Hex Archives",
@@ -36,6 +38,10 @@ export default async function SaltongHexArchivePage() {
           subtitle={subtitle}
           icon={icon}
         />
+
+        <Button variant="outline" asChild>
+          <Link href="/play/hex">Play Latest Game</Link>
+        </Button>
       </Navbar>
       <div className="mx-auto w-full max-w-prose">
         <ArchiveCalendar />

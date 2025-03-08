@@ -8,6 +8,10 @@ export interface HexAnswerData {
   liveScore: number;
   startedAt?: number;
   updatedAt?: number;
+  isRevealed?: boolean;
+  isTopRank?: boolean;
+
+  isTopRankWhileLive?: boolean;
 }
 
 export type Rank = (typeof HEX_RANKS)[number];

@@ -20,16 +20,23 @@ const Hex = ({
   value,
   onClick,
   center,
+  disabled,
   ...props
 }: Omit<React.ComponentProps<"svg">, "children" | "onClick" | "center"> & {
   value: string;
   onClick: (value: string) => void;
   center?: boolean;
+  disabled?: boolean;
 }) => (
   <div
-    className="relative flex items-center justify-center"
+    className={cn("relative flex items-center justify-center", {
+      "pointer-events-none": disabled,
+      "opacity-50": disabled,
+    })}
     onClick={() => {
-      onClick(value);
+      if (!disabled) {
+        onClick(value);
+      }
     }}
   >
     <svg
@@ -65,29 +72,56 @@ export default function HexGrid({
   letters,
   centerLetter,
   onClick,
+  isDisabled,
 }: {
   letters: string[];
   centerLetter: string;
   onClick: (_letter: string) => void;
+  isDisabled?: boolean;
 }) {
   return (
     <div className="flex flex-col">
       <div className={cn(rowVariants())}>
-        <Hex value={letters?.[0]?.toUpperCase()} onClick={onClick} />
-        <Hex value={letters?.[1]?.toUpperCase()} onClick={onClick} />
+        <Hex
+          value={letters?.[0]?.toUpperCase()}
+          onClick={onClick}
+          disabled={isDisabled}
+        />
+        <Hex
+          value={letters?.[1]?.toUpperCase()}
+          onClick={onClick}
+          disabled={isDisabled}
+        />
       </div>
       <div className={cn(rowVariants({ center: true }))}>
-        <Hex value={letters?.[2]?.toUpperCase()} onClick={onClick} />
+        <Hex
+          value={letters?.[2]?.toUpperCase()}
+          onClick={onClick}
+          disabled={isDisabled}
+        />
         <Hex
           value={centerLetter?.toUpperCase()}
           onClick={onClick}
           center={true}
+          disabled={isDisabled}
         />
-        <Hex value={letters?.[3]?.toUpperCase()} onClick={onClick} />
+        <Hex
+          value={letters?.[3]?.toUpperCase()}
+          onClick={onClick}
+          disabled={isDisabled}
+        />
       </div>
       <div className={cn(rowVariants())}>
-        <Hex value={letters?.[4]?.toUpperCase()} onClick={onClick} />
-        <Hex value={letters?.[5]?.toUpperCase()} onClick={onClick} />
+        <Hex
+          value={letters?.[4]?.toUpperCase()}
+          onClick={onClick}
+          disabled={isDisabled}
+        />
+        <Hex
+          value={letters?.[5]?.toUpperCase()}
+          onClick={onClick}
+          disabled={isDisabled}
+        />
       </div>
     </div>
   );

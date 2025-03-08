@@ -9,7 +9,12 @@ import { useEventListener } from "usehooks-ts";
 import { toast } from "sonner";
 import { useMemo, useState } from "react";
 import useHexAnswer from "../hooks/useHexAnswer";
-import { getWordScore } from "../utils";
+import {
+  getRank,
+  getRankScoreMap,
+  getTotalScore,
+  getWordScore,
+} from "../utils";
 import WordListCard from "./word-list-card";
 import ScoreTracker from "./score-tracker";
 import WordListBar from "./word-list-bar";
@@ -29,6 +34,9 @@ export default function GameWrapper({
 
   const [animate, setAnimate] = useState("");
   const [lastScore, setLastScore] = useState(0);
+  const rankMap = useMemo(() => {
+    return getRankScoreMap(roundData.maxScore!);
+  }, [roundData.maxScore]);
 
   function animateError() {
     setAnimate("error");
@@ -80,10 +88,17 @@ export default function GameWrapper({
     const score = getWordScore(inputWord);
     setLastScore(score);
     setPlayerAnswer((prev) => {
+      const roundScore = getTotalScore(prev.guessedWords);
+      const rank = getRank(roundScore + score, rankMap);
+      const isTopRank = rank?.name === rankMap[rankMap.length - 1].name;
+
       return {
         ...prev,
         guessedWords: [...prev.guessedWords, inputWord],
-        ...(isLive ? { liveScore: prev.liveScore + score } : {}),
+        isTopRank,
+        ...(isLive
+          ? { liveScore: prev.liveScore + score, isTopRankWhileLive: isTopRank }
+          : {}),
       };
     });
 
@@ -95,6 +110,10 @@ export default function GameWrapper({
   }
 
   function onKeyDown(event: KeyboardEvent | { key: string }) {
+    if (playerAnswer.isRevealed) {
+      return;
+    }
+
     if (animate) {
       return;
     }
@@ -135,6 +154,7 @@ export default function GameWrapper({
         <ScoreTracker
           wordList={parsedWords}
           guessedWords={playerAnswer.guessedWords}
+          isGameOver={playerAnswer.isRevealed}
         />
 
         <WordListBar date={date} roundData={roundData} />
@@ -199,7 +219,7 @@ export default function GameWrapper({
                 </div>
               ))}
             </div>
-          ) : (
+          ) : playerAnswer.isRevealed ? null : (
             <span className="text-saltong-purple animate-pulse text-center text-4xl font-bold tracking-tight select-none">
               Type or Click
             </span>
@@ -212,6 +232,7 @@ export default function GameWrapper({
             centerLetter={centerLetter}
             onSubmit={submitAnswer}
             onChange={onKeyDown}
+            isDisabled={playerAnswer.isRevealed}
           />
         </div>
       </div>
