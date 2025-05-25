@@ -79,30 +79,20 @@ export const getHexDateInPh = (date = new Date()) => {
 
 export const getFormattedHexDateInPh = (date = new Date()) => {
   return format(getHexDateInPh(date), DATE_FORMAT);
-  // return formatInTimeZone(getHexDateInPh(date), PH_TIMEZONE, DATE_FORMAT);
 };
 
 export const getPrevFormattedHexDateInPh = (date = new Date()) => {
   const currHexDate = getHexDateInPh(date);
 
   if (isTuesday(currHexDate)) {
-    return formatInTimeZone(previousFriday(date), PH_TIMEZONE, DATE_FORMAT);
+    return format(previousFriday(date), DATE_FORMAT);
   }
 
-  return formatInTimeZone(previousTuesday(date), PH_TIMEZONE, DATE_FORMAT);
+  return format(previousTuesday(date), DATE_FORMAT);
 };
 
 export const getNextFormattedHexDateInPh = (date = new Date()) => {
   const currDateInPh = getDateInPh();
-
-  // eslint-disable-next-line no-console
-  console.log(
-    "currDateInPh",
-    currDateInPh,
-    isTuesday(currDateInPh),
-    isFriday(currDateInPh),
-    closestTo(currDateInPh, [nextTuesday(date), nextFriday(date)])
-  );
 
   if (isTuesday(currDateInPh)) {
     return formatInTimeZone(nextFriday(date), PH_TIMEZONE, DATE_FORMAT);
@@ -213,4 +203,23 @@ export const formatShortDuration = (duration: Duration) => {
   formattedDuration += `${days ? zeroPad(hours ?? 0) : (hours ?? 0)}h ${zeroPad(minutes ?? 0)}m ${zeroPad(seconds ?? 0)}s`;
 
   return formattedDuration;
+};
+
+export const getDurationString = (time: number) => {
+  const interval = { start: 0, end: time };
+  const baseDuration = intervalToDuration(interval);
+  const diffInDays = differenceInDays(interval.end, interval.start);
+  const duration = {
+    d: diffInDays,
+    h: baseDuration.hours,
+    m: baseDuration.minutes,
+    s: baseDuration.seconds,
+  };
+
+  const timeStr = Object.entries(duration)
+    .filter(([, value]) => value && value > 0)
+    .map(([key, value]) => `${value}${key}`)
+    .join(" ");
+
+  return timeStr;
 };

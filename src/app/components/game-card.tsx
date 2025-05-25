@@ -14,7 +14,6 @@ export default async function GameCard({
 > & { mode: GameConfig["mode"] | "hex" }) {
   const { icon, subtitle, blurb, mode } = gameConfig;
   const supabase = await createClient();
-  // safe to use here because archives page uses getUser
   const { data } = await supabase.auth.getSession();
 
   return (

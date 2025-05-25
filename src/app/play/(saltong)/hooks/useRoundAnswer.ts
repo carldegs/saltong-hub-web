@@ -8,7 +8,7 @@ import { SALTONG_CONFIGS } from "../constants";
 export default function useRoundAnswer(
   mode: GameMode,
   gameDate: string,
-  gameId: number
+  gameId?: number
 ) {
   const [rounds, setRounds] = useRoundAnswers(mode);
   const [, setLastUpdated] = useLocalTimestamp();
@@ -41,7 +41,7 @@ export default function useRoundAnswer(
             ),
           };
 
-          if (data.solvedLive) {
+          if (data.solvedLive && gameId) {
             const resetStreak = curr.lastGameId !== gameId - 1;
             const currentWinStreak = resetStreak
               ? 1
@@ -64,7 +64,7 @@ export default function useRoundAnswer(
           };
         }
 
-        if (data.solvedLive) {
+        if (data.solvedLive && gameId) {
           curr = {
             ...curr,
             lastGameDate: gameDate,

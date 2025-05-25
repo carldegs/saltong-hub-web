@@ -13,7 +13,6 @@ import { createClient } from "@/lib/supabase/server";
 
 async function ArchivesAlert() {
   const supabase = await createClient();
-  // safe to use here because archives page uses getUser
   const { data } = await supabase.auth.getSession();
 
   return (

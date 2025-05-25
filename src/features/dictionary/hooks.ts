@@ -92,39 +92,3 @@ export const useDictionary = <W extends number | number[] = number[]>(
     isLoading,
   } as UseDictionaryResponse<W>;
 };
-
-// export const useDictionary = () => {
-//   const [dict, setDict] = useReadDictionary();
-//   const [isLoading, setIsLoading] = useState(false);
-
-//   const hasDict = useCallback((wordLen: number) => !!dict[wordLen], [dict]);
-
-//   const fetchDict = useCallback(
-//     async (length: number) => {
-//       setIsLoading(true);
-//       let newData = { ...dict };
-//       let shouldUpdate = false;
-
-//       if (!dict[length]) {
-//         const data = await getDictionary(length);
-//         newData = { ...newData, [length]: data };
-//         shouldUpdate = true;
-//       } else {
-//         console.log(`Dictionary for length ${length} found in localstorage.`);
-//       }
-
-//       if (shouldUpdate) {
-//         setDict(newData);
-//       }
-
-//       setIsLoading(false);
-//       return newData[length];
-//     },
-//     [dict, setDict]
-//   );
-
-//   return useMemo(
-//     () => ({ dict, isLoading, fetchDict, hasDict }),
-//     [dict, fetchDict, hasDict, isLoading]
-//   );
-// };

@@ -20,7 +20,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function AppSidebar() {
   const supabase = await createClient();
-  const { data: userData } = await supabase.auth.getUser();
+  const { data: authData } = await supabase.auth.getSession();
 
   return (
     <Sidebar>
@@ -64,7 +64,7 @@ export async function AppSidebar() {
 
         <NavUser
           user={{
-            email: userData?.user?.email,
+            email: authData.session?.user.email,
           }}
         />
       </SidebarFooter>

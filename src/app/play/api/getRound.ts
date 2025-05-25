@@ -1,10 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { Database } from "@/lib/supabase/types";
-import {
-  getFormattedDateInPh,
-  getFormattedHexDateInPh,
-  getHexDateInPh,
-} from "@/utils/time";
+import { getFormattedDateInPh, getFormattedHexDateInPh } from "@/utils/time";
 import { cache } from "react";
 
 const getRound = cache(
@@ -17,16 +13,6 @@ const getRound = cache(
       (table === "saltong-hex-rounds"
         ? getFormattedHexDateInPh()
         : getFormattedDateInPh());
-
-    // eslint-disable-next-line no-console
-    console.log({
-      gameDate,
-      date,
-      table,
-      d: Date(),
-      formatted: getFormattedHexDateInPh(),
-      hexDate: getHexDateInPh(),
-    });
 
     const supabase = await createClient();
     const { data: round } = await supabase

@@ -4,16 +4,18 @@ import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/providers/modal/modal-provider";
 import { ArchiveIcon, Award } from "lucide-react";
 import ResultsDialog from "./results-dialog";
-import { GameMode } from "../types";
+import { GameMode, SaltongRound } from "../types";
 import usePlayerStats from "../hooks/usePlayerStats";
 import Link from "next/link";
 
 export function ResultsButton({
   mode,
   gameDate,
+  roundData,
 }: {
   mode: GameMode;
   gameDate: string;
+  roundData: SaltongRound;
 }) {
   const { isOpen, onOpenChange } = useModalStore((state) => state);
   const [playerStats] = usePlayerStats();
@@ -25,6 +27,7 @@ export function ResultsButton({
         onOpenChange={onOpenChange}
         mode={mode}
         gameDate={gameDate}
+        roundData={roundData}
       />
       <Button
         variant="outline"

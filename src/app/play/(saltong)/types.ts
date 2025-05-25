@@ -37,6 +37,8 @@ export interface RoundAnswerData {
 export interface RoundStats {
   isCorrect: boolean;
   status: "correct" | "incorrect" | "partial" | "idle";
+  round: RoundAnswerData;
+  timeSolvedInSec?: number;
 }
 
 export interface PlayerStats {

@@ -1,5 +1,7 @@
+"use client";
+
 import { RootCredenzaProps } from "@/components/ui/credenza";
-import { GameMode, PlayerStats, RoundStats } from "../types";
+import { GameMode, PlayerStats, RoundStats, SaltongRound } from "../types";
 import {
   Card,
   CardContent,
@@ -7,15 +9,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useMemo, useState } from "react";
-import { differenceInDays, intervalToDuration } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
 import usePlayerStats from "../hooks/usePlayerStats";
 import useRoundStats from "../hooks/useRoundStats";
 import ResultsChart from "./results-chart";
 import { SALTONG_CONFIGS } from "../constants";
 import Image from "next/image";
 import Link from "next/link";
-import { ArchiveIcon } from "lucide-react";
+import {
+  ArchiveIcon,
+  ChevronDownIcon,
+  HandCoinsIcon,
+  Share2Icon,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -24,7 +30,19 @@ import {
 } from "@/components/ui/dialog";
 import { useInterval } from "usehooks-ts";
 import useRoundAnswers from "../hooks/useRoundAnswers";
-import { getFormattedDateInPh } from "@/utils/time";
+import { getDurationString, getFormattedDateInPh } from "@/utils/time";
+import ContributeDialog from "@/components/shared/contribute-dialog";
+import { Button } from "@/components/ui/button";
+import useShareResults from "../hooks/useShareResults";
+import { toast } from "sonner";
+import { ButtonGroup } from "@/components/ui/button-group";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
 
 const OTHER_GAMES_LIST = [
   {
@@ -90,23 +108,20 @@ function TimeCard({ mode, gameDate }: { mode: GameMode; gameDate: string }) {
 
       return setTime(-1);
     },
-    round.endedAt && round.startedAt && isLive ? null : 1000
+    round.endedAt && round.startedAt ? null : 1000
   );
 
-  const interval = { start: 0, end: time };
-  const baseDuration = intervalToDuration(interval);
-  const diffInDays = differenceInDays(interval.end, interval.start);
-  const duration = {
-    d: diffInDays,
-    h: baseDuration.hours,
-    m: baseDuration.minutes,
-    s: baseDuration.seconds,
-  };
+  useEffect(() => {
+    if (round.endedAt && round.startedAt) {
+      setTime(round.endedAt - round.startedAt);
+    }
+  }, [isLive, round.endedAt, round.startedAt]);
 
-  const timeStr = Object.entries(duration)
-    .filter(([, value]) => value && value > 0)
-    .map(([key, value]) => `${value}${key}`)
-    .join(" ");
+  if (!isLive) {
+    return null;
+  }
+
+  const timeStr = getDurationString(time);
 
   return (
     <Card className="min-w-[90px] grow p-0 shadow-none">
@@ -135,10 +150,12 @@ function ResultsDialogComponent({
     gameMode: "main",
   },
   gameDate,
+  roundData,
 }: Omit<RootCredenzaProps, "children"> & {
   roundStats: RoundStats;
   playerStats?: PlayerStats;
   gameDate: string;
+  roundData: SaltongRound;
 }) {
   const gameModeConfig = SALTONG_CONFIGS[playerStats.gameMode];
   const { status } = roundStats;
@@ -172,6 +189,13 @@ function ResultsDialogComponent({
     ];
   }, [currentWinStreak, longestWinStreak, totalLosses, totalWins]);
 
+  const { shareResults, canShare, copyResults } = useShareResults({
+    playerStats,
+    roundStats,
+    gameDate,
+    roundData,
+  });
+
   const filteredGamesList = useMemo(
     () => [
       {
@@ -185,15 +209,24 @@ function ResultsDialogComponent({
     [gameModeConfig.icon, gameModeConfig.mode, playerStats.gameMode]
   );
 
+  const [showContribution, setShowContribution] = useState(false);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+      {showContribution && (
+        <ContributeDialog
+          open={showContribution}
+          onOpenChange={setShowContribution}
+        />
+      )}
+
       <DialogContent className="max-h-full overflow-y-auto sm:max-h-[90dvh]">
         <DialogHeader className="px-0">
           <DialogTitle className="mb-2 border-0 font-bold">
             {STATUS_TEXT[status]}
           </DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-3 px-4 md:px-0">
+        <div className="flex flex-col gap-3 md:px-0">
           <div className="flex flex-wrap gap-3">
             {statBarData.map((data) => (
               <Card
@@ -209,6 +242,39 @@ function ResultsDialogComponent({
             <TimeCard mode={playerStats.gameMode} gameDate={gameDate} />
           </div>
           <ResultsChart playerStats={winTurns} />
+          {(status === "correct" || status === "incorrect") && canShare && (
+            <ButtonGroup className="flex h-12 w-full">
+              <Button
+                className="h-12 flex-1 border-r bg-teal-500 hover:bg-teal-600"
+                onClick={() => {
+                  shareResults().catch((err) => {
+                    if ((err as Error)?.name === "AbortError") {
+                      return;
+                    }
+
+                    toast.error("Cannot share results");
+                  });
+                }}
+              >
+                <Share2Icon />
+                <span>Share Results</span>
+              </Button>
+              <Menubar className="h-auto !gap-0 !rounded-none !border-none !bg-none !p-0 !shadow-none">
+                <MenubarMenu>
+                  <MenubarTrigger asChild>
+                    <Button className="h-12 min-w-12 flex-1 rounded-l-none bg-teal-500 hover:bg-teal-600">
+                      <ChevronDownIcon />
+                    </Button>
+                  </MenubarTrigger>
+                  <MenubarContent>
+                    <MenubarItem onClick={copyResults}>
+                      Copy Results
+                    </MenubarItem>
+                  </MenubarContent>
+                </MenubarMenu>
+              </Menubar>
+            </ButtonGroup>
+          )}
           <span className="text-center text-sm font-bold tracking-wider">
             PLAY OTHER GAMES
           </span>
@@ -239,6 +305,27 @@ function ResultsDialogComponent({
                 </Card>
               </Link>
             ))}
+
+            <Card
+              onClick={() => {
+                setShowContribution(true);
+              }}
+              className="col-span-2 h-full cursor-pointer bg-cyan-100 p-0 text-cyan-700 shadow-none hover:bg-cyan-300 dark:bg-cyan-900/20 dark:text-cyan-100 dark:hover:bg-cyan-900"
+            >
+              <CardContent className="flex h-full items-center justify-center gap-3 p-3">
+                <div className="relative mb-2 h-[36px] sm:mb-1">
+                  <HandCoinsIcon size={36} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="w-full text-sm font-bold tracking-wider uppercase">
+                    CONTRIBUTE
+                  </span>
+                  <span className="w-full text-sm">
+                    Help keep the site running!
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </DialogContent>
@@ -251,9 +338,11 @@ export default function ResultsDialog({
   onOpenChange,
   mode,
   gameDate,
+  roundData,
 }: Omit<RootCredenzaProps, "children"> & {
   mode: GameMode;
   gameDate: string;
+  roundData: SaltongRound;
 }) {
   const [playerStats] = usePlayerStats();
   const stats = useMemo(() => playerStats[mode], [mode, playerStats]);
@@ -267,6 +356,7 @@ export default function ResultsDialog({
         roundStats={roundStats}
         playerStats={stats}
         gameDate={gameDate}
+        roundData={roundData}
       />
     );
   }

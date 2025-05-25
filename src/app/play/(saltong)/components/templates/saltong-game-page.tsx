@@ -59,7 +59,7 @@ async function SaltongGamePage({
           icon={icon}
         />
         <div className="flex gap-1.5">
-          <ResultsButton mode={mode} gameDate={round.date} />
+          <ResultsButton mode={mode} gameDate={round.date} roundData={round} />
         </div>
       </Navbar>
       <GameWrapper
@@ -107,7 +107,10 @@ export default async function SaltongMainPageWithSuspense({
   searchParams: Promise<{ d?: string }>;
 } & GameConfig) {
   return (
-    <Suspense fallback={<SaltongGamePageLoading {...gameConfig} />}>
+    <Suspense
+      key={gameConfig.mode}
+      fallback={<SaltongGamePageLoading {...gameConfig} />}
+    >
       <SaltongGamePage searchParams={searchParams} {...gameConfig} />
     </Suspense>
   );
