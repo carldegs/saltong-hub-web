@@ -7,7 +7,7 @@ import { GameConfig } from "../../types";
 import { notFound } from "next/navigation";
 import { ComponentProps, Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
-import UnauthorizedErrorPage from "@/app/play/(saltong)/components/archives/unauthorized-error-page";
+import UnauthorizedErrorPage from "@/app/components/unauthorized-error-page";
 import GameWrapperLoading from "../game-wrapper-loading";
 
 async function SaltongGamePage({

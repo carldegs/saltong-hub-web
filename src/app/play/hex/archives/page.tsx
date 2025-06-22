@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { HEX_CONFIG } from "../constants";
 import { createClient } from "@/lib/supabase/server";
-import UnauthorizedErrorPage from "../components/archives/unauthorized-error-page";
+import UnauthorizedErrorPage from "@/app/components/unauthorized-error-page";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { ComponentProps } from "react";
 import ArchiveCalendar from "../components/archives/archive-calendar";

@@ -3,7 +3,7 @@ import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { ComponentProps } from "react";
 import ArchiveMonthlyCalendar from "./archive-calendar";
 import { createClient } from "@/lib/supabase/server";
-import UnauthorizedErrorPage from "./unauthorized-error-page";
+import UnauthorizedErrorPage from "@/app/components/unauthorized-error-page";
 
 export default async function SaltongArchivePage({
   ...gameConfig

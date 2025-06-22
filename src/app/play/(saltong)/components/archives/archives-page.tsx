@@ -3,7 +3,7 @@ import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { ComponentProps } from "react";
 import ArchiveMonthlyCalendar from "./archive-monthly-calendar";
 import { createClient } from "@/lib/supabase/server";
-import UnauthorizedErrorPage from "./unauthorized-error-page";
+import UnauthorizedErrorPage from "../../../../components/unauthorized-error-page";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 

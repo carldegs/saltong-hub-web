@@ -20,8 +20,8 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { signOut } from "@/app/(auth-pages)/actions";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 export function NavUser({
   user,
@@ -32,35 +32,33 @@ export function NavUser({
     avatar: string;
   }>;
 }) {
+  const supabase = createClient();
   const { isMobile, setOpenMobile } = useSidebar();
   const currPathname = usePathname();
+  const router = useRouter();
 
   if (!user?.email && !user?.name && !user?.avatar) {
     // show Log in/Sign up button
     return (
       <SidebarMenu>
         <SidebarMenuItem>
-          <div className="grid grid-cols-2 gap-2">
-            <Button
-              size="lg"
-              onClick={() => {
-                setOpenMobile(false);
+          <Button
+            className="w-full"
+            size="lg"
+            onClick={() => {
+              setOpenMobile(false);
+            }}
+            asChild
+          >
+            <Link
+              href={{
+                pathname: "/auth",
+                query: { f: currPathname },
               }}
-              asChild
             >
-              <Link
-                href={{
-                  pathname: "/login",
-                  query: { f: currPathname },
-                }}
-              >
-                Log in
-              </Link>
-            </Button>
-            <Button size="lg" variant="secondary">
-              <Link href="/signup">Sign up</Link>
-            </Button>
-          </div>
+              Log in
+            </Link>
+          </Button>
         </SidebarMenuItem>
       </SidebarMenu>
     );
@@ -120,7 +118,12 @@ export function NavUser({
                   Account
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={signOut}>
+              <DropdownMenuItem
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  router.refresh();
+                }}
+              >
                 <LogOut className="mr-4 size-5" />
                 Log out
               </DropdownMenuItem>
