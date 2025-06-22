@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
@@ -22,7 +22,7 @@ export default async function LoginPage({
     redirect("/", RedirectType.replace);
   }
 
-  const showSignup = searchParams?.signup === "1";
+  const showSignup = (await searchParams)?.signup === "1";
 
   return (
     <div className="bg-muted relative flex min-h-screen w-full grid-rows-[auto_1fr] items-center justify-center">

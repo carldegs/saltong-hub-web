@@ -35,7 +35,7 @@ export default async function GameCard({
       )}
     >
       <div className="flex flex-1">
-        <Image alt={`Saltong ${subtitle}`} src={icon} className="size-16" />
+        <Image alt={`Saltong ${subtitle}`} src={icon} width={64} height={64} />
         <div className="ml-4 flex flex-col">
           <span className="font-semibold">Saltong {subtitle}</span>
           <span className="text-base opacity-70">{blurb}</span>
