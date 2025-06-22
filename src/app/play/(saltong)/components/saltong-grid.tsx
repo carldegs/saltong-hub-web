@@ -50,7 +50,7 @@ export default function SaltongGrid({
                           status?.[i * wordLen + j] === LetterStatus.Incorrect,
                         "bg-orange-500 dark:bg-orange-600":
                           status?.[i * wordLen + j] === LetterStatus.Partial,
-                        "inverted-colors:bg-blue-500 bg-green-500 dark:bg-green-700":
+                        "bg-green-500 dark:bg-green-700 inverted-colors:bg-blue-500":
                           status?.[i * wordLen + j] === LetterStatus.Correct,
                       }
                     )}

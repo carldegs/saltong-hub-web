@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { ArchiveIcon } from "lucide-react";
+import Image from "next/image";
 
 export default async function GameCard({
   className,
@@ -34,7 +35,7 @@ export default async function GameCard({
       )}
     >
       <div className="flex flex-1">
-        <img src={icon} className="size-16" />
+        <Image alt={`Saltong ${subtitle}`} src={icon} className="size-16" />
         <div className="ml-4 flex flex-col">
           <span className="font-semibold">Saltong {subtitle}</span>
           <span className="text-base opacity-70">{blurb}</span>
