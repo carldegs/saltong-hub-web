@@ -19,7 +19,7 @@ const getGameCount = (gameStartDate: string, date: Date) => {
   );
 };
 
-export default function ArchiveMonthlyCalendar({
+export default function VaultMonthlyCalendar({
   mode,
   startDate,
   focusedDate,

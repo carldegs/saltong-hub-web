@@ -1,17 +1,17 @@
 import { Metadata } from "next";
 import { SALTONG_CONFIGS } from "../../constants";
-import SaltongArchivePage from "../../components/archives/archives-page";
+import SaltongVaultPage from "../../components/vault/vault-page";
 
 export const metadata: Metadata = {
-  title: "Saltong Mini Archives",
+  title: "Saltong Mini Vault",
 };
 
-export default async function SaltongMiniArchivePage(props: {
+export default async function SaltongMiniVaultPage(props: {
   searchParams: Promise<{ d?: string }>;
 }) {
   const searchParams = await props.searchParams;
   return (
-    <SaltongArchivePage
+    <SaltongVaultPage
       searchParams={searchParams}
       {...SALTONG_CONFIGS["mini"]}
     />

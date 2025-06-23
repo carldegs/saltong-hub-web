@@ -51,7 +51,7 @@ const getMonthsBetweenDates = (startDate: Date, endDate: Date): MonthYear[] => {
   return months;
 };
 
-export default function ArchiveCalendar() {
+export default function VaultCalendar() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialDate = searchParams.get("d")
@@ -80,7 +80,7 @@ export default function ArchiveCalendar() {
 
   useEffect(() => {
     router.replace(
-      `/play/hex/archives?d=${new Date(selectedRange.year, selectedRange.month).valueOf() / 100000}`
+      `/play/hex/vault?d=${new Date(selectedRange.year, selectedRange.month).valueOf() / 100000}`
     );
   }, [selectedRange, router]);
 

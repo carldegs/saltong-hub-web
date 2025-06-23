@@ -17,7 +17,7 @@ import { SALTONG_CONFIGS } from "../constants";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ArchiveIcon,
+  VaultIcon,
   ChevronDownIcon,
   HandCoinsIcon,
   Share2Icon,
@@ -199,10 +199,10 @@ function ResultsDialogComponent({
   const filteredGamesList = useMemo(
     () => [
       {
-        mode: "archive",
-        name: `${gameModeConfig.mode === "main" ? "" : gameModeConfig.mode} Archives`,
+        mode: "vault",
+        name: `${gameModeConfig.mode === "main" ? "" : gameModeConfig.mode} Vault`,
         icon: gameModeConfig.icon,
-        href: `/play${playerStats.gameMode === "main" ? "" : `/${gameModeConfig.mode}`}/archives`,
+        href: `/play${playerStats.gameMode === "main" ? "" : `/${gameModeConfig.mode}`}/vault`,
       },
       ...OTHER_GAMES_LIST.filter(({ mode }) => mode !== playerStats.gameMode),
     ],
@@ -292,9 +292,9 @@ function ResultsDialogComponent({
                   <CardContent className="flex flex-col items-center justify-center p-3">
                     <div className="relative mb-2 h-[36px] sm:mb-1">
                       <Image src={icon} alt={mode} width={36} height={36} />
-                      {mode === "archive" && (
+                      {mode === "vault" && (
                         <div className="absolute -top-2 -right-3 rounded-full bg-teal-700 p-1">
-                          <ArchiveIcon className="size-4 text-teal-50" />
+                          <VaultIcon className="size-4 text-teal-50" />
                         </div>
                       )}
                     </div>

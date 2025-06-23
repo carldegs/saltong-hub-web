@@ -1,11 +1,14 @@
 import { GameConfig } from "@/app/play/(saltong)/types";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { ComponentProps } from "react";
-import ArchiveMonthlyCalendar from "./archive-calendar";
+import VaultMonthlyCalendar from "./vault-monthly-calendar";
 import { createClient } from "@/lib/supabase/server";
-import UnauthorizedErrorPage from "@/app/components/unauthorized-error-page";
+import UnauthorizedErrorPage from "../../../../components/unauthorized-error-page";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-export default async function SaltongArchivePage({
+export default async function SaltongVaultPage({
+  searchParams,
   ...gameConfig
 }: {
   searchParams: { d?: string };
@@ -37,9 +40,24 @@ export default async function SaltongArchivePage({
           subtitle={subtitle}
           icon={icon}
         />
+
+        <Button variant="outline" asChild>
+          <Link
+            href={`/play/${gameConfig.mode === "main" ? "" : `/${gameConfig.mode}`}`}
+          >
+            Play Latest Game
+          </Link>
+        </Button>
       </Navbar>
       <div className="mx-auto w-full max-w-prose">
-        <ArchiveMonthlyCalendar />
+        <VaultMonthlyCalendar
+          {...gameConfig}
+          focusedDate={
+            !isNaN(Number(searchParams?.d))
+              ? new Date(Number(searchParams.d) * 100000)
+              : new Date()
+          }
+        />
       </div>
     </>
   );

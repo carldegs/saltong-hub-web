@@ -3,7 +3,7 @@ import { GameConfig } from "../play/(saltong)/types";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { ArchiveIcon } from "lucide-react";
+import { VaultIcon } from "lucide-react";
 import Image from "next/image";
 
 export default async function GameCard({
@@ -57,9 +57,9 @@ export default async function GameCard({
         </Button>
         {data.session && (
           <Button className="flex-1" variant="outline" asChild>
-            <Link href={`/play/${mode !== "main" ? mode : ""}/archives`}>
-              <ArchiveIcon className="mr-1 size-5" />
-              Archives
+            <Link href={`/play/${mode !== "main" ? mode : ""}/vault`}>
+              <VaultIcon className="mr-1 size-5" />
+              Vault
             </Link>
           </Button>
         )}

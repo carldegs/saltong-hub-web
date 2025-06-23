@@ -1,19 +1,18 @@
-import { Metadata } from "next";
-import { HEX_CONFIG } from "../constants";
-import { createClient } from "@/lib/supabase/server";
-import UnauthorizedErrorPage from "@/app/components/unauthorized-error-page";
+import { GameConfig } from "@/app/play/(saltong)/types";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { ComponentProps } from "react";
-import ArchiveCalendar from "../components/archives/archive-calendar";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import VaultMonthlyCalendar from "./vault-calendar";
+import { createClient } from "@/lib/supabase/server";
+import UnauthorizedErrorPage from "@/app/components/unauthorized-error-page";
 
-export const metadata: Metadata = {
-  title: "Saltong Hex Archives",
-};
-
-export default async function SaltongHexArchivePage() {
-  const gameConfig = HEX_CONFIG;
+export default async function SaltongVaultPage({
+  ...gameConfig
+}: {
+  searchParams: { d?: string };
+} & Pick<
+  GameConfig,
+  "colorScheme" | "subtitle" | "icon" | "startDate" | "mode"
+>) {
   const { colorScheme, subtitle, icon } = gameConfig;
 
   const supabase = await createClient();
@@ -38,13 +37,9 @@ export default async function SaltongHexArchivePage() {
           subtitle={subtitle}
           icon={icon}
         />
-
-        <Button variant="outline" asChild>
-          <Link href="/play/hex">Play Latest Game</Link>
-        </Button>
       </Navbar>
       <div className="mx-auto w-full max-w-prose">
-        <ArchiveCalendar />
+        <VaultMonthlyCalendar />
       </div>
     </>
   );

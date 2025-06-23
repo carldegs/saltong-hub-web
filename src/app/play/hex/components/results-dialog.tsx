@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArchiveIcon, InfoIcon, StarIcon } from "lucide-react";
+import { VaultIcon, InfoIcon, StarIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -29,10 +29,10 @@ import { isPangram } from "../utils";
 
 const OTHER_GAMES_LIST = [
   {
-    mode: "archive",
-    name: "Hex Archives",
+    mode: "vault",
+    name: "Hex Vault",
     icon: "/hex.svg",
-    href: "/play/hex/archives",
+    href: "/play/hex/vault",
   },
   {
     mode: "main",
@@ -136,9 +136,9 @@ function ResultsDialogComponent({
                       <CardContent className="flex flex-col items-center justify-center p-3">
                         <div className="relative mb-2 h-[36px] sm:mb-1">
                           <Image src={icon} alt={mode} width={36} height={36} />
-                          {mode === "archive" && (
+                          {mode === "vault" && (
                             <div className="absolute -top-2 -right-3 rounded-full bg-teal-700 p-1">
-                              <ArchiveIcon className="size-4 text-teal-50" />
+                              <VaultIcon className="size-4 text-teal-50" />
                             </div>
                           )}
                         </div>

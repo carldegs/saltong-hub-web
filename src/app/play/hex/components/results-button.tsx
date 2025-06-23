@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/providers/modal/modal-provider";
-import { ArchiveIcon, CrownIcon } from "lucide-react";
+import { VaultIcon, CrownIcon } from "lucide-react";
 import Link from "next/link";
 import ResultsDialog from "./results-dialog";
 import { HexRound } from "../types";
@@ -44,10 +44,10 @@ export function ResultsButton({
         title="Play previous games"
         asChild
       >
-        <Link href="/play/hex/archives">
-          <ArchiveIcon className="h-[1.2rem] w-[1.2rem]" />
-          <span className="hidden md:inline-block">Archives</span>
-          <span className="sr-only">Archives</span>
+        <Link href="/play/hex/vault">
+          <VaultIcon className="h-[1.2rem] w-[1.2rem]" />
+          <span className="hidden md:inline-block">Vault</span>
+          <span className="sr-only">Vault</span>
         </Link>
       </Button>
     </>

@@ -35,7 +35,7 @@ export default function GameCountdownCard({
   return (
     <div
       className={cn(
-        "to-background/50 flex flex-col rounded-lg border bg-linear-to-br from-gray-200 p-4 text-xl backdrop-blur-md dark:from-gray-400/50",
+        "from-background/20 to-muted/10 flex flex-col rounded-lg border bg-linear-to-br p-4 text-xl backdrop-blur-xs",
         className
       )}
     >

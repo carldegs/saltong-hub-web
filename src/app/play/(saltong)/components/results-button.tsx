@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/providers/modal/modal-provider";
-import { ArchiveIcon, Award } from "lucide-react";
+import { VaultIcon, Award } from "lucide-react";
 import ResultsDialog from "./results-dialog";
 import { GameMode, SaltongRound } from "../types";
 import usePlayerStats from "../hooks/usePlayerStats";
@@ -55,10 +55,10 @@ export function ResultsButton({
         title="Play previous games"
         asChild
       >
-        <Link href={`/play${mode === "main" ? "" : `/${mode}`}/archives`}>
-          <ArchiveIcon className="h-[1.2rem] w-[1.2rem]" />
-          <span className="hidden md:inline-block">Archives</span>
-          <span className="sr-only">Archives</span>
+        <Link href={`/play${mode === "main" ? "" : `/${mode}`}/vault`}>
+          <VaultIcon className="h-[1.2rem] w-[1.2rem]" />
+          <span className="hidden md:inline-block">Vault</span>
+          <span className="sr-only">Vault</span>
         </Link>
       </Button>
     </>
