@@ -11,6 +11,9 @@ const eslintConfig = [
     extends: ["next/core-web-vitals", "next/typescript"],
   }),
   eslintPluginPrettierRecommended,
+  {
+    ignores: ["src/components/ui/*"],
+  },
 ];
 
 export default eslintConfig;

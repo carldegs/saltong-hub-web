@@ -17,29 +17,12 @@ import { ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
 import { NavbarBrand } from "../navbar";
 import { createClient } from "@/lib/supabase/server";
-import { UserResponse } from "@supabase/supabase-js";
-
-const getUserDetails = (data: UserResponse["data"]) => {
-  if (!data?.user) {
-    return;
-  }
-
-  const name =
-    data?.user?.user_metadata?.full_name || data?.user?.email || "User";
-  const avatar = data?.user?.user_metadata?.avatar_url || "/default-avatar.png";
-  const email = data?.user?.email || "No email provided";
-
-  return {
-    name,
-    avatar,
-    email,
-  };
-};
+import { getUserProfile } from "@/utils/user";
 
 export async function AppSidebar() {
   const supabase = await createClient();
-  const { data: authData } = await supabase.auth.getUser();
-  const userDetails = getUserDetails(authData);
+  const { data } = await supabase.auth.getUser();
+  const profile = getUserProfile(data.user);
 
   return (
     <Sidebar>
@@ -73,7 +56,7 @@ export async function AppSidebar() {
           <OtherGamesSidebarMenu />
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>SETTINGS</SidebarGroupLabel>
+          <SidebarGroupLabel>MORE</SidebarGroupLabel>
           <SettingsSidebarMenu />
         </SidebarGroup>
       </SidebarContent>
@@ -81,7 +64,7 @@ export async function AppSidebar() {
       <SidebarFooter>
         <MoreSidebarMenu />
 
-        <NavUser user={userDetails} />
+        <NavUser profile={profile} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

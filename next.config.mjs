@@ -1,3 +1,5 @@
+import data from "./package.json" with { type: "json" };
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   turbopack: {
@@ -7,6 +9,9 @@ const nextConfig = {
         as: "*.js",
       },
     },
+  },
+  publicRuntimeConfig: {
+    version: data.version,
   },
 };
 

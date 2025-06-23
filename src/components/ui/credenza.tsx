@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Dialog,
   DialogClose,
@@ -23,7 +24,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { useMediaQuery } from "@/hooks/use-media-query";
 
 interface BaseProps {
   children: React.ReactNode;
@@ -39,18 +39,36 @@ interface CredenzaProps extends BaseProps {
   asChild?: true;
 }
 
-const desktop = "(min-width: 768px)";
+const CredenzaContext = React.createContext<{ isMobile: boolean }>({
+  isMobile: false,
+});
+
+const useCredenzaContext = () => {
+  const context = React.useContext(CredenzaContext);
+  if (!context) {
+    throw new Error(
+      "Credenza components cannot be rendered outside the Credenza Context"
+    );
+  }
+  return context;
+};
 
 const Credenza = ({ children, ...props }: RootCredenzaProps) => {
-  const isDesktop = useMediaQuery(desktop);
-  const Credenza = isDesktop ? Dialog : Drawer;
+  const isMobile = useIsMobile();
+  const Credenza = isMobile ? Drawer : Dialog;
 
-  return <Credenza {...props}>{children}</Credenza>;
+  return (
+    <CredenzaContext.Provider value={{ isMobile }}>
+      <Credenza {...props} {...(isMobile && { autoFocus: true })}>
+        {children}
+      </Credenza>
+    </CredenzaContext.Provider>
+  );
 };
 
 const CredenzaTrigger = ({ className, children, ...props }: CredenzaProps) => {
-  const isDesktop = useMediaQuery(desktop);
-  const CredenzaTrigger = isDesktop ? DialogTrigger : DrawerTrigger;
+  const { isMobile } = useCredenzaContext();
+  const CredenzaTrigger = isMobile ? DrawerTrigger : DialogTrigger;
 
   return (
     <CredenzaTrigger className={className} {...props}>
@@ -60,8 +78,8 @@ const CredenzaTrigger = ({ className, children, ...props }: CredenzaProps) => {
 };
 
 const CredenzaClose = ({ className, children, ...props }: CredenzaProps) => {
-  const isDesktop = useMediaQuery(desktop);
-  const CredenzaClose = isDesktop ? DialogClose : DrawerClose;
+  const { isMobile } = useCredenzaContext();
+  const CredenzaClose = isMobile ? DrawerClose : DialogClose;
 
   return (
     <CredenzaClose className={className} {...props}>
@@ -71,16 +89,11 @@ const CredenzaClose = ({ className, children, ...props }: CredenzaProps) => {
 };
 
 const CredenzaContent = ({ className, children, ...props }: CredenzaProps) => {
-  const isDesktop = useMediaQuery(desktop);
-  const CredenzaContent = isDesktop ? DialogContent : DrawerContent;
+  const { isMobile } = useCredenzaContext();
+  const CredenzaContent = isMobile ? DrawerContent : DialogContent;
 
   return (
-    <CredenzaContent
-      className={cn(className, {
-        "overflow-y-scroll": isDesktop,
-      })}
-      {...props}
-    >
+    <CredenzaContent className={className} {...props}>
       {children}
     </CredenzaContent>
   );
@@ -91,8 +104,8 @@ const CredenzaDescription = ({
   children,
   ...props
 }: CredenzaProps) => {
-  const isDesktop = useMediaQuery(desktop);
-  const CredenzaDescription = isDesktop ? DialogDescription : DrawerDescription;
+  const { isMobile } = useCredenzaContext();
+  const CredenzaDescription = isMobile ? DrawerDescription : DialogDescription;
 
   return (
     <CredenzaDescription className={className} {...props}>
@@ -102,8 +115,8 @@ const CredenzaDescription = ({
 };
 
 const CredenzaHeader = ({ className, children, ...props }: CredenzaProps) => {
-  const isDesktop = useMediaQuery(desktop);
-  const CredenzaHeader = isDesktop ? DialogHeader : DrawerHeader;
+  const { isMobile } = useCredenzaContext();
+  const CredenzaHeader = isMobile ? DrawerHeader : DialogHeader;
 
   return (
     <CredenzaHeader className={className} {...props}>
@@ -113,8 +126,8 @@ const CredenzaHeader = ({ className, children, ...props }: CredenzaProps) => {
 };
 
 const CredenzaTitle = ({ className, children, ...props }: CredenzaProps) => {
-  const isDesktop = useMediaQuery(desktop);
-  const CredenzaTitle = isDesktop ? DialogTitle : DrawerTitle;
+  const { isMobile } = useCredenzaContext();
+  const CredenzaTitle = isMobile ? DrawerTitle : DialogTitle;
 
   return (
     <CredenzaTitle className={className} {...props}>
@@ -132,8 +145,8 @@ const CredenzaBody = ({ className, children, ...props }: CredenzaProps) => {
 };
 
 const CredenzaFooter = ({ className, children, ...props }: CredenzaProps) => {
-  const isDesktop = useMediaQuery(desktop);
-  const CredenzaFooter = isDesktop ? DialogFooter : DrawerFooter;
+  const { isMobile } = useCredenzaContext();
+  const CredenzaFooter = isMobile ? DrawerFooter : DialogFooter;
 
   return (
     <CredenzaFooter className={className} {...props}>

@@ -1,6 +1,6 @@
 "use client";
 
-import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
+import { BadgeCheck, ChevronsUpDown, LogOut, SettingsIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -22,22 +22,15 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { Profile } from "@/utils/user";
 
-export function NavUser({
-  user,
-}: {
-  user?: Partial<{
-    name: string;
-    email: string;
-    avatar: string;
-  }>;
-}) {
+export function NavUser({ profile }: { profile?: Profile }) {
   const supabase = createClient();
   const { isMobile, setOpenMobile } = useSidebar();
   const currPathname = usePathname();
   const router = useRouter();
 
-  if (!user?.email && !user?.name && !user?.avatar) {
+  if (!profile?.email && !profile?.username && !profile?.avatarUrl) {
     // show Log in/Sign up button
     return (
       <SidebarMenu>
@@ -74,19 +67,19 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage src={profile.avatarUrl} alt={profile.username} />
                 <AvatarFallback className="rounded-lg">
-                  {user.name?.charAt(0).toUpperCase() ??
-                    user.email?.charAt(0).toUpperCase() ??
+                  {profile.username?.charAt(0).toUpperCase() ??
+                    profile.email?.charAt(0).toUpperCase() ??
                     "?"}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {user.name ?? user.email}
+                  {profile.username ?? profile.email}
                 </span>
-                {user.name && (
-                  <span className="truncate text-xs">{user.email}</span>
+                {profile.username && (
+                  <span className="truncate text-xs">{profile.email}</span>
                 )}
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -101,19 +94,27 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage src={profile.avatarUrl} alt={profile.username} />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold">
+                    {profile.username}
+                  </span>
+                  <span className="truncate text-xs">{profile.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Link href="/account" className="w-full">
+                <Link href="/settings" className="w-full">
+                  <SettingsIcon className="mr-4 inline size-5" />
+                  Settings
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/settings/account" className="w-full">
                   <BadgeCheck className="mr-4 inline size-5" />
                   Account
                 </Link>

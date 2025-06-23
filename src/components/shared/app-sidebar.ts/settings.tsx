@@ -3,7 +3,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ColorModeToggle } from "@/components/shared/color-mode-toggle";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
@@ -13,39 +12,38 @@ export async function SettingsSidebarMenu() {
 
   return (
     <SidebarMenu>
-      <SidebarMenuItem className="flex items-center justify-between pr-1 pl-2">
-        Color Mode <ColorModeToggle />
-      </SidebarMenuItem>
       <SidebarMenuItem>
-        <SidebarMenuButton className="h-auto" asChild>
-          <Link
-            href="/privacy"
-            className="flex w-full items-center gap-3 text-base"
-          >
-            <span className="text-base">Privacy Policy</span>
+        <SidebarMenuButton className="h-auto py-1.5" asChild>
+          <Link href="/settings" className="flex w-full items-center gap-3">
+            <span className="text-sm">Settings</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
 
       <SidebarMenuItem>
-        <SidebarMenuButton className="h-auto" asChild>
-          <Link
-            href="/about"
-            className="flex w-full items-center gap-3 text-base"
-          >
-            <span className="text-base">About</span>
+        <SidebarMenuButton className="h-auto py-1.5" asChild>
+          <Link href="/privacy" className="flex w-full items-center gap-3">
+            <span className="text-sm">Privacy Policy</span>
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+
+      <SidebarMenuItem>
+        <SidebarMenuButton className="h-auto py-1.5" asChild>
+          <Link href="/about" className="flex w-full items-center gap-3">
+            <span className="text-sm">About</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
 
       {data?.session?.user && (
         <SidebarMenuItem>
-          <SidebarMenuButton className="h-auto" asChild>
+          <SidebarMenuButton className="h-auto py-1.5" asChild>
             <Link
-              href="/account"
-              className="flex w-full items-center gap-3 text-base"
+              href="/settings/account"
+              className="flex w-full items-center gap-3"
             >
-              <span className="text-base">Account</span>
+              <span className="text-sm">Account</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
