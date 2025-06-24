@@ -13,6 +13,7 @@ import { Particles } from "@/components/magicui/particles";
 import GoogleIcon from "@/assets/auth/google.svg";
 import DiscordIcon from "@/assets/auth/discord.svg";
 import TwitterIcon from "@/assets/auth/twitter.svg";
+import { getRedirectURL } from "@/lib/utils";
 
 export default function AuthForm({
   showSignup = false,
@@ -29,7 +30,7 @@ export default function AuthForm({
   function handleOAuth(provider: "google" | "discord" | "twitter") {
     supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: getRedirectURL() },
     });
   }
 

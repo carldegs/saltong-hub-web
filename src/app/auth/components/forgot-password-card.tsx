@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getRedirectURL } from "@/lib/utils";
 
 interface ForgotPasswordCardProps {
   onBack: () => void;
@@ -21,7 +22,9 @@ export function ForgotPasswordCard({
   async function resetPassword() {
     setLoading(true);
     setError(null);
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: getRedirectURL(),
+    });
     setLoading(false);
     if (error) {
       setError(error.message);

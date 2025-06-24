@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { signupSchema } from "../auth-schema";
 import { createClient } from "@/lib/supabase/client";
+import { getRedirectURL } from "@/lib/utils";
 
 interface SignupCardProps {
   onBack: () => void;
@@ -50,6 +51,9 @@ export function SignupCard({ onBack }: SignupCardProps) {
     const { error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: getRedirectURL(),
+      },
     });
     if (error) {
       setFormError(error.message);

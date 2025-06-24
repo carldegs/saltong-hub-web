@@ -7,6 +7,7 @@ import { passwordSchema } from "../auth-schema";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { AuthCard } from "./auth-card";
+import { getRedirectURL } from "@/lib/utils";
 
 export function ResetPasswordCard() {
   const supabase = createClient();
@@ -49,7 +50,12 @@ export function ResetPasswordCard() {
       return;
     }
     setFormError(null);
-    const { error } = await supabase.auth.updateUser({ password });
+    const { error } = await supabase.auth.updateUser(
+      { password },
+      {
+        emailRedirectTo: getRedirectURL(),
+      }
+    );
     if (error) {
       setFormError(error.message);
       setIsSubmitting(false);
