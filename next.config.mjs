@@ -1,4 +1,5 @@
 import data from "./package.json" with { type: "json" };
+import createMDX from "@next/mdx";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -32,8 +33,10 @@ const nextConfig = {
   publicRuntimeConfig: {
     version: data.version,
   },
+  pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
 };
 
 import { withVercelToolbar } from "@vercel/toolbar/plugins/next";
+const withMDX = createMDX();
 
-export default withVercelToolbar()(nextConfig);
+export default withMDX(withVercelToolbar()(nextConfig));

@@ -22,8 +22,8 @@ export async function SettingsSidebarMenu() {
 
       <SidebarMenuItem>
         <SidebarMenuButton className="h-auto py-1.5" asChild>
-          <Link href="/privacy" className="flex w-full items-center gap-3">
-            <span className="text-sm">Privacy Policy</span>
+          <Link href="/policies" className="flex w-full items-center gap-3">
+            <span className="text-sm">Policies</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>

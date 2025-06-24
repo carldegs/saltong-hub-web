@@ -14,9 +14,9 @@ export default function AboutSection() {
       <SettingsSectionHeader>About</SettingsSectionHeader>
       <SettingsSectionContent>
         <SettingsSectionList>
-          {/* TODO: Implement Privacy Policy */}
-          <SettingsSectionItemLink href="/privacy">
-            Privacy Policy
+          {/* TODO: Implement Policies */}
+          <SettingsSectionItemLink href="/policies">
+            Permissions & Policies
           </SettingsSectionItemLink>
           {/* TODO: Implement About Page */}
           <SettingsSectionItemLink href="/about">
