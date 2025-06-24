@@ -16,7 +16,7 @@ import { VercelToolbar } from "@vercel/toolbar/next";
 
 export const metadata: Metadata = {
   title: "Saltong Hub",
-  description: "Filipino clone of Wordle",
+  description: "The place for Filipino word games",
   openGraph: {
     siteName: "Saltong Hub",
     url: "https://saltong.com",

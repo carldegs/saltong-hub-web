@@ -36,10 +36,14 @@
   --sidebar-accent-foreground: hsl(240 5.9% 10%);
   --sidebar-border: hsl(220 13% 91%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
+
+  --cell-correct: var(--color-green-500);
+  --cell-incorrect: var(--color-slate-300);
+  --cell-partial: var(--color-orange-500);
+  --cell-primary-foreground: hsl(0 0% 3.9% / 70%);
 }
 
-.dark,
-.dark-hc {
+.dark {
   --background: hsl(0 0% 3.9%);
   --foreground: hsl(0 0% 98%);
   --card: hsl(0 0% 3.9%);
@@ -64,63 +68,76 @@
   --chart-3: hsl(30 80% 55%);
   --chart-4: hsl(280 65% 60%);
   --chart-2: hsl(340 75% 55%);
+
+  --cell-correct: var(--color-green-700);
+  --cell-incorrect: var(--color-slate-600);
+  --cell-partial: var(--color-orange-600);
+  --cell-primary-foreground: hsl(0 0% 98% / 70%);
+}
+
+.hc {
+  --cell-correct: hsl(205 97% 36%);
+  --cell-incorrect: hsl(217, 9%, 53%);
+  --cell-partial: hsl(24, 69%, 46%);
+  --cell-primary-foreground: hsl(0 0% 98%);
 }
 
 @theme inline {
-  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans:
+    var(--font-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
-  --color-saltong-green-50: #f0f9f3;
-  --color-saltong-green-100: #daf1e1;
-  --color-saltong-green-200: #b7e3c8;
-  --color-saltong-green-300: #88cda6;
-  --color-saltong-green-400: #56b181;
-  --color-saltong-green-500: #2f855a;
-  --color-saltong-green-600: #24774f;
-  --color-saltong-green-700: #1d5f41;
-  --color-saltong-green-800: #194c35;
-  --color-saltong-green-900: #163e2d;
-  --color-saltong-green-950: #0b2319;
-  --color-saltong-green: #2f855a;
+  --color-saltong-green-50: hsl(142 50% 96%);
+  --color-saltong-green-100: hsl(142 48% 89%);
+  --color-saltong-green-200: hsl(142 54% 80%);
+  --color-saltong-green-300: hsl(142 48% 67%);
+  --color-saltong-green-400: hsl(142 41% 52%);
+  --color-saltong-green-500: hsl(142 51% 36%);
+  --color-saltong-green-600: hsl(142 53% 30%);
+  --color-saltong-green-700: hsl(142 53% 24%);
+  --color-saltong-green-800: hsl(142 56% 20%);
+  --color-saltong-green-900: hsl(142 57% 17%);
+  --color-saltong-green-950: hsl(142 44% 9%);
+  --color-saltong-green: hsl(142 51% 36%);
 
-  --color-saltong-red-50: #fdf3f3;
-  --color-saltong-red-100: #fce4e4;
-  --color-saltong-red-200: #facece;
-  --color-saltong-red-300: #f5acac;
-  --color-saltong-red-400: #ed7c7c;
-  --color-saltong-red-500: #e15252;
-  --color-saltong-red-600: #c53030;
-  --color-saltong-red-700: #ad2828;
-  --color-saltong-red-800: #8f2525;
-  --color-saltong-red-900: #772525;
-  --color-saltong-red-950: #400f0f;
-  --color-saltong-red: #c53030;
+  --color-saltong-red-50: hsl(0 60% 98%);
+  --color-saltong-red-100: hsl(0 70% 96%);
+  --color-saltong-red-200: hsl(0 85% 90%);
+  --color-saltong-red-300: hsl(0 80% 83%);
+  --color-saltong-red-400: hsl(0 77% 70%);
+  --color-saltong-red-500: hsl(0 69% 60%);
+  --color-saltong-red-600: hsl(0 60% 48%);
+  --color-saltong-red-700: hsl(0 63% 41%);
+  --color-saltong-red-800: hsl(0 61% 35%);
+  --color-saltong-red-900: hsl(0 56% 30%);
+  --color-saltong-red-950: hsl(0 62% 15%);
+  --color-saltong-red: hsl(0 60% 48%);
 
-  --color-saltong-blue-50: #f3f6fc;
-  --color-saltong-blue-100: #e6eef8;
-  --color-saltong-blue-200: #c7dbf0;
-  --color-saltong-blue-300: #95bce4;
-  --color-saltong-blue-400: #5d9bd3;
-  --color-saltong-blue-500: #387ebf;
-  --color-saltong-blue-600: #2b6cb0;
-  --color-saltong-blue-700: #214f83;
-  --color-saltong-blue-800: #1f456d;
-  --color-saltong-blue-900: #1f3b5b;
-  --color-saltong-blue-950: #14263d;
-  --color-saltong-blue: #2b6cb0;
+  --color-saltong-blue-50: hsl(217 50% 97%);
+  --color-saltong-blue-100: hsl(217 44% 95%);
+  --color-saltong-blue-200: hsl(217 54% 87%);
+  --color-saltong-blue-300: hsl(217 56% 71%);
+  --color-saltong-blue-400: hsl(217 57% 60%);
+  --color-saltong-blue-500: hsl(217 57% 47%);
+  --color-saltong-blue-600: hsl(217 57% 42%);
+  --color-saltong-blue-700: hsl(217 59% 32%);
+  --color-saltong-blue-800: hsl(217 57% 27%);
+  --color-saltong-blue-900: hsl(217 52% 24%);
+  --color-saltong-blue-950: hsl(217 49% 15%);
+  --color-saltong-blue: hsl(217 57% 42%);
 
-  --color-saltong-purple-50: #f5f5fd;
-  --color-saltong-purple-100: #eeecfb;
-  --color-saltong-purple-200: #dfdcf8;
-  --color-saltong-purple-300: #c5bff3;
-  --color-saltong-purple-400: #a89bea;
-  --color-saltong-purple-500: #8a72e0;
-  --color-saltong-purple-600: #7854d3;
-  --color-saltong-purple-700: #6b46c1;
-  --color-saltong-purple-800: #5636a1;
-  --color-saltong-purple-900: #482e84;
-  --color-saltong-purple-950: #2d1c59;
-  --color-saltong-purple: #6b46c1;
+  --color-saltong-purple-50: hsl(250 67% 98%);
+  --color-saltong-purple-100: hsl(250 60% 97%);
+  --color-saltong-purple-200: hsl(250 60% 93%);
+  --color-saltong-purple-300: hsl(250 56% 85%);
+  --color-saltong-purple-400: hsl(250 56% 75%);
+  --color-saltong-purple-500: hsl(250 64% 66%);
+  --color-saltong-purple-600: hsl(250 59% 58%);
+  --color-saltong-purple-700: hsl(250 51% 52%);
+  --color-saltong-purple-800: hsl(250 50% 42%);
+  --color-saltong-purple-900: hsl(250 48% 34%);
+  --color-saltong-purple-950: hsl(250 53% 23%);
+  --color-saltong-purple: hsl(250 51% 52%);
 
   --color-border: var(--border);
   --color-input: var(--input);
@@ -166,6 +183,11 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
+
+  --color-cell-correct: var(--cell-correct);
+  --color-cell-incorrect: var(--cell-incorrect);
+  --color-cell-partial: var(--cell-partial);
+  --color-cell-primary-foreground: var(--cell-primary-foreground);
 
   @keyframes accordion-down {
     from {

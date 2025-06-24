@@ -82,6 +82,12 @@ function ResultsDialogComponent({
     [rankScoreMap]
   );
 
+  // Reverse the rankScoreMap so that highest rank is first
+  const reversedRankScoreMap = useMemo(
+    () => [...rankScoreMap].reverse(),
+    [rankScoreMap]
+  );
+
   const userGuessedAllWords = guessedWords.length === wordList.length;
 
   return (
@@ -119,6 +125,7 @@ function ResultsDialogComponent({
                   </div>
                 </div>
               </div>
+              {/* TODO: Add share */}
               <span className="text-center text-sm font-bold tracking-wider">
                 PLAY OTHER GAMES
               </span>
@@ -165,7 +172,7 @@ function ResultsDialogComponent({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {rankScoreMap.map((rankData) => (
+                {reversedRankScoreMap.map((rankData) => (
                   <TableRow
                     key={rankData.name}
                     className={cn({
@@ -173,8 +180,8 @@ function ResultsDialogComponent({
                         rank?.name === rankData.name,
                     })}
                   >
-                    <TableCell className="px-6 tracking-wider">
-                      {rankData.icon} {rankData.name?.toUpperCase()}
+                    <TableCell className="px-6 capitalize">
+                      {rankData.icon} {rankData.name}
                     </TableCell>
                     <TableCell className="px-6 text-right">
                       {rankData.score}

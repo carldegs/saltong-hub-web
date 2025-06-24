@@ -46,11 +46,11 @@ export default function SaltongGrid({
                       {
                         "translate-y-0 md:translate-y-0":
                           !!status?.[i * wordLen + j],
-                        "bg-slate-300 dark:bg-slate-600":
+                        "bg-cell-incorrect inverted-colors:bg-slate-800":
                           status?.[i * wordLen + j] === LetterStatus.Incorrect,
-                        "bg-orange-500 dark:bg-orange-600":
+                        "bg-cell-partial inverted-colors:bg-yellow-500":
                           status?.[i * wordLen + j] === LetterStatus.Partial,
-                        "bg-green-500 dark:bg-green-700 inverted-colors:bg-blue-500":
+                        "bg-cell-correct inverted-colors:bg-blue-500":
                           status?.[i * wordLen + j] === LetterStatus.Correct,
                       }
                     )}
@@ -71,7 +71,7 @@ export default function SaltongGrid({
                   )}
 
                   <div className="absolute flex size-[35px] items-center justify-center md:size-[45px]">
-                    <p className="text-2xl font-bold uppercase opacity-70 select-none md:text-3xl">
+                    <p className="text-cell-primary-foreground text-2xl font-bold uppercase select-none md:text-3xl">
                       {(currTurn === i
                         ? inputData?.[j]
                         : grid?.[wordLen * i + j]) ?? ""}

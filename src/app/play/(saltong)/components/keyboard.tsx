@@ -36,11 +36,11 @@ export default function Keyboard({
                     {
                       "max-w-[64px] flex-grow-3":
                         key === "Enter" || key === "Backspace",
-                      "bg-slate-300 dark:bg-slate-600":
+                      "bg-cell-incorrect text-cell-primary-foreground":
                         status?.[key] === LetterStatus.Incorrect,
-                      "bg-orange-500 dark:bg-orange-600":
+                      "bg-cell-partial text-cell-primary-foreground":
                         status?.[key] === LetterStatus.Partial,
-                      "bg-green-500 dark:bg-green-700":
+                      "bg-cell-correct text-cell-primary-foreground":
                         status?.[key] === LetterStatus.Correct,
                     }
                   )}
