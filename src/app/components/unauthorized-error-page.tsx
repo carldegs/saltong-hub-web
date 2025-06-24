@@ -130,7 +130,7 @@ export default function UnauthorizedErrorPage(
               <Link
                 href={{
                   pathname: "/auth",
-                  query: { f: currPathname },
+                  query: { next: currPathname },
                 }}
               >
                 Log in
@@ -145,7 +145,7 @@ export default function UnauthorizedErrorPage(
               <Link
                 href={{
                   pathname: "/auth",
-                  query: { signup: "1", f: currPathname },
+                  query: { signup: "1", next: currPathname },
                 }}
               >
                 Sign up

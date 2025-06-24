@@ -46,7 +46,7 @@ export function NavUser({ profile }: { profile?: Profile }) {
             <Link
               href={{
                 pathname: "/auth",
-                query: { f: currPathname },
+                query: { next: currPathname },
               }}
             >
               Log in

@@ -30,7 +30,7 @@ export default function AuthForm({
   function handleOAuth(provider: "google" | "discord" | "twitter") {
     supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: getRedirectURL() },
+      options: { redirectTo: `${getRedirectURL()}/auth/callback` },
     });
   }
 
