@@ -1,23 +1,23 @@
 import { Metadata } from "next";
-import { SALTONG_CONFIGS } from "../constants";
 import getRound from "../../api/getRound";
 import SaltongMainPageWithSuspense from "../components/templates/saltong-game-page";
+import { GAME_SETTINGS } from "../../constants";
 
 interface Props {
   searchParams: Promise<{ d?: string }>;
 }
 
-const CONFIG = SALTONG_CONFIGS["main"];
+const CONFIG = GAME_SETTINGS["saltong-main"];
 
 export async function generateMetadata({
   searchParams: _searchParams,
 }: Props): Promise<Metadata> {
   const searchParams = await _searchParams;
-  const round = await getRound(CONFIG.tableName, searchParams?.d);
+  const round = await getRound(CONFIG.config.tableName, searchParams?.d);
 
   if (!round) {
     return {
-      title: "Saltong Mini",
+      title: "Saltong",
     };
   }
 

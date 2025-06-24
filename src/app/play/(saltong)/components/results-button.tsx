@@ -4,16 +4,19 @@ import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/providers/modal/modal-provider";
 import { VaultIcon, Award } from "lucide-react";
 import ResultsDialog from "./results-dialog";
-import { GameMode, SaltongRound } from "../types";
+import { SaltongRound } from "../types";
 import usePlayerStats from "../hooks/usePlayerStats";
 import Link from "next/link";
+import { GameId } from "../../types";
 
 export function ResultsButton({
-  mode,
+  gameId,
+  path,
   gameDate,
   roundData,
 }: {
-  mode: GameMode;
+  gameId: GameId;
+  path: string;
   gameDate: string;
   roundData: SaltongRound;
 }) {
@@ -25,7 +28,7 @@ export function ResultsButton({
       <ResultsDialog
         open={isOpen}
         onOpenChange={onOpenChange}
-        mode={mode}
+        gameId={gameId}
         gameDate={gameDate}
         roundData={roundData}
       />
@@ -36,9 +39,9 @@ export function ResultsButton({
         }}
         size="icon"
         className="gap-1.5 font-bold md:h-auto md:w-auto md:px-2"
-        disabled={!Object.keys(playerStats?.[mode] ?? {}).length}
+        disabled={!Object.keys(playerStats?.[gameId] ?? {}).length}
         title={
-          !Object.keys(playerStats?.[mode] ?? {}).length
+          !Object.keys(playerStats?.[gameId] ?? {}).length
             ? "Play a game to view results"
             : undefined
         }
@@ -51,11 +54,11 @@ export function ResultsButton({
         variant="outline"
         size="icon"
         className="gap-1.5 font-bold md:h-auto md:w-auto md:px-2"
-        disabled={!Object.keys(playerStats?.[mode] ?? {}).length}
+        disabled={!Object.keys(playerStats?.[gameId] ?? {}).length}
         title="Play previous games"
         asChild
       >
-        <Link href={`/play${mode === "main" ? "" : `/${mode}`}/vault`}>
+        <Link href={`/play${path}/vault`}>
           <VaultIcon className="h-[1.2rem] w-[1.2rem]" />
           <span className="hidden md:inline-block">Vault</span>
           <span className="sr-only">Vault</span>

@@ -3,21 +3,21 @@ import { getFormattedDateInPh, isFormattedDateInFuture } from "@/utils/time";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import GameWrapper from "../game-wrapper";
 import { ResultsButton } from "../results-button";
-import { GameConfig } from "../../types";
 import { notFound } from "next/navigation";
 import { ComponentProps, Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import UnauthorizedErrorPage from "@/app/components/unauthorized-error-page";
 import GameWrapperLoading from "../game-wrapper-loading";
+import { SaltongGameSettings } from "@/app/play/types";
 
 async function SaltongGamePage({
   searchParams: _searchParams,
-  ...gameConfig
+  ...gameSettings
 }: {
   searchParams: Promise<{ d?: string }>;
-} & GameConfig) {
-  const { tableName, colorScheme, subtitle, mode, maxTries, wordLen, icon } =
-    gameConfig;
+} & SaltongGameSettings) {
+  const { config, colorScheme, name, id: gameId, icon, path } = gameSettings;
+  const { tableName, maxTries, wordLen } = config;
   const searchParams = await _searchParams;
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
@@ -27,7 +27,7 @@ async function SaltongGamePage({
     searchParams?.d &&
     searchParams?.d !== getFormattedDateInPh()
   ) {
-    return <UnauthorizedErrorPage {...gameConfig} />;
+    return <UnauthorizedErrorPage {...gameSettings} />;
   }
 
   // TODO: Test if it works on different timezones
@@ -53,28 +53,33 @@ async function SaltongGamePage({
           colorScheme={
             colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
           }
-          title="Saltong"
-          subtitle={subtitle}
           boxed={`#${round.gameId}`}
           icon={icon}
+          name={name}
         />
         <div className="flex gap-1.5">
-          <ResultsButton mode={mode} gameDate={round.date} roundData={round} />
+          <ResultsButton
+            path={path}
+            gameId={gameId}
+            gameDate={round.date}
+            roundData={round}
+          />
         </div>
       </Navbar>
       <GameWrapper
         maxTries={maxTries}
         wordLen={wordLen}
         roundData={round}
-        mode={mode}
+        gameId={gameId}
         isLive={isLive}
       />
     </>
   );
 }
 
-function SaltongGamePageLoading(gameConfig: GameConfig) {
-  const { colorScheme, subtitle, maxTries, wordLen, icon } = gameConfig;
+function SaltongGamePageLoading(gameSettings: SaltongGameSettings) {
+  const { colorScheme, config, name, icon } = gameSettings;
+  const { maxTries, wordLen } = config;
 
   return (
     <>
@@ -89,7 +94,7 @@ function SaltongGamePageLoading(gameConfig: GameConfig) {
               colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
             }
             title="Saltong"
-            subtitle={subtitle}
+            subtitle={name.split(" ")[1] || ""}
             icon={icon}
             isLoading
           />
@@ -102,16 +107,16 @@ function SaltongGamePageLoading(gameConfig: GameConfig) {
 
 export default async function SaltongMainPageWithSuspense({
   searchParams,
-  ...gameConfig
+  ...gameSettings
 }: {
   searchParams: Promise<{ d?: string }>;
-} & GameConfig) {
+} & SaltongGameSettings) {
   return (
     <Suspense
-      key={gameConfig.mode}
-      fallback={<SaltongGamePageLoading {...gameConfig} />}
+      key={gameSettings.id}
+      fallback={<SaltongGamePageLoading {...gameSettings} />}
     >
-      <SaltongGamePage searchParams={searchParams} {...gameConfig} />
+      <SaltongGamePage searchParams={searchParams} {...gameSettings} />
     </Suspense>
   );
 }

@@ -78,3 +78,9 @@ export const getUserProfile = (user?: User | null): Profile | undefined => {
     mainProvider,
   };
 };
+
+export const isUserConfirmed = (user?: User | null) => {
+  return user?.app_metadata?.providers?.includes("email")
+    ? !!user?.confirmed_at
+    : true;
+};

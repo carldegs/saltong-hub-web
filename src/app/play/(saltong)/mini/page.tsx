@@ -1,19 +1,19 @@
 import { Metadata } from "next";
-import { SALTONG_CONFIGS } from "../constants";
 import getRound from "../../api/getRound";
 import SaltongMainPageWithSuspense from "../components/templates/saltong-game-page";
+import { GAME_SETTINGS } from "../../constants";
 
 interface Props {
   searchParams: Promise<{ d?: string }>;
 }
 
-const CONFIG = SALTONG_CONFIGS["mini"];
+const SETTINGS = GAME_SETTINGS["saltong-mini"];
 
 export async function generateMetadata({
   searchParams: _searchParams,
 }: Props): Promise<Metadata> {
   const searchParams = await _searchParams;
-  const round = await getRound(CONFIG.tableName, searchParams?.d);
+  const round = await getRound(SETTINGS.config.tableName, searchParams?.d);
 
   if (!round) {
     return {
@@ -30,7 +30,7 @@ export default async function SaltongMainPage(props: Props) {
   return (
     <SaltongMainPageWithSuspense
       searchParams={props.searchParams}
-      {...CONFIG}
+      {...SETTINGS}
     />
   );
 }

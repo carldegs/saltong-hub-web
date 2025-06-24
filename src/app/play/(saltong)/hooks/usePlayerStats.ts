@@ -1,8 +1,9 @@
 import { useLocalStorage } from "usehooks-ts";
-import { GameMode, PlayerStats } from "../types";
+import { PlayerStats } from "../types";
+import { GameId } from "../../types";
 
 export default function usePlayerStats() {
-  return useLocalStorage<Partial<Record<GameMode, PlayerStats>>>(
+  return useLocalStorage<Partial<Record<GameId, PlayerStats>>>(
     "saltong/stats",
     {},
     {

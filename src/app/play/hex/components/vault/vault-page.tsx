@@ -1,19 +1,16 @@
-import { GameConfig } from "@/app/play/(saltong)/types";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { ComponentProps } from "react";
 import VaultMonthlyCalendar from "./vault-calendar";
 import { createClient } from "@/lib/supabase/server";
 import UnauthorizedErrorPage from "@/app/components/unauthorized-error-page";
+import { GameSettings } from "@/app/play/types";
 
 export default async function SaltongVaultPage({
   ...gameConfig
 }: {
   searchParams: { d?: string };
-} & Pick<
-  GameConfig,
-  "colorScheme" | "subtitle" | "icon" | "startDate" | "mode"
->) {
-  const { colorScheme, subtitle, icon } = gameConfig;
+} & Pick<GameSettings, "colorScheme" | "name" | "icon">) {
+  const { colorScheme, name, icon } = gameConfig;
 
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
@@ -34,7 +31,7 @@ export default async function SaltongVaultPage({
             colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
           }
           title="Saltong"
-          subtitle={subtitle}
+          name={name}
           icon={icon}
         />
       </Navbar>

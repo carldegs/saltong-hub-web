@@ -2,8 +2,6 @@ import { Navbar } from "@/components/shared/navbar";
 import DailyGamesCard from "./components/daily-games-card";
 import HexGamesCard from "./components/hex-games-card";
 import GameCard from "./components/game-card";
-import { SALTONG_CONFIGS } from "./play/(saltong)/constants";
-import { HEX_CONFIG } from "./play/hex/constants";
 import HomeNavbarBrand from "./components/home-navbar-brand";
 import { VaultIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,10 +9,11 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { VelocityScroll } from "@/components/magicui/scroll-based-velocity";
 import { Particles } from "@/components/magicui/particles";
+import { GAME_SETTINGS } from "./play/constants";
 
 async function VaultsAlert() {
   const supabase = await createClient();
-  const { data } = await supabase.auth.getSession();
+  const { data } = await supabase.auth.getUser();
 
   return (
     <div className="relative flex w-full flex-col items-center justify-center overflow-hidden rounded-xl border border-teal-300 bg-linear-to-br from-teal-200 to-teal-100 py-6 dark:from-teal-600/20 dark:to-teal-500/50">
@@ -32,7 +31,7 @@ async function VaultsAlert() {
           Just sign up to get started.
         </span>
 
-        {!data.session ? (
+        {!data.user ? (
           <Button asChild size="lg" className="font-bold tracking-widest">
             <Link href="/auth">CREATE ACCOUNT</Link>
           </Button>
@@ -50,6 +49,8 @@ async function VaultsAlert() {
 }
 
 export default async function HomePage() {
+  const allGames = Object.values(GAME_SETTINGS);
+
   return (
     <div className="grid min-h-screen w-full grid-rows-[auto_1fr]">
       <Navbar>
@@ -74,12 +75,11 @@ export default async function HomePage() {
           <VaultsAlert />
         </div>
         <div className="@container/bot mx-auto w-full max-w-5xl space-y-8 px-4 py-8">
-          {/* <VaultsAlert /> */}
+          <h3>All Games</h3>
           <div className="grid grid-cols-1 gap-4 @min-[600px]/bot:grid-cols-2">
-            <GameCard {...SALTONG_CONFIGS["main"]} />
-            <GameCard {...SALTONG_CONFIGS["max"]} />
-            <GameCard {...SALTONG_CONFIGS["mini"]} />
-            <GameCard {...HEX_CONFIG} />
+            {allGames.map((config) => (
+              <GameCard key={config.id} {...config} />
+            ))}
           </div>
         </div>
       </main>

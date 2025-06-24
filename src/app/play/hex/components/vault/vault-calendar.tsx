@@ -22,9 +22,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { HEX_CONFIG } from "@/app/play/hex/constants";
 import { cn } from "@/lib/utils";
 import useHexAnswers from "@/app/play/hex/hooks/useHexAnswers";
+import { GAME_SETTINGS } from "@/app/play/constants";
 
 interface MonthYear {
   year: number;
@@ -106,7 +106,7 @@ export default function VaultCalendar() {
     });
   };
 
-  const startDate = new Date(HEX_CONFIG.startDate);
+  const startDate = new Date(GAME_SETTINGS["hex"].config.startDate);
   const endDate = new Date();
   const months = getMonthsBetweenDates(startDate, endDate);
 

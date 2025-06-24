@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import { SALTONG_CONFIGS } from "../../constants";
 import SaltongVaultPage from "../../components/vault/vault-page";
+import { GAME_SETTINGS } from "@/app/play/constants";
 
 export const metadata: Metadata = {
   title: "Saltong Max Vault",
@@ -11,6 +11,9 @@ export default async function SaltongMaxVaultPage(props: {
 }) {
   const searchParams = await props.searchParams;
   return (
-    <SaltongVaultPage searchParams={searchParams} {...SALTONG_CONFIGS["max"]} />
+    <SaltongVaultPage
+      searchParams={searchParams}
+      {...GAME_SETTINGS["saltong-max"]}
+    />
   );
 }

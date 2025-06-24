@@ -1,4 +1,3 @@
-import { GameConfig } from "@/app/play/(saltong)/types";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { ComponentProps } from "react";
 import VaultMonthlyCalendar from "./vault-monthly-calendar";
@@ -6,23 +5,25 @@ import { createClient } from "@/lib/supabase/server";
 import UnauthorizedErrorPage from "../../../../components/unauthorized-error-page";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { SaltongGameSettings } from "@/app/play/types";
 
 export default async function SaltongVaultPage({
   searchParams,
-  ...gameConfig
+  ...gameSettings
 }: {
   searchParams: { d?: string };
 } & Pick<
-  GameConfig,
-  "colorScheme" | "subtitle" | "icon" | "startDate" | "mode"
+  SaltongGameSettings,
+  "colorScheme" | "name" | "icon" | "config" | "id" | "path"
 >) {
-  const { colorScheme, subtitle, icon } = gameConfig;
+  const { colorScheme, name, icon, config, id: gameId, path } = gameSettings;
+  const { startDate } = config;
 
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
 
   if (!data.user) {
-    return <UnauthorizedErrorPage {...gameConfig} />;
+    return <UnauthorizedErrorPage {...gameSettings} />;
   }
 
   return (
@@ -37,21 +38,19 @@ export default async function SaltongVaultPage({
             colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
           }
           title="Saltong"
-          subtitle={subtitle}
+          name={name}
           icon={icon}
         />
 
         <Button variant="outline" asChild>
-          <Link
-            href={`/play/${gameConfig.mode === "main" ? "" : `/${gameConfig.mode}`}`}
-          >
-            Play Latest Game
-          </Link>
+          <Link href={`/play${path}`}>Play Latest Game</Link>
         </Button>
       </Navbar>
       <div className="mx-auto w-full max-w-prose">
         <VaultMonthlyCalendar
-          {...gameConfig}
+          gameId={gameId}
+          path={path}
+          startDate={startDate}
           focusedDate={
             !isNaN(Number(searchParams?.d))
               ? new Date(Number(searchParams.d) * 100000)

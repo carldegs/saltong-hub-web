@@ -7,10 +7,9 @@ import GameWrapper from "./components/game-wrapper";
 import { HexStoreProvider } from "./providers/hex-store-provider";
 import { Metadata } from "next";
 import { ResultsButton } from "./components/results-button";
+import { GAME_SETTINGS } from "../constants";
 
-const SUBTITLE = "Hex";
-const COLOR_SCHEME = "purple";
-const TABLE_NAME = "saltong-hex-rounds";
+const SETTINGS = GAME_SETTINGS["hex"];
 
 export const metadata: Metadata = {
   title: "Saltong Hex",
@@ -20,7 +19,7 @@ export default async function SaltongHexPage(props: {
   searchParams: Promise<{ d?: string }>;
 }) {
   const searchParams = await props.searchParams;
-  const round = await getRound(TABLE_NAME, searchParams?.d);
+  const round = await getRound(SETTINGS.config.tableName, searchParams?.d);
   const isLive = round?.date === getFormattedHexDateInPh();
 
   if (!round) {
@@ -35,11 +34,11 @@ export default async function SaltongHexPage(props: {
 
   return (
     <div className="grid min-h-screen w-full grid-rows-[auto_1fr]">
-      <Navbar colorScheme={COLOR_SCHEME}>
+      <Navbar colorScheme={SETTINGS.colorScheme}>
         <NavbarBrand
-          colorScheme={COLOR_SCHEME}
+          colorScheme={SETTINGS.colorScheme}
           title="Saltong"
-          subtitle={SUBTITLE}
+          name={SETTINGS.name}
           boxed={`#${round.gameId}`}
           icon="/hex.svg"
         />

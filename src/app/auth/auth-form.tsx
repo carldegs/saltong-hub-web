@@ -8,6 +8,7 @@ import { SignupCard } from "./components/signup-card";
 import { ForgotPasswordCard } from "./components/forgot-password-card";
 import { createClient } from "@/lib/supabase/client";
 import { useState } from "react";
+import { Particles } from "@/components/magicui/particles";
 
 import GoogleIcon from "@/assets/auth/google.svg";
 import DiscordIcon from "@/assets/auth/discord.svg";
@@ -33,8 +34,9 @@ export default function AuthForm({
   }
 
   return (
-    <div className="bg-muted flex min-h-screen w-full grid-rows-[auto_1fr] items-center justify-center">
-      <AuthCard>
+    <div className="bg-secondary flex min-h-screen w-full grid-rows-[auto_1fr] items-center justify-center">
+      <Particles className="absolute top-0 left-0 z-0 h-full w-full" />
+      <AuthCard className="relative">
         {step === "email" && (
           <>
             <EmailCard

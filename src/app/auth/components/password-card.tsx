@@ -57,7 +57,9 @@ export function PasswordCard({
 
   return (
     <>
-      <p className="font-bold tracking-widest uppercase">Enter your password</p>
+      <p className="font-bold tracking-widest uppercase">
+        LOGIN TO YOUR ACCOUNT
+      </p>
       <Input
         type="email"
         placeholder="Email"

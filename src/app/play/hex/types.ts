@@ -1,5 +1,5 @@
 import { Tables } from "@/lib/supabase/types";
-import { HEX_RANKS } from "./constants";
+import { GAME_SETTINGS } from "../constants";
 
 export type HexRound = Tables<"saltong-hex-rounds">;
 
@@ -14,6 +14,6 @@ export interface HexAnswerData {
   isTopRankWhileLive?: boolean;
 }
 
-export type Rank = (typeof HEX_RANKS)[number];
+export type Rank = (typeof GAME_SETTINGS.hex.config.ranks)[number];
 
 export type ScoredRank = Rank & { score: number };

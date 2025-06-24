@@ -4,35 +4,31 @@ import { useEffect, useMemo, useState } from "react";
 import { useEventListener, useIsMounted } from "usehooks-ts";
 import Keyboard from "./keyboard";
 import SaltongGrid from "./saltong-grid";
-import {
-  GameMode,
-  LetterStatus,
-  RoundAnswerData,
-  SaltongRound,
-} from "../types";
+import { LetterStatus, RoundAnswerData, SaltongRound } from "../types";
 import { toast } from "sonner";
 import useRoundAnswer from "../hooks/useRoundAnswer";
 import { cn } from "@/lib/utils";
 import { useModalStore } from "@/providers/modal/modal-provider";
 import { useDictionary } from "@/features/dictionary/hooks";
 import { getLetterStatusGrid } from "../utils";
+import { GameId } from "../../types";
 
 export default function GameWrapper({
   maxTries,
   wordLen,
   roundData,
-  mode,
+  gameId,
   isLive,
 }: {
   maxTries: number;
   wordLen: number;
   roundData: SaltongRound;
-  mode: GameMode;
+  gameId: GameId;
   isLive?: boolean;
 }) {
   const { dict, isLoading: isFetchingDict } = useDictionary(wordLen);
   const [playerAnswer, setPlayerAnswer] = useRoundAnswer(
-    mode,
+    gameId,
     roundData.date,
     roundData.gameId
   );

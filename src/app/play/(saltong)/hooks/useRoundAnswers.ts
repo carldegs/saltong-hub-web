@@ -1,9 +1,9 @@
 import { useLocalStorage } from "usehooks-ts";
-import { GameMode, RoundAnswerData } from "../types";
+import { RoundAnswerData } from "../types";
 
-export default function useRoundAnswers(mode: GameMode) {
+export default function useRoundAnswers(gameId: string) {
   return useLocalStorage<Record<string, RoundAnswerData>>(
-    `saltong/${mode}/answers`,
+    `saltong/${gameId}/answers`,
     {},
     {
       initializeWithValue: false,

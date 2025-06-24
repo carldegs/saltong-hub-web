@@ -85,6 +85,7 @@ export interface NavbarBrandProps
     VariantProps<typeof navbarBrandTitleVariants> {
   title?: string;
   subtitle?: string;
+  name?: string;
   boxed?: string;
   icon?: string;
   iconLight?: string;
@@ -98,18 +99,21 @@ const NavbarBrand = ({
   className,
   children,
   colorScheme,
-  title,
-  subtitle,
+  title: _title,
+  subtitle: _subtitle,
   boxed,
   icon,
   iconLight,
   hideMenu,
   hideBrand,
   isLoading,
+  name,
   ...props
 }: NavbarBrandProps & {
   ref?: React.RefObject<HTMLDivElement>;
 }) => {
+  const [title, subtitle] = name?.split(" ") ?? [_title, _subtitle];
+
   return (
     <div
       ref={ref}

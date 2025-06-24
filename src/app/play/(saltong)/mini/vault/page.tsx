@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import { SALTONG_CONFIGS } from "../../constants";
 import SaltongVaultPage from "../../components/vault/vault-page";
+import { GAME_SETTINGS } from "@/app/play/constants";
 
 export const metadata: Metadata = {
   title: "Saltong Mini Vault",
@@ -13,7 +13,7 @@ export default async function SaltongMiniVaultPage(props: {
   return (
     <SaltongVaultPage
       searchParams={searchParams}
-      {...SALTONG_CONFIGS["mini"]}
+      {...GAME_SETTINGS["saltong-mini"]}
     />
   );
 }

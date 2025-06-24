@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function SettingsSidebarMenu() {
   const supabase = await createClient();
-  const { data } = await supabase.auth.getSession();
+  const { data } = await supabase.auth.getUser();
 
   return (
     <SidebarMenu>
@@ -36,7 +36,7 @@ export async function SettingsSidebarMenu() {
         </SidebarMenuButton>
       </SidebarMenuItem>
 
-      {data?.session?.user && (
+      {data?.user && (
         <SidebarMenuItem>
           <SidebarMenuButton className="h-auto py-1.5" asChild>
             <Link

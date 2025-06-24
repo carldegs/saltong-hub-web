@@ -1,7 +1,7 @@
 "use client";
 
 import { RootCredenzaProps } from "@/components/ui/credenza";
-import { GameMode, PlayerStats, RoundStats, SaltongRound } from "../types";
+import { PlayerStats, RoundStats, SaltongRound } from "../types";
 import {
   Card,
   CardContent,
@@ -13,7 +13,6 @@ import { useEffect, useMemo, useState } from "react";
 import usePlayerStats from "../hooks/usePlayerStats";
 import useRoundStats from "../hooks/useRoundStats";
 import ResultsChart from "./results-chart";
-import { SALTONG_CONFIGS } from "../constants";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -43,33 +42,16 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
+import { GAME_SETTINGS } from "../../constants";
+import { GameId, SaltongGameSettings } from "../../types";
+import { getTitleSubtitle } from "../../utils";
 
 const OTHER_GAMES_LIST = [
-  {
-    mode: "main",
-    name: "Saltong",
-    icon: "/main.svg",
-    href: "/play",
-  },
-  {
-    mode: "max",
-    name: "Saltong Max",
-    icon: "/max.svg",
-    href: "/play/max",
-  },
-  {
-    mode: "mini",
-    name: "Saltong Mini",
-    icon: "/mini.svg",
-    href: "/play/mini",
-  },
-  {
-    mode: "hex",
-    name: "Saltong Hex",
-    icon: "/hex.svg",
-    href: "/play/hex",
-  },
-];
+  "saltong-main",
+  "saltong-max",
+  "saltong-mini",
+  "hex",
+] satisfies GameId[];
 
 const STATUS_TEXT: Record<RoundStats["status"], string> = {
   correct: "SOLVED!",
@@ -78,8 +60,8 @@ const STATUS_TEXT: Record<RoundStats["status"], string> = {
   idle: "Start Guessing!",
 };
 
-function TimeCard({ mode, gameDate }: { mode: GameMode; gameDate: string }) {
-  const [rounds] = useRoundAnswers(mode);
+function TimeCard({ gameId, gameDate }: { gameId: GameId; gameDate: string }) {
+  const [rounds] = useRoundAnswers(gameId);
   const isLive = useMemo(() => getFormattedDateInPh() === gameDate, [gameDate]);
 
   const round = useMemo(
@@ -147,7 +129,7 @@ function ResultsDialogComponent({
     lastGameId: 0,
     createdAt: Date.now(),
     updatedAt: 0,
-    gameMode: "main",
+    gameId: "saltong-main",
   },
   gameDate,
   roundData,
@@ -157,7 +139,9 @@ function ResultsDialogComponent({
   gameDate: string;
   roundData: SaltongRound;
 }) {
-  const gameModeConfig = SALTONG_CONFIGS[playerStats.gameMode];
+  const gameSettings = GAME_SETTINGS[
+    playerStats.gameId as keyof typeof GAME_SETTINGS
+  ] as SaltongGameSettings;
   const { status } = roundStats;
   const {
     totalWins,
@@ -199,14 +183,24 @@ function ResultsDialogComponent({
   const filteredGamesList = useMemo(
     () => [
       {
-        mode: "vault",
-        name: `${gameModeConfig.mode === "main" ? "" : gameModeConfig.mode} Vault`,
-        icon: gameModeConfig.icon,
-        href: `/play${playerStats.gameMode === "main" ? "" : `/${gameModeConfig.mode}`}/vault`,
+        gameId: "vault",
+        name: `${getTitleSubtitle(gameSettings.name).subtitle} Vault`,
+        icon: gameSettings.icon,
+        href: `/play${gameSettings.path}/vault`,
       },
-      ...OTHER_GAMES_LIST.filter(({ mode }) => mode !== playerStats.gameMode),
+      ...OTHER_GAMES_LIST.filter((gameId) => gameId !== gameSettings.id).map(
+        (gameId) => {
+          const settings = GAME_SETTINGS[gameId as keyof typeof GAME_SETTINGS];
+          return {
+            gameId: settings.id,
+            name: settings.name,
+            icon: settings.icon,
+            href: `/play${settings.path}`,
+          };
+        }
+      ),
     ],
-    [gameModeConfig.icon, gameModeConfig.mode, playerStats.gameMode]
+    [gameSettings.name, gameSettings.icon, gameSettings.path, gameSettings.id]
   );
 
   const [showContribution, setShowContribution] = useState(false);
@@ -239,7 +233,7 @@ function ResultsDialogComponent({
                 </CardHeader>
               </Card>
             ))}
-            <TimeCard mode={playerStats.gameMode} gameDate={gameDate} />
+            <TimeCard gameId={gameSettings.id} gameDate={gameDate} />
           </div>
           <ResultsChart playerStats={winTurns} />
           {(status === "correct" || status === "incorrect") && canShare && (
@@ -279,10 +273,10 @@ function ResultsDialogComponent({
             PLAY OTHER GAMES
           </span>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {filteredGamesList.map(({ href, mode, name, icon }) => (
+            {filteredGamesList.map(({ href, gameId, name, icon }) => (
               <Link
                 href={href}
-                key={mode}
+                key={gameId}
                 className="min-w-[90px] grow"
                 onClick={() => {
                   onOpenChange?.(false);
@@ -291,8 +285,8 @@ function ResultsDialogComponent({
                 <Card className="hover:bg-primary-foreground h-full p-0 shadow-none">
                   <CardContent className="flex flex-col items-center justify-center p-3">
                     <div className="relative mb-2 h-[36px] sm:mb-1">
-                      <Image src={icon} alt={mode} width={36} height={36} />
-                      {mode === "vault" && (
+                      <Image src={icon} alt={gameId} width={36} height={36} />
+                      {gameId === "vault" && (
                         <div className="absolute -top-2 -right-3 rounded-full bg-teal-700 p-1">
                           <VaultIcon className="size-4 text-teal-50" />
                         </div>
@@ -336,17 +330,17 @@ function ResultsDialogComponent({
 export default function ResultsDialog({
   open,
   onOpenChange,
-  mode,
+  gameId,
   gameDate,
   roundData,
 }: Omit<RootCredenzaProps, "children"> & {
-  mode: GameMode;
+  gameId: GameId;
   gameDate: string;
   roundData: SaltongRound;
 }) {
   const [playerStats] = usePlayerStats();
-  const stats = useMemo(() => playerStats[mode], [mode, playerStats]);
-  const roundStats = useRoundStats(mode, gameDate);
+  const stats = useMemo(() => playerStats[gameId], [gameId, playerStats]);
+  const roundStats = useRoundStats(gameId, gameDate);
 
   if (open) {
     return (

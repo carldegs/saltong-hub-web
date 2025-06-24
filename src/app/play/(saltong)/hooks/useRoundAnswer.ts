@@ -1,31 +1,32 @@
 import { useCallback, useMemo } from "react";
-import { GameMode, RoundAnswerData, PlayerStats } from "../types";
+import { RoundAnswerData, PlayerStats } from "../types";
 import useRoundAnswers from "./useRoundAnswers";
-import useLocalTimestamp from "./useLocalTimestamp";
 import usePlayerStats from "./usePlayerStats";
-import { SALTONG_CONFIGS } from "../constants";
+import { GameId, SaltongGameSettings } from "../../types";
+import { GAME_SETTINGS } from "../../constants";
 
 export default function useRoundAnswer(
-  mode: GameMode,
+  gameId: GameId,
   gameDate: string,
-  gameId?: number
+  roundId?: number
 ) {
-  const [rounds, setRounds] = useRoundAnswers(mode);
-  const [, setLastUpdated] = useLocalTimestamp();
+  const [rounds, setRounds] = useRoundAnswers(gameId);
   const [, setStats] = usePlayerStats();
 
   const updateStats = useCallback(
     (data: Omit<RoundAnswerData, "updatedAt">) => {
       setStats((prev) => {
         let curr =
-          prev[mode] ||
+          prev[gameId] ||
           ({
-            gameMode: mode,
+            gameId,
             totalWins: 0,
             totalLosses: 0,
             currentWinStreak: 0,
             longestWinStreak: 0,
-            winTurns: new Array(SALTONG_CONFIGS[mode].maxTries).fill(0),
+            winTurns: new Array(
+              (GAME_SETTINGS[gameId] as SaltongGameSettings).config.maxTries
+            ).fill(0),
             lastGameDate: "",
             lastGameId: 0,
             createdAt: Date.now(),
@@ -41,8 +42,8 @@ export default function useRoundAnswer(
             ),
           };
 
-          if (data.solvedLive && gameId) {
-            const resetStreak = curr.lastGameId !== gameId - 1;
+          if (data.solvedLive && roundId) {
+            const resetStreak = curr.lastGameId !== roundId - 1;
             const currentWinStreak = resetStreak
               ? 1
               : curr.currentWinStreak + 1;
@@ -64,11 +65,11 @@ export default function useRoundAnswer(
           };
         }
 
-        if (data.solvedLive && gameId) {
+        if (data.solvedLive && roundId) {
           curr = {
             ...curr,
             lastGameDate: gameDate,
-            lastGameId: gameId,
+            lastGameId: roundId,
           };
         }
 
@@ -79,11 +80,11 @@ export default function useRoundAnswer(
 
         return {
           ...prev,
-          [mode]: curr,
+          [gameId]: curr,
         };
       });
     },
-    [gameDate, gameId, mode, setStats]
+    [gameDate, roundId, gameId, setStats]
   );
 
   const round = useMemo(
@@ -122,10 +123,8 @@ export default function useRoundAnswer(
           },
         };
       });
-
-      setLastUpdated(Date.now());
     },
-    [setRounds, setLastUpdated, gameDate, updateStats]
+    [setRounds, gameDate, updateStats]
   );
 
   const reset = useCallback(() => {

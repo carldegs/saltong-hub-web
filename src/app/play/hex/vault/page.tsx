@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { HEX_CONFIG } from "../constants";
 import { createClient } from "@/lib/supabase/server";
 import UnauthorizedErrorPage from "@/app/components/unauthorized-error-page";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
@@ -7,20 +6,22 @@ import { ComponentProps } from "react";
 import VaultCalendar from "../components/vault/vault-calendar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { GAME_SETTINGS } from "../../constants";
 
 export const metadata: Metadata = {
   title: "Saltong Hex Vault",
 };
 
+const SETTINGS = GAME_SETTINGS["hex"];
+
 export default async function SaltongHexVaultPage() {
-  const gameConfig = HEX_CONFIG;
-  const { colorScheme, subtitle, icon } = gameConfig;
+  const { colorScheme, name, icon } = SETTINGS;
 
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
 
   if (!data.user) {
-    return <UnauthorizedErrorPage {...gameConfig} />;
+    return <UnauthorizedErrorPage {...SETTINGS} />;
   }
 
   return (
@@ -35,7 +36,7 @@ export default async function SaltongHexVaultPage() {
             colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
           }
           title="Saltong"
-          subtitle={subtitle}
+          name={name}
           icon={icon}
         />
 

@@ -3,16 +3,16 @@
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { GameConfig } from "@/app/play/(saltong)/types";
 import { ComponentProps } from "react";
 import { usePathname } from "next/navigation";
 import { Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { GameSettings } from "../play/types";
 
 export default function UnauthorizedErrorPage(
-  gameConfig: Pick<GameConfig, "colorScheme" | "subtitle" | "icon">
+  gameSettings: Pick<GameSettings, "colorScheme" | "name" | "icon">
 ) {
-  const { colorScheme, subtitle, icon } = gameConfig;
+  const { colorScheme, name, icon } = gameSettings;
   const currPathname = usePathname();
 
   return (
@@ -26,9 +26,8 @@ export default function UnauthorizedErrorPage(
           colorScheme={
             colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
           }
-          title="Saltong"
-          subtitle={subtitle}
           icon={icon}
+          name={name}
         />
       </Navbar>
       <div
@@ -106,9 +105,8 @@ export default function UnauthorizedErrorPage(
             Sorry po!
           </h1>
           <div className="text-muted-foreground mb-8 text-lg">
-            To access previous rounds of{" "}
-            <b>Saltong{subtitle ? ` ${subtitle}` : ""}</b>, please log in or
-            create a free account.
+            To access previous rounds of <b>{name}</b>, please log in or create
+            a free account.
             <br />
             <span
               className={cn("font-semibold", {

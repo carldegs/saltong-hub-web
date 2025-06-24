@@ -3,8 +3,8 @@ import { RoundStats, PlayerStats, LetterStatus, SaltongRound } from "../types";
 import { getLetterStatusGrid } from "../utils";
 import { useCopyToClipboard } from "usehooks-ts";
 import { toast } from "sonner";
-import { SALTONG_CONFIGS } from "../constants";
 import { getDurationString } from "@/utils/time";
+import { GAME_SETTINGS } from "../../constants";
 
 export default function useShareResults({
   roundStats,
@@ -19,8 +19,8 @@ export default function useShareResults({
   const [, copyToClipboard] = useCopyToClipboard();
 
   const shareTitle = useMemo(() => {
-    return `Saltong ${SALTONG_CONFIGS[playerStats.gameMode].subtitle} #${roundData.gameId}`;
-  }, [playerStats.gameMode, roundData.gameId]);
+    return `${GAME_SETTINGS[playerStats.gameId].name} #${roundData.gameId}`;
+  }, [playerStats.gameId, roundData.gameId]);
 
   const shareMessage = useMemo(() => {
     const wordLen = roundData.word.length;
@@ -38,7 +38,7 @@ export default function useShareResults({
       stats = `🏅X/${wordLen}`;
     }
 
-    // Pad gridStatus to have n rows equal to SALTONG_CONFIGS[playerStats.gameMode].maxTries
+    // Pad gridStatus to have n rows equal to maxTries
     const chunkedGridStatus = [];
     for (let i = 0; i < gridStatus.length; i += wordLen) {
       chunkedGridStatus.push(gridStatus.slice(i, i + wordLen));
@@ -70,10 +70,10 @@ export default function useShareResults({
 
   const copyResults = useCallback(() => {
     copyToClipboard(
-      `Saltong ${SALTONG_CONFIGS[playerStats.gameMode].subtitle} #${roundData.gameId}\n\n${shareMessage}\n\n${window.location.href}`
+      `${GAME_SETTINGS[playerStats.gameId].name} #${roundData.gameId}\n\n${shareMessage}\n\n${window.location.href}`
     );
     toast.success("Results copied to clipboard!");
-  }, [copyToClipboard, playerStats.gameMode, roundData.gameId, shareMessage]);
+  }, [copyToClipboard, playerStats.gameId, roundData.gameId, shareMessage]);
 
   return useMemo(
     () => ({

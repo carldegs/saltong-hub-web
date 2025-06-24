@@ -12,7 +12,7 @@ const eslintConfig = [
   }),
   eslintPluginPrettierRecommended,
   {
-    ignores: ["src/components/ui/*"],
+    ignores: ["src/components/ui/*", "src/components/magicui/*"],
   },
 ];
 

@@ -1,16 +1,17 @@
 import { useMemo } from "react";
 import useRoundAnswers from "./useRoundAnswers";
-import { GameMode, RoundStats } from "../types";
+import { RoundStats } from "../types";
+import { GameId } from "../../types";
 
-export default function useRoundStats(mode: GameMode, gameDate: string) {
-  const [rounds] = useRoundAnswers(mode);
+export default function useRoundStats(gameId: GameId, roundDate: string) {
+  const [rounds] = useRoundAnswers(gameId);
 
   const round = useMemo(
     () =>
-      rounds[gameDate] || {
+      rounds[roundDate] || {
         grid: "",
       },
-    [rounds, gameDate]
+    [rounds, roundDate]
   );
 
   const status = useMemo(() => {

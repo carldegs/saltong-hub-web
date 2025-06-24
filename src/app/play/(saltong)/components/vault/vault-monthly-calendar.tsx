@@ -1,7 +1,7 @@
 "use client";
 
 import useRoundAnswers from "@/app/play/(saltong)/hooks/useRoundAnswers";
-import { GameConfig } from "@/app/play/(saltong)/types";
+import { GameId, SaltongGameSettings } from "@/app/play/types";
 import { buttonVariants } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
@@ -20,16 +20,20 @@ const getGameCount = (gameStartDate: string, date: Date) => {
 };
 
 export default function VaultMonthlyCalendar({
-  mode,
+  gameId,
+  path,
   startDate,
   focusedDate,
-}: Pick<GameConfig, "mode" | "startDate"> & {
+}: {
+  gameId: GameId;
+  path: SaltongGameSettings["path"];
+  startDate: SaltongGameSettings["config"]["startDate"];
   focusedDate: Date;
 }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [answers] = useRoundAnswers(mode);
+  const [answers] = useRoundAnswers(gameId);
 
   const solvedDates = useMemo(() => {
     return Object.entries(answers)
@@ -65,9 +69,7 @@ export default function VaultMonthlyCalendar({
             return;
           }
 
-          router.push(
-            `/play/${mode !== "main" ? mode : ""}?d=${format(date, DATE_FORMAT)}`
-          );
+          router.push(`/play${path}?d=${format(date, DATE_FORMAT)}`);
         }}
         month={focusedDate}
         onMonthChange={(date) => {
@@ -105,7 +107,7 @@ export default function VaultMonthlyCalendar({
             return (
               <Link
                 className="h-full w-full"
-                href={`/play/${mode !== "main" ? mode : ""}?d=${format(day.date, DATE_FORMAT)}`}
+                href={`/play${path}?d=${format(day.date, DATE_FORMAT)}`}
               >
                 <div className="flex h-full w-full flex-col items-center justify-center">
                   <span>{day.date.getDate()}</span>
