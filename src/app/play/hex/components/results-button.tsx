@@ -44,7 +44,7 @@ export function ResultsButton({
         title="Play previous games"
         asChild
       >
-        <Link href="/play/hex/vault">
+        <Link href="/play/hex/vault" prefetch={false}>
           <VaultIcon className="h-[1.2rem] w-[1.2rem]" />
           <span className="hidden md:inline-block">Vault</span>
           <span className="sr-only">Vault</span>

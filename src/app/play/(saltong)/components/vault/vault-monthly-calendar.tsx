@@ -108,6 +108,7 @@ export default function VaultMonthlyCalendar({
               <Link
                 className="h-full w-full"
                 href={`/play${path}?d=${format(day.date, DATE_FORMAT)}`}
+                prefetch={false}
               >
                 <div className="flex h-full w-full flex-col items-center justify-center">
                   <span>{day.date.getDate()}</span>

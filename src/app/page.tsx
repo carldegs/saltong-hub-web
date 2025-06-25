@@ -33,7 +33,9 @@ async function VaultsAlert() {
 
         {!data.user ? (
           <Button asChild size="lg" className="font-bold tracking-widest">
-            <Link href="/auth">CREATE ACCOUNT</Link>
+            <Link href="/auth" prefetch={false}>
+              CREATE ACCOUNT
+            </Link>
           </Button>
         ) : (
           <Button asChild size="lg" className="font-bold tracking-wide">

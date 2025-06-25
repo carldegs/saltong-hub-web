@@ -211,7 +211,7 @@ export default function VaultCalendar() {
         {dateList.map(({ date, iteration, status }) => {
           return (
             <span key={date} className="hover:bg-muted/50 rounded-lg border">
-              <Link href={`/play/hex?d=${date}`}>
+              <Link href={`/play/hex?d=${date}`} prefetch={false}>
                 <div className="flex items-center gap-2 p-3">
                   <div
                     className={cn(

@@ -1,5 +1,5 @@
 import { RootCredenzaProps } from "@/components/ui/credenza";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import useHexScores from "../hooks/useHexScores";
 import useHexAnswer from "../hooks/useHexAnswer";
 import { HexRound } from "../types";
@@ -10,7 +10,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
-import { VaultIcon, InfoIcon, StarIcon } from "lucide-react";
+import {
+  VaultIcon,
+  InfoIcon,
+  StarIcon,
+  ChevronDownIcon,
+  Share2Icon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -26,6 +32,16 @@ import { cn } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { isPangram } from "../utils";
+import { ButtonGroup } from "@/components/ui/button-group";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+import { toast } from "sonner";
+import { useCopyToClipboard } from "usehooks-ts";
 
 const OTHER_GAMES_LIST = [
   {
@@ -61,6 +77,7 @@ function ResultsDialogComponent({
   onRevealAnswers,
   guessedWords,
   wordList,
+  round,
 }: Omit<RootCredenzaProps, "children"> & {
   guessedWords: string[];
   wordList: string[];
@@ -89,6 +106,32 @@ function ResultsDialogComponent({
   );
 
   const userGuessedAllWords = guessedWords.length === wordList.length;
+
+  const [, copyToClipboard] = useCopyToClipboard();
+  const shareText = useMemo(() => {
+    const rankNum = rankScoreMap.findIndex((r) => r.name === rank?.name) + 1;
+
+    return `Saltong Hex ${round.gameId}\n\n${rank?.icon} ${rank?.name?.toUpperCase()}\n🏅${rankNum} 🔢${score} 📖${guessedWords.length}\n\n${window.location.href}`;
+  }, [
+    guessedWords.length,
+    rank?.icon,
+    rank?.name,
+    rankScoreMap,
+    round.gameId,
+    score,
+  ]);
+
+  const shareResults = useCallback(() => {
+    return window?.navigator?.share({
+      title: "Saltong Hex",
+      text: shareText,
+    });
+  }, [shareText]);
+
+  const copyResults = useCallback(() => {
+    copyToClipboard(shareText);
+    toast.success("Results copied to clipboard");
+  }, [copyToClipboard, shareText]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -125,7 +168,38 @@ function ResultsDialogComponent({
                   </div>
                 </div>
               </div>
-              {/* TODO: Add share */}
+              <ButtonGroup className="flex h-12 w-full">
+                <Button
+                  className="h-12 flex-1 border-r bg-teal-500 hover:bg-teal-600"
+                  onClick={() => {
+                    shareResults().catch((err) => {
+                      if ((err as Error)?.name === "AbortError") {
+                        return;
+                      }
+
+                      toast.error("Cannot share results");
+                    });
+                  }}
+                >
+                  <Share2Icon />
+                  <span>Share Results</span>
+                </Button>
+                <Menubar className="h-auto !gap-0 !rounded-none !border-none !bg-none !p-0 !shadow-none">
+                  <MenubarMenu>
+                    <MenubarTrigger asChild>
+                      <Button className="h-12 min-w-12 flex-1 rounded-l-none bg-teal-500 hover:bg-teal-600">
+                        <ChevronDownIcon />
+                      </Button>
+                    </MenubarTrigger>
+                    <MenubarContent>
+                      <MenubarItem onClick={copyResults}>
+                        Copy Results
+                      </MenubarItem>
+                    </MenubarContent>
+                  </MenubarMenu>
+                </Menubar>
+              </ButtonGroup>
+
               <span className="text-center text-sm font-bold tracking-wider">
                 PLAY OTHER GAMES
               </span>
@@ -139,7 +213,7 @@ function ResultsDialogComponent({
                       onOpenChange?.(false);
                     }}
                   >
-                    <Card className="hover:bg-primary-foreground h-full p-0 shadow-none">
+                    <Card className="hover:bg-muted h-full p-0 shadow-none">
                       <CardContent className="flex flex-col items-center justify-center p-3">
                         <div className="relative mb-2 h-[36px] sm:mb-1">
                           <Image src={icon} alt={mode} width={36} height={36} />

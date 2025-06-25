@@ -51,12 +51,13 @@ export default function useShareResults({
       .replaceAll(LetterStatus.Empty, "⬛")
       .replaceAll(LetterStatus.Partial, "🟨");
 
-    return `${stats}\n\n${grid}\n\n${window.location.href}`;
+    return `${shareTitle}\n\n${stats}\n\n${grid}\n\n${window.location.href}`;
   }, [
     roundData.word,
     roundStats.isCorrect,
     roundStats.round.grid,
     roundStats.timeSolvedInSec,
+    shareTitle,
   ]);
 
   const canShare = useMemo(() => !!window?.navigator?.canShare, []);
@@ -69,11 +70,9 @@ export default function useShareResults({
   }, [shareMessage, shareTitle]);
 
   const copyResults = useCallback(() => {
-    copyToClipboard(
-      `${GAME_SETTINGS[playerStats.gameId].name} #${roundData.gameId}\n\n${shareMessage}\n\n${window.location.href}`
-    );
+    copyToClipboard(shareMessage);
     toast.success("Results copied to clipboard!");
-  }, [copyToClipboard, playerStats.gameId, roundData.gameId, shareMessage]);
+  }, [copyToClipboard, shareMessage]);
 
   return useMemo(
     () => ({

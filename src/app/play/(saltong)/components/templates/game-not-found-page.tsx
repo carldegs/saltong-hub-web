@@ -35,7 +35,9 @@ export default function GameNotFound() {
           </span>
           <div className="base:flex-col flex w-full gap-4 md:flex-row">
             <Button className="flex-1" asChild>
-              <Link href="./vault">View Vault</Link>
+              <Link href="./vault" prefetch={false}>
+                View Vault
+              </Link>
             </Button>
           </div>
         </div>

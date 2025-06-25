@@ -132,6 +132,7 @@ export default function UnauthorizedErrorPage(
                   pathname: "/auth",
                   query: { next: currPathname },
                 }}
+                prefetch={false}
               >
                 Log in
               </Link>
@@ -147,6 +148,7 @@ export default function UnauthorizedErrorPage(
                   pathname: "/auth",
                   query: { signup: "1", next: currPathname },
                 }}
+                prefetch={false}
               >
                 Sign up
               </Link>

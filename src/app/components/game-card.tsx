@@ -55,7 +55,7 @@ export default async function GameCard({
         </Button>
         {data.user && (
           <Button className="flex-1" variant="outline" asChild>
-            <Link href={`/play${path}/vault`}>
+            <Link href={`/play${path}/vault`} prefetch={false}>
               <VaultIcon className="mr-1 size-5" />
               Vault
             </Link>

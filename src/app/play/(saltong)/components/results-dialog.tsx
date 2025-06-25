@@ -180,11 +180,12 @@ function ResultsDialogComponent({
     roundData,
   });
 
-  const filteredGamesList = useMemo(
-    () => [
+  const filteredGamesList = useMemo(() => {
+    const subtitle = getTitleSubtitle(gameSettings.name).subtitle;
+    return [
       {
         gameId: "vault",
-        name: `${getTitleSubtitle(gameSettings.name).subtitle} Vault`,
+        name: `${subtitle ?? ""}${subtitle ? " " : ""}Vault`,
         icon: gameSettings.icon,
         href: `/play${gameSettings.path}/vault`,
       },
@@ -199,9 +200,13 @@ function ResultsDialogComponent({
           };
         }
       ),
-    ],
-    [gameSettings.name, gameSettings.icon, gameSettings.path, gameSettings.id]
-  );
+    ];
+  }, [
+    gameSettings.name,
+    gameSettings.icon,
+    gameSettings.path,
+    gameSettings.id,
+  ]);
 
   const [showContribution, setShowContribution] = useState(false);
 
@@ -282,7 +287,7 @@ function ResultsDialogComponent({
                   onOpenChange?.(false);
                 }}
               >
-                <Card className="hover:bg-primary-foreground h-full p-0 shadow-none">
+                <Card className="hover:bg-muted h-full p-0 shadow-none">
                   <CardContent className="flex flex-col items-center justify-center p-3">
                     <div className="relative mb-2 h-[36px] sm:mb-1">
                       <Image src={icon} alt={gameId} width={36} height={36} />
