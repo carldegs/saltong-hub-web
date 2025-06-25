@@ -1,7 +1,7 @@
 "use client";
 
 import { RootCredenzaProps } from "@/components/ui/credenza";
-import { PlayerStats, RoundStats, SaltongRound } from "../types";
+import { LetterStatus, PlayerStats, RoundStats, SaltongRound } from "../types";
 import {
   Card,
   CardContent,
@@ -15,12 +15,7 @@ import useRoundStats from "../hooks/useRoundStats";
 import ResultsChart from "./results-chart";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  VaultIcon,
-  ChevronDownIcon,
-  HandCoinsIcon,
-  Share2Icon,
-} from "lucide-react";
+import { VaultIcon, HandCoinsIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -31,20 +26,11 @@ import { useInterval } from "usehooks-ts";
 import useRoundAnswers from "../hooks/useRoundAnswers";
 import { getDurationString, getFormattedDateInPh } from "@/utils/time";
 import ContributeDialog from "@/components/shared/contribute-dialog";
-import { Button } from "@/components/ui/button";
-import useShareResults from "../hooks/useShareResults";
-import { toast } from "sonner";
-import { ButtonGroup } from "@/components/ui/button-group";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarTrigger,
-} from "@/components/ui/menubar";
 import { GAME_SETTINGS } from "../../constants";
 import { GameId, SaltongGameSettings } from "../../types";
 import { getTitleSubtitle } from "../../utils";
+import ShareButtons from "@/components/shared/share-buttons";
+import { getLetterStatusGrid } from "../utils";
 
 const OTHER_GAMES_LIST = [
   "saltong-main",
@@ -58,6 +44,54 @@ const STATUS_TEXT: Record<RoundStats["status"], string> = {
   incorrect: "YOU LOSE",
   partial: "Still Guessing...",
   idle: "Start Guessing!",
+};
+
+const getShareDetails = ({
+  roundStats,
+  playerStats,
+  roundData,
+}: {
+  roundStats: RoundStats;
+  playerStats: PlayerStats;
+  gameDate: string;
+  roundData: SaltongRound;
+}) => {
+  const title = `${GAME_SETTINGS[playerStats.gameId].name} #${roundData.gameId}`;
+
+  const wordLen = roundData.word.length;
+  const gridStatus = getLetterStatusGrid({
+    gridStr: roundStats.round.grid,
+    word: roundData.word,
+    wordLen,
+  });
+
+  let stats = "";
+
+  if (roundStats.isCorrect) {
+    stats = `🏅${Math.floor(gridStatus.length / wordLen)} ⏳${getDurationString((roundStats.timeSolvedInSec ?? 0) * 1000)}`;
+  } else {
+    stats = `🏅X/${wordLen}`;
+  }
+
+  // Pad gridStatus to have n rows equal to maxTries
+  const chunkedGridStatus = [];
+  for (let i = 0; i < gridStatus.length; i += wordLen) {
+    chunkedGridStatus.push(gridStatus.slice(i, i + wordLen));
+  }
+
+  const grid = chunkedGridStatus
+    .join("\n")
+    .replaceAll(LetterStatus.Correct, "🟩")
+    .replaceAll(LetterStatus.Incorrect, "⬛")
+    .replaceAll(LetterStatus.Empty, "⬛")
+    .replaceAll(LetterStatus.Partial, "🟨");
+
+  const message = `${title}\n\n${stats}\n\n${grid}\n\n${window.location.href}`;
+
+  return {
+    title,
+    message,
+  };
 };
 
 function TimeCard({ gameId, gameDate }: { gameId: GameId; gameDate: string }) {
@@ -173,7 +207,7 @@ function ResultsDialogComponent({
     ];
   }, [currentWinStreak, longestWinStreak, totalLosses, totalWins]);
 
-  const { shareResults, canShare, copyResults } = useShareResults({
+  const shareDetails = getShareDetails({
     playerStats,
     roundStats,
     gameDate,
@@ -241,39 +275,10 @@ function ResultsDialogComponent({
             <TimeCard gameId={gameSettings.id} gameDate={gameDate} />
           </div>
           <ResultsChart playerStats={winTurns} />
-          {(status === "correct" || status === "incorrect") && canShare && (
-            <ButtonGroup className="flex h-12 w-full">
-              <Button
-                className="h-12 flex-1 border-r bg-teal-500 hover:bg-teal-600"
-                onClick={() => {
-                  shareResults().catch((err) => {
-                    if ((err as Error)?.name === "AbortError") {
-                      return;
-                    }
-
-                    toast.error("Cannot share results");
-                  });
-                }}
-              >
-                <Share2Icon />
-                <span>Share Results</span>
-              </Button>
-              <Menubar className="h-auto !gap-0 !rounded-none !border-none !bg-none !p-0 !shadow-none">
-                <MenubarMenu>
-                  <MenubarTrigger asChild>
-                    <Button className="h-12 min-w-12 flex-1 rounded-l-none bg-teal-500 hover:bg-teal-600">
-                      <ChevronDownIcon />
-                    </Button>
-                  </MenubarTrigger>
-                  <MenubarContent>
-                    <MenubarItem onClick={copyResults}>
-                      Copy Results
-                    </MenubarItem>
-                  </MenubarContent>
-                </MenubarMenu>
-              </Menubar>
-            </ButtonGroup>
+          {(status === "correct" || status === "incorrect") && (
+            <ShareButtons {...shareDetails} />
           )}
+
           <span className="text-center text-sm font-bold tracking-wider">
             PLAY OTHER GAMES
           </span>

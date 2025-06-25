@@ -1,5 +1,7 @@
+"use client";
+
 import { RootCredenzaProps } from "@/components/ui/credenza";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import useHexScores from "../hooks/useHexScores";
 import useHexAnswer from "../hooks/useHexAnswer";
 import { HexRound } from "../types";
@@ -10,13 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  VaultIcon,
-  InfoIcon,
-  StarIcon,
-  ChevronDownIcon,
-  Share2Icon,
-} from "lucide-react";
+import { VaultIcon, InfoIcon, StarIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -32,16 +28,7 @@ import { cn } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { isPangram } from "../utils";
-import { ButtonGroup } from "@/components/ui/button-group";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarTrigger,
-} from "@/components/ui/menubar";
-import { toast } from "sonner";
-import { useCopyToClipboard } from "usehooks-ts";
+import ShareButtons from "@/components/shared/share-buttons";
 
 const OTHER_GAMES_LIST = [
   {
@@ -107,7 +94,6 @@ function ResultsDialogComponent({
 
   const userGuessedAllWords = guessedWords.length === wordList.length;
 
-  const [, copyToClipboard] = useCopyToClipboard();
   const shareText = useMemo(() => {
     const rankNum = rankScoreMap.findIndex((r) => r.name === rank?.name) + 1;
 
@@ -120,18 +106,6 @@ function ResultsDialogComponent({
     round.gameId,
     score,
   ]);
-
-  const shareResults = useCallback(() => {
-    return window?.navigator?.share({
-      title: "Saltong Hex",
-      text: shareText,
-    });
-  }, [shareText]);
-
-  const copyResults = useCallback(() => {
-    copyToClipboard(shareText);
-    toast.success("Results copied to clipboard");
-  }, [copyToClipboard, shareText]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -168,37 +142,8 @@ function ResultsDialogComponent({
                   </div>
                 </div>
               </div>
-              <ButtonGroup className="flex h-12 w-full">
-                <Button
-                  className="h-12 flex-1 border-r bg-teal-500 hover:bg-teal-600"
-                  onClick={() => {
-                    shareResults().catch((err) => {
-                      if ((err as Error)?.name === "AbortError") {
-                        return;
-                      }
 
-                      toast.error("Cannot share results");
-                    });
-                  }}
-                >
-                  <Share2Icon />
-                  <span>Share Results</span>
-                </Button>
-                <Menubar className="h-auto !gap-0 !rounded-none !border-none !bg-none !p-0 !shadow-none">
-                  <MenubarMenu>
-                    <MenubarTrigger asChild>
-                      <Button className="h-12 min-w-12 flex-1 rounded-l-none bg-teal-500 hover:bg-teal-600">
-                        <ChevronDownIcon />
-                      </Button>
-                    </MenubarTrigger>
-                    <MenubarContent>
-                      <MenubarItem onClick={copyResults}>
-                        Copy Results
-                      </MenubarItem>
-                    </MenubarContent>
-                  </MenubarMenu>
-                </Menubar>
-              </ButtonGroup>
+              <ShareButtons title="Saltong Hex" message={shareText} />
 
               <span className="text-center text-sm font-bold tracking-wider">
                 PLAY OTHER GAMES
