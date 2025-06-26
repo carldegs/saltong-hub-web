@@ -4,34 +4,31 @@ import { useEffect, useMemo, useState } from "react";
 import { useEventListener, useIsMounted } from "usehooks-ts";
 import Keyboard from "./keyboard";
 import SaltongGrid from "./saltong-grid";
-import {
-  GameMode,
-  LetterStatus,
-  RoundAnswerData,
-  SaltongRound,
-} from "../types";
+import { LetterStatus, RoundAnswerData, SaltongRound } from "../types";
 import { toast } from "sonner";
 import useRoundAnswer from "../hooks/useRoundAnswer";
 import { cn } from "@/lib/utils";
 import { useModalStore } from "@/providers/modal/modal-provider";
 import { useDictionary } from "@/features/dictionary/hooks";
+import { getLetterStatusGrid } from "../utils";
+import { GameId } from "../../types";
 
 export default function GameWrapper({
   maxTries,
   wordLen,
   roundData,
-  mode,
+  gameId,
   isLive,
 }: {
   maxTries: number;
   wordLen: number;
   roundData: SaltongRound;
-  mode: GameMode;
+  gameId: GameId;
   isLive?: boolean;
 }) {
   const { dict, isLoading: isFetchingDict } = useDictionary(wordLen);
   const [playerAnswer, setPlayerAnswer] = useRoundAnswer(
-    mode,
+    gameId,
     roundData.date,
     roundData.gameId
   );
@@ -40,46 +37,15 @@ export default function GameWrapper({
 
   const { onOpenChange } = useModalStore((state) => state);
 
-  const status = useMemo(() => {
-    const guessList =
-      playerAnswer.grid.match(new RegExp(`.{1,${wordLen}}`, "g")) || [];
-    let finalResults = "";
-
-    for (let i = 0; i < guessList.length; i++) {
-      const guess = guessList[i];
-      const result = Array(wordLen).fill(LetterStatus.Incorrect);
-
-      const answerLetters: (string | null)[] = roundData.word.split("");
-      const guessLetters: (string | null)[] = guess.split("");
-
-      // check for correct letters
-      for (let j = 0; j < wordLen; j++) {
-        if (answerLetters[j] === guessLetters[j]) {
-          result[j] = LetterStatus.Correct;
-          answerLetters[j] = null;
-          guessLetters[j] = null;
-        }
-      }
-
-      // check for partial letters
-      for (let j = 0; j < wordLen; j++) {
-        if (guessLetters[j] === null) {
-          continue;
-        }
-
-        const index = answerLetters.indexOf(guessLetters[j]);
-
-        if (index !== -1) {
-          result[j] = LetterStatus.Partial;
-          answerLetters[index] = null;
-        }
-      }
-
-      finalResults += result.join("");
-    }
-
-    return finalResults;
-  }, [playerAnswer.grid, roundData.word, wordLen]);
+  const status = useMemo(
+    () =>
+      getLetterStatusGrid({
+        gridStr: playerAnswer.grid,
+        word: roundData.word,
+        wordLen,
+      }),
+    [playerAnswer.grid, roundData.word, wordLen]
+  );
 
   const keyboardStatus = useMemo(() => {
     let res: Record<string, string> = {};
@@ -186,7 +152,7 @@ export default function GameWrapper({
 
   return (
     <>
-      <main className="my-6 flex h-full flex-grow flex-col items-center justify-center gap-8">
+      <main className="my-6 flex h-full grow flex-col items-center justify-center gap-8">
         {playerAnswer.answer && (
           <a
             href={`https://tagalog.pinoydictionary.com/search?q=${playerAnswer.answer}`}

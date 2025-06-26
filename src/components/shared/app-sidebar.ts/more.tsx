@@ -1,15 +1,20 @@
 "use client";
+
 import { SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import ContributeDialog from "../contribute-dialog";
 import { HandCoins } from "lucide-react";
+import { ColorModeToggle } from "../color-mode-toggle";
 
 export function MoreSidebarMenu() {
   const [showContribution, setShowContribution] = useState(false);
 
   return (
     <SidebarMenu>
+      <SidebarMenuItem className="mb-2 flex items-center justify-between pr-1 pl-2 text-sm">
+        Color Mode <ColorModeToggle />
+      </SidebarMenuItem>
       {showContribution && (
         <ContributeDialog
           open={showContribution}

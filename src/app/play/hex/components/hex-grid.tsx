@@ -20,16 +20,23 @@ const Hex = ({
   value,
   onClick,
   center,
+  disabled,
   ...props
 }: Omit<React.ComponentProps<"svg">, "children" | "onClick" | "center"> & {
   value: string;
   onClick: (value: string) => void;
   center?: boolean;
+  disabled?: boolean;
 }) => (
   <div
-    className="relative flex items-center justify-center"
+    className={cn("relative flex items-center justify-center", {
+      "pointer-events-none": disabled,
+      "opacity-50": disabled,
+    })}
     onClick={() => {
-      onClick(value);
+      if (!disabled) {
+        onClick(value);
+      }
     }}
   >
     <svg
@@ -44,7 +51,7 @@ const Hex = ({
         d="M79.67433714816835 3.9999999999999996Q86.60254037844386 0 93.53074360871938 3.9999999999999996L166.27687752661222 46Q173.20508075688772 50 173.20508075688772 58L173.20508075688772 142Q173.20508075688772 150 166.27687752661222 154L93.53074360871938 196Q86.60254037844386 200 79.67433714816835 196L6.92820323027551 154Q0 150 0 142L0 58Q0 50 6.92820323027551 46Z"
       ></path>
     </svg>
-    <span className="absolute mt-0 cursor-pointer select-none text-4xl font-bold opacity-80">
+    <span className="absolute mt-0 cursor-pointer text-4xl font-bold opacity-80 select-none">
       {value?.toUpperCase()}
     </span>
   </div>
@@ -65,29 +72,56 @@ export default function HexGrid({
   letters,
   centerLetter,
   onClick,
+  isDisabled,
 }: {
   letters: string[];
   centerLetter: string;
   onClick: (_letter: string) => void;
+  isDisabled?: boolean;
 }) {
   return (
     <div className="flex flex-col">
       <div className={cn(rowVariants())}>
-        <Hex value={letters?.[0]?.toUpperCase()} onClick={onClick} />
-        <Hex value={letters?.[1]?.toUpperCase()} onClick={onClick} />
+        <Hex
+          value={letters?.[0]?.toUpperCase()}
+          onClick={onClick}
+          disabled={isDisabled}
+        />
+        <Hex
+          value={letters?.[1]?.toUpperCase()}
+          onClick={onClick}
+          disabled={isDisabled}
+        />
       </div>
       <div className={cn(rowVariants({ center: true }))}>
-        <Hex value={letters?.[2]?.toUpperCase()} onClick={onClick} />
+        <Hex
+          value={letters?.[2]?.toUpperCase()}
+          onClick={onClick}
+          disabled={isDisabled}
+        />
         <Hex
           value={centerLetter?.toUpperCase()}
           onClick={onClick}
           center={true}
+          disabled={isDisabled}
         />
-        <Hex value={letters?.[3]?.toUpperCase()} onClick={onClick} />
+        <Hex
+          value={letters?.[3]?.toUpperCase()}
+          onClick={onClick}
+          disabled={isDisabled}
+        />
       </div>
       <div className={cn(rowVariants())}>
-        <Hex value={letters?.[4]?.toUpperCase()} onClick={onClick} />
-        <Hex value={letters?.[5]?.toUpperCase()} onClick={onClick} />
+        <Hex
+          value={letters?.[4]?.toUpperCase()}
+          onClick={onClick}
+          disabled={isDisabled}
+        />
+        <Hex
+          value={letters?.[5]?.toUpperCase()}
+          onClick={onClick}
+          disabled={isDisabled}
+        />
       </div>
     </div>
   );

@@ -1,27 +1,52 @@
 import { useMemo } from "react";
 import useRoundAnswers from "./useRoundAnswers";
-import { GameMode, RoundStats } from "../types";
+import { RoundStats } from "../types";
+import { GameId } from "../../types";
 
-export default function useRoundStats(mode: GameMode, gameDate: string) {
-  const [rounds] = useRoundAnswers(mode);
+export default function useRoundStats(gameId: GameId, roundDate: string) {
+  const [rounds] = useRoundAnswers(gameId);
 
   const round = useMemo(
     () =>
-      rounds[gameDate] || {
+      rounds[roundDate] || {
         grid: "",
       },
-    [rounds, gameDate]
+    [rounds, roundDate]
   );
+
+  const status = useMemo(() => {
+    if (!round.startedAt) {
+      return "idle";
+    }
+
+    if (round.startedAt && !round.endedAt) {
+      return "partial";
+    }
+
+    if (round.isCorrect) {
+      return "correct";
+    }
+
+    return "incorrect";
+  }, [round.endedAt, round.isCorrect, round.startedAt]);
+
+  const timeSolvedInSec = useMemo(() => {
+    if (round.startedAt && round.endedAt) {
+      const started = new Date(round.startedAt).getTime();
+      const ended = new Date(round.endedAt).getTime();
+      return Math.floor((ended - started) / 1000);
+    }
+    return undefined;
+  }, [round.startedAt, round.endedAt]);
 
   return useMemo(
     () =>
       ({
         isCorrect: !!round.isCorrect,
-        time:
-          round.endedAt && round.startedAt
-            ? round.endedAt - round.startedAt
-            : -1,
+        status,
+        round,
+        timeSolvedInSec,
       }) satisfies RoundStats,
-    [round.endedAt, round.isCorrect, round.startedAt]
+    [round, status, timeSolvedInSec]
   );
 }

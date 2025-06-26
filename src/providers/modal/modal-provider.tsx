@@ -15,7 +15,7 @@ export default function ModalStoreProvider({
 }: {
   children: ReactNode;
 }) {
-  const storeRef = useRef<ModalStoreApi>();
+  const storeRef = useRef<ModalStoreApi>(undefined);
 
   if (!storeRef.current) {
     storeRef.current = createModalStore();

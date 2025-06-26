@@ -38,19 +38,19 @@ export default function SaltongGrid({
               ) : (
                 <div
                   key={`${i}-${j}`}
-                  className="relative size-[35px] overflow-hidden rounded-lg bg-muted md:size-[45px]"
+                  className="bg-muted relative size-[35px] overflow-hidden rounded-lg md:size-[45px]"
                 >
                   <div
                     className={cn(
-                      "absolute inset-0 flex size-[35px] translate-y-[-35px] items-center justify-center bg-destructive transition-transform duration-200 ease-in-out-expo md:size-[45px] md:translate-y-[-45px]",
+                      "bg-destructive ease-in-out-expo absolute inset-0 flex size-[35px] translate-y-[-35px] items-center justify-center transition-transform duration-200 md:size-[45px] md:translate-y-[-45px]",
                       {
                         "translate-y-0 md:translate-y-0":
                           !!status?.[i * wordLen + j],
-                        "bg-slate-300 dark:bg-slate-600":
+                        "bg-cell-incorrect inverted-colors:bg-slate-800":
                           status?.[i * wordLen + j] === LetterStatus.Incorrect,
-                        "bg-orange-500 dark:bg-orange-600":
+                        "bg-cell-partial inverted-colors:bg-yellow-500":
                           status?.[i * wordLen + j] === LetterStatus.Partial,
-                        "inverted-colors:bg-blue-500 bg-green-500 dark:bg-green-700":
+                        "bg-cell-correct inverted-colors:bg-blue-500":
                           status?.[i * wordLen + j] === LetterStatus.Correct,
                       }
                     )}
@@ -59,9 +59,9 @@ export default function SaltongGrid({
                   {!disabled && (
                     <div
                       className={cn(
-                        "absolute inset-0 flex size-[35px] translate-y-[-35px] items-center justify-center bg-blue-400 transition-transform duration-200 ease-in-out-expo md:size-[45px] md:translate-y-[-45px]",
+                        "ease-in-out-expo absolute inset-0 flex size-[35px] translate-y-[-35px] items-center justify-center bg-blue-400 transition-transform duration-200 md:size-[45px] md:translate-y-[-45px]",
                         {
-                          "delay-[20ms] translate-y-0 md:translate-y-0":
+                          "translate-y-0 delay-[20ms] md:translate-y-0":
                             currTurn === i,
                           "translate-y-[35px] md:translate-y-[45px]":
                             i < currTurn,
@@ -71,7 +71,7 @@ export default function SaltongGrid({
                   )}
 
                   <div className="absolute flex size-[35px] items-center justify-center md:size-[45px]">
-                    <p className="select-none text-2xl font-bold uppercase opacity-70 md:text-3xl">
+                    <p className="text-cell-primary-foreground text-2xl font-bold uppercase select-none md:text-3xl">
                       {(currTurn === i
                         ? inputData?.[j]
                         : grid?.[wordLen * i + j]) ?? ""}

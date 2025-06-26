@@ -1,7 +1,7 @@
 "use client";
 
 import { getDailyGameCountdown } from "@/utils/time";
-import GameCard from "./game-card";
+import GameCountdownCard from "./game-countdown-card";
 
 const DAILY_GAMES = [
   {
@@ -26,7 +26,7 @@ const DAILY_GAMES = [
 
 export default function DailyGamesCard({ className }: { className?: string }) {
   return (
-    <GameCard
+    <GameCountdownCard
       games={DAILY_GAMES}
       countdown={getDailyGameCountdown}
       className={className}

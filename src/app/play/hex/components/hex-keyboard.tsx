@@ -8,9 +8,11 @@ export default function HexKeyboard({
   centerLetter,
   onSubmit,
   onChange,
+  isDisabled,
 }: Pick<HexRound, "rootWord" | "centerLetter"> & {
   onSubmit: () => void;
   onChange: (event: KeyboardEvent | { key: string }) => void;
+  isDisabled?: boolean;
 }) {
   const { letters, shuffleLetters } = useHexStore((store) => store);
 
@@ -22,6 +24,7 @@ export default function HexKeyboard({
         onClick={(letter) => {
           onChange({ key: letter });
         }}
+        isDisabled={isDisabled}
       />
       <div className="mt-4 flex justify-center gap-4">
         <Button
@@ -30,14 +33,28 @@ export default function HexKeyboard({
           onClick={() => {
             onChange({ key: "Backspace" });
           }}
+          disabled={isDisabled}
         >
           <DeleteIcon size={16} />
+          <span className="sr-only">Delete</span>
         </Button>
-        <Button size="icon" className="rounded-full" onClick={shuffleLetters}>
+        <Button
+          size="icon"
+          className="rounded-full"
+          onClick={shuffleLetters}
+          disabled={isDisabled}
+        >
           <ShuffleIcon size={16} />
+          <span className="sr-only">Shuffle</span>
         </Button>
-        <Button size="icon" className="rounded-full" onClick={onSubmit}>
+        <Button
+          size="icon"
+          className="rounded-full"
+          onClick={onSubmit}
+          disabled={isDisabled}
+        >
           <PlayIcon size={16} />
+          <span className="sr-only">Submit</span>
         </Button>
       </div>
     </div>

@@ -16,8 +16,14 @@ import { MoreSidebarMenu } from "./more";
 import { ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
 import { NavbarBrand } from "../navbar";
+import { createClient } from "@/lib/supabase/server";
+import { getUserProfile } from "@/utils/user";
 
-export function AppSidebar() {
+export async function AppSidebar() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+  const profile = getUserProfile(data.user);
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -35,7 +41,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>GAMES</SidebarGroupLabel>{" "}
           <SidebarGroupAction
-            className="mr-4 whitespace-nowrap text-sm hover:underline"
+            className="mr-4 text-sm whitespace-nowrap hover:underline"
             asChild
           >
             <Link href="/">
@@ -50,7 +56,7 @@ export function AppSidebar() {
           <OtherGamesSidebarMenu />
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>SETTINGS</SidebarGroupLabel>
+          <SidebarGroupLabel>MORE</SidebarGroupLabel>
           <SettingsSidebarMenu />
         </SidebarGroup>
       </SidebarContent>
@@ -58,13 +64,7 @@ export function AppSidebar() {
       <SidebarFooter>
         <MoreSidebarMenu />
 
-        <NavUser
-          user={{
-            name: "carldegs",
-            email: "carl.2795@gmail.com",
-            avatar: "https://avatars.githubusercontent.com/u/1792317?v=4",
-          }}
-        />
+        <NavUser profile={profile} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

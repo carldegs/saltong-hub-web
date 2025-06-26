@@ -1,4 +1,4 @@
-import { HEX_RANKS } from "./constants";
+import { GAME_SETTINGS } from "../constants";
 import { ScoredRank } from "./types";
 
 export const isPangram = (word: string) =>
@@ -11,7 +11,7 @@ export const getTotalScore = (words: string[]) =>
   words.reduce((acc, word) => acc + getWordScore(word), 0);
 
 export const getRankScoreMap = (maxScore: number) => {
-  return HEX_RANKS.map((rank) => ({
+  return GAME_SETTINGS.hex.config.ranks.map((rank) => ({
     ...rank,
     score: Math.floor(rank.percentage * maxScore),
   }));

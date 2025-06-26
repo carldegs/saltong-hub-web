@@ -9,9 +9,15 @@ import { useEventListener } from "usehooks-ts";
 import { toast } from "sonner";
 import { useMemo, useState } from "react";
 import useHexAnswer from "../hooks/useHexAnswer";
-import { getWordScore } from "../utils";
+import {
+  getRank,
+  getRankScoreMap,
+  getTotalScore,
+  getWordScore,
+} from "../utils";
 import WordListCard from "./word-list-card";
 import ScoreTracker from "./score-tracker";
+import WordListBar from "./word-list-bar";
 
 export default function GameWrapper({
   roundData,
@@ -28,6 +34,9 @@ export default function GameWrapper({
 
   const [animate, setAnimate] = useState("");
   const [lastScore, setLastScore] = useState(0);
+  const rankMap = useMemo(() => {
+    return getRankScoreMap(roundData.maxScore!);
+  }, [roundData.maxScore]);
 
   function animateError() {
     setAnimate("error");
@@ -79,10 +88,17 @@ export default function GameWrapper({
     const score = getWordScore(inputWord);
     setLastScore(score);
     setPlayerAnswer((prev) => {
+      const roundScore = getTotalScore(prev.guessedWords);
+      const rank = getRank(roundScore + score, rankMap);
+      const isTopRank = rank?.name === rankMap[rankMap.length - 1].name;
+
       return {
         ...prev,
         guessedWords: [...prev.guessedWords, inputWord],
-        ...(isLive ? { liveScore: prev.liveScore + score } : {}),
+        isTopRank,
+        ...(isLive
+          ? { liveScore: prev.liveScore + score, isTopRankWhileLive: isTopRank }
+          : {}),
       };
     });
 
@@ -94,6 +110,10 @@ export default function GameWrapper({
   }
 
   function onKeyDown(event: KeyboardEvent | { key: string }) {
+    if (playerAnswer.isRevealed) {
+      return;
+    }
+
     if (animate) {
       return;
     }
@@ -134,7 +154,10 @@ export default function GameWrapper({
         <ScoreTracker
           wordList={parsedWords}
           guessedWords={playerAnswer.guessedWords}
+          isGameOver={playerAnswer.isRevealed}
         />
+
+        <WordListBar date={date} roundData={roundData} />
 
         <div className="relative mb-8 flex min-h-[60px] flex-col items-center justify-center gap-1 md:gap-16">
           {animate === "success" && (
@@ -142,9 +165,9 @@ export default function GameWrapper({
               style={{
                 left: `${Math.floor(Math.random() * 30) + 30}%`,
               }}
-              className="absolute top-0 z-10 flex size-8 min-w-8 animate-slide-out items-center justify-center rounded-full bg-saltong-purple"
+              className="animate-slide-out bg-saltong-purple absolute top-0 z-10 flex size-8 min-w-8 items-center justify-center rounded-full"
             >
-              <span className="text-lg font-bold text-saltong-purple-200">
+              <span className="text-saltong-purple-200 text-lg font-bold">
                 +{lastScore}
               </span>
             </div>
@@ -152,7 +175,7 @@ export default function GameWrapper({
           {inputWord?.length >= 9 ? (
             <span
               className={cn(
-                "mx-auto flex w-fit items-center justify-center gap-0.5 rounded-md bg-saltong-purple-200 px-4 py-3 text-3xl font-bold dark:bg-saltong-purple/30",
+                "bg-saltong-purple-200 dark:bg-saltong-purple/30 mx-auto flex w-fit items-center justify-center gap-0.5 rounded-md px-4 py-3 text-3xl font-bold",
                 {
                   "text-2xl md:text-3xl": inputWord.length > 12,
                   "animate-wobble bg-red-400 transition-colors dark:bg-red-500":
@@ -178,7 +201,7 @@ export default function GameWrapper({
               {inputWord?.split("").map((letter, index) => (
                 <div
                   className={cn(
-                    "flex size-[40px] items-center justify-center rounded-lg bg-saltong-purple-200 dark:bg-saltong-purple/30 md:size-[45px]",
+                    "bg-saltong-purple-200 dark:bg-saltong-purple/30 flex size-[40px] items-center justify-center rounded-lg md:size-[45px]",
                     {
                       "bg-saltong-purple dark:bg-saltong-purple":
                         letter === centerLetter,
@@ -190,14 +213,14 @@ export default function GameWrapper({
                   )}
                   key={`${letter}-${index}`}
                 >
-                  <span className="select-none text-2xl font-bold md:text-3xl">
+                  <span className="text-2xl font-bold select-none md:text-3xl">
                     {letter.toUpperCase()}
                   </span>
                 </div>
               ))}
             </div>
-          ) : (
-            <span className="animate-pulse select-none text-center text-4xl font-bold tracking-tight text-saltong-purple">
+          ) : playerAnswer.isRevealed ? null : (
+            <span className="text-saltong-purple animate-pulse text-center text-4xl font-bold tracking-tight select-none">
               Type or Click
             </span>
           )}
@@ -209,6 +232,7 @@ export default function GameWrapper({
             centerLetter={centerLetter}
             onSubmit={submitAnswer}
             onChange={onKeyDown}
+            isDisabled={playerAnswer.isRevealed}
           />
         </div>
       </div>

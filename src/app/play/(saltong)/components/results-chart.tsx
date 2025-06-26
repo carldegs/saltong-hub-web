@@ -15,15 +15,17 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { Button } from "@/components/ui/button";
+import { HelpCircleIcon } from "lucide-react";
 
 const chartConfig = {
   you: {
     label: "You",
-    color: "hsl(var(--chart-1))",
+    color: "var(--chart-1)",
   },
   avg: {
     label: "Average",
-    color: "hsl(var(--chart-2))",
+    color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
 
@@ -37,12 +39,15 @@ export default function ResultsChart({
   const chartData = playerStats.map((stat, idx) => ({
     turn: `Turn ${idx + 1}`,
     you: stat,
-    avg: totalStats ? totalStats[idx] : 0,
+    avg: totalStats ? totalStats[idx] : undefined,
   }));
 
   return (
     <Card>
-      <CardContent className="px-2 pb-0">
+      <CardContent className="relative px-2 pb-0">
+        <Button size="icon" variant="ghost" className="absolute -top-3 right-4">
+          <HelpCircleIcon size={20} />
+        </Button>
         <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[350px]"

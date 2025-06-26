@@ -22,7 +22,7 @@ export const HexStoreProvider = ({
   children,
   initialState = {},
 }: HexStoreProviderProps) => {
-  const storeRef = useRef<HexStoreApi>();
+  const storeRef = useRef<HexStoreApi>(undefined);
 
   if (!storeRef.current) {
     storeRef.current = createHexStore({
