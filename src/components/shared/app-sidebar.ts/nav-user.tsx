@@ -108,13 +108,17 @@ export function NavUser({ profile }: { profile?: Profile }) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Link href="/settings" className="w-full">
+                <Link href="/settings" className="w-full" prefetch={false}>
                   <SettingsIcon className="mr-4 inline size-5" />
                   Settings
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Link href="/settings/account" className="w-full">
+                <Link
+                  href="/settings/account"
+                  className="w-full"
+                  prefetch={false}
+                >
                   <BadgeCheck className="mr-4 inline size-5" />
                   Account
                 </Link>

@@ -51,7 +51,9 @@ export default async function GameCard({
             "bg-purple-500 dark:bg-purple-200": colorScheme === "purple",
           })}
         >
-          <Link href={`/play${path}`}>Play Game</Link>
+          <Link href={`/play${path}`} prefetch={false}>
+            Play Game
+          </Link>
         </Button>
         {data.user && (
           <Button className="flex-1" variant="outline" asChild>

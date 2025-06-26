@@ -19,7 +19,11 @@ export function GamesSidebarMenu() {
       {GAMES.map((game) => (
         <SidebarMenuItem key={game.name}>
           <SidebarMenuButton className="h-auto" asChild>
-            <Link href={game.href} className="flex w-full items-center gap-3">
+            <Link
+              href={game.href}
+              className="flex w-full items-center gap-3"
+              prefetch={false}
+            >
               {game.icon && (
                 <Image
                   src={game.icon}

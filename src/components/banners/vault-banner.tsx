@@ -32,7 +32,7 @@ export default async function VaultsAlert() {
           </Button>
         ) : (
           <Button asChild size="lg" className="font-bold tracking-wide">
-            <Link href="/play/vault">
+            <Link href="/play/vault" prefetch={false}>
               <VaultIcon />
               PLAY NOW
             </Link>
