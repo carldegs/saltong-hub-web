@@ -13,7 +13,7 @@ const fontSans = FontSans({
   variable: "--font-sans",
 });
 import { VercelToolbar } from "@vercel/toolbar/next";
-import { GoogleTagManager } from "@next/third-parties/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 export const metadata: Metadata = {
   title: "Saltong Hub",
@@ -38,7 +38,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <GoogleTagManager gtmId="GTM-MXVLJ6P8" />
+      <GoogleAnalytics gaId="G-Q2M6YCF07C" />
 
       <body
         className={cn("bg-background font-sans antialiased", fontSans.variable)}
