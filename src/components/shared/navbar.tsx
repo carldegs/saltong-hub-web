@@ -111,6 +111,8 @@ const NavbarBrand = ({
   isLoading,
   name,
   href,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  prefetch,
   ...props
 }: NavbarBrandProps &
   Partial<Pick<LinkProps, "href" | "prefetch">> & {
