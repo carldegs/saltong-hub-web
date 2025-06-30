@@ -23,6 +23,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Profile } from "@/utils/user";
+import { sendEvent } from "@/lib/analytics";
 
 export function NavUser({ profile }: { profile?: Profile }) {
   const supabase = createClient();
@@ -47,6 +48,12 @@ export function NavUser({ profile }: { profile?: Profile }) {
               href={{
                 pathname: "/auth",
                 query: { next: currPathname },
+              }}
+              onClick={() => {
+                sendEvent("button_click", {
+                  location: "sidebar",
+                  action: "login",
+                });
               }}
             >
               Log in
@@ -108,13 +115,17 @@ export function NavUser({ profile }: { profile?: Profile }) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Link href="/settings" className="w-full">
+                <Link href="/settings" className="w-full" prefetch={false}>
                   <SettingsIcon className="mr-4 inline size-5" />
                   Settings
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Link href="/settings/account" className="w-full">
+                <Link
+                  href="/settings/account"
+                  className="w-full"
+                  prefetch={false}
+                >
                   <BadgeCheck className="mr-4 inline size-5" />
                   Account
                 </Link>

@@ -41,6 +41,8 @@ export default async function SaltongHexPage(props: {
           name={SETTINGS.name}
           boxed={`#${round.gameId}`}
           icon="/hex.svg"
+          href="/"
+          prefetch={false}
         />
         <div className="flex gap-1.5">
           <ResultsButton gameDate={round.date} isLive={isLive} round={round} />

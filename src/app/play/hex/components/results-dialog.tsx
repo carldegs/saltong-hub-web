@@ -29,6 +29,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { isPangram } from "../utils";
 import ShareButtons from "@/components/shared/share-buttons";
+import { sendEvent } from "@/lib/analytics";
 
 const OTHER_GAMES_LIST = [
   {
@@ -113,7 +114,15 @@ function ResultsDialogComponent({
         <DialogHeader className="px-0">
           <DialogTitle className="mb-2 border-0 font-bold">Stats</DialogTitle>
         </DialogHeader>
-        <Tabs defaultValue="account" className="w-full">
+        <Tabs
+          defaultValue="account"
+          className="w-full"
+          onValueChange={(value) => {
+            sendEvent("hex_results_dialog_tag_change", {
+              tab: value,
+            });
+          }}
+        >
           <TabsList className="w-full">
             <TabsTrigger value="share">Share</TabsTrigger>
             <TabsTrigger value="progress">Your Progress</TabsTrigger>
@@ -155,6 +164,11 @@ function ResultsDialogComponent({
                     key={mode}
                     className="min-w-[90px] grow"
                     onClick={() => {
+                      sendEvent("button_click", {
+                        location: "results_dialog",
+                        action: "play_game",
+                        gameId: mode,
+                      });
                       onOpenChange?.(false);
                     }}
                   >
@@ -250,6 +264,11 @@ function ResultsDialogComponent({
                 <div className="mt-6 flex w-full flex-col justify-end gap-2 md:flex-row md:gap-4">
                   <Button
                     onClick={() => {
+                      sendEvent("hex_reveal_answer", {
+                        gameId: round.gameId,
+                        rank: rank?.name,
+                        score,
+                      });
                       onRevealAnswers();
                     }}
                   >

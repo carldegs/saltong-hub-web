@@ -15,7 +15,6 @@ export function SettingsSectionHeader({
   );
 }
 
-// Link item: always shows chevron, wraps with Next.js Link
 export function SettingsSectionItemLink({
   href,
   children,
@@ -31,7 +30,7 @@ export function SettingsSectionItemLink({
 >) {
   return (
     <div>
-      <Link href={href} className="contents" {...props}>
+      <Link href={href} className="contents" prefetch={false} {...props}>
         <div
           className={cn(
             "hover:bg-muted/50 group flex cursor-pointer items-center justify-between gap-2 px-6 py-3 transition",

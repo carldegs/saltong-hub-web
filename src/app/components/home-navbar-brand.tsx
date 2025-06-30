@@ -11,6 +11,8 @@ export default function HomeNavbarBrand() {
       icon="/hub-light.svg"
       iconLight="/hub.svg"
       hideBrand={open && !isMobile}
+      href="/"
+      prefetch={false}
     />
   );
 }

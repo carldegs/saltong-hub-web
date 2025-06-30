@@ -6,8 +6,9 @@ import { useTheme } from "next-themes";
 
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { useIsMounted } from "@/hooks/use-is-mounted";
+import { sendEvent } from "@/lib/analytics";
 
-export function ColorModeToggle() {
+export function ColorModeToggle({ location }: { location?: string }) {
   const { theme, setTheme } = useTheme();
   const mounted = useIsMounted();
 
@@ -21,7 +22,13 @@ export function ColorModeToggle() {
       variant="outline"
       size="sm"
       value={theme}
-      onValueChange={setTheme}
+      onValueChange={(theme) => {
+        sendEvent("color_mode_change", {
+          theme,
+          location,
+        });
+        setTheme(theme);
+      }}
     >
       <ToggleGroupItem value="light">
         <Sun className="size-4" />

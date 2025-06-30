@@ -18,6 +18,8 @@ export default function GameNotFound() {
             title="Saltong"
             subtitle="Hub"
             icon={"/hub.svg"}
+            href="/"
+            prefetch={false}
           />
         </div>
       </Navbar>

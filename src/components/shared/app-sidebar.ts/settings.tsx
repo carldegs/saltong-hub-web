@@ -14,7 +14,11 @@ export async function SettingsSidebarMenu() {
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton className="h-auto py-1.5" asChild>
-          <Link href="/settings" className="flex w-full items-center gap-3">
+          <Link
+            href="/settings"
+            className="flex w-full items-center gap-3"
+            prefetch={false}
+          >
             <span className="text-sm">Settings</span>
           </Link>
         </SidebarMenuButton>
@@ -22,7 +26,11 @@ export async function SettingsSidebarMenu() {
 
       <SidebarMenuItem>
         <SidebarMenuButton className="h-auto py-1.5" asChild>
-          <Link href="/about" className="flex w-full items-center gap-3">
+          <Link
+            href="/about"
+            className="flex w-full items-center gap-3"
+            prefetch={false}
+          >
             <span className="text-sm">About</span>
           </Link>
         </SidebarMenuButton>

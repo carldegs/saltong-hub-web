@@ -4,7 +4,7 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
-import Link from "next/link";
+import HoverPrefetchLink from "../hover-prefetch-link";
 
 export const GAMES = [
   { href: "/play", icon: "/main.svg", name: "Saltong" },
@@ -19,7 +19,10 @@ export function GamesSidebarMenu() {
       {GAMES.map((game) => (
         <SidebarMenuItem key={game.name}>
           <SidebarMenuButton className="h-auto" asChild>
-            <Link href={game.href} className="flex w-full items-center gap-3">
+            <HoverPrefetchLink
+              href={game.href}
+              className="flex w-full items-center gap-3"
+            >
               {game.icon && (
                 <Image
                   src={game.icon}
@@ -29,7 +32,7 @@ export function GamesSidebarMenu() {
                 />
               )}
               <span className="text-base">{game.name}</span>
-            </Link>
+            </HoverPrefetchLink>
           </SidebarMenuButton>
         </SidebarMenuItem>
       ))}

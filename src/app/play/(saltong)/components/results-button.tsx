@@ -6,8 +6,9 @@ import { VaultIcon, Award } from "lucide-react";
 import ResultsDialog from "./results-dialog";
 import { SaltongRound } from "../types";
 import usePlayerStats from "../hooks/usePlayerStats";
-import Link from "next/link";
 import { GameId } from "../../types";
+import { sendEvent } from "@/lib/analytics";
+import HoverPrefetchLink from "@/components/shared/hover-prefetch-link";
 
 export function ResultsButton({
   gameId,
@@ -36,6 +37,11 @@ export function ResultsButton({
         variant="outline"
         onClick={() => {
           onOpenChange(true);
+          sendEvent("open_results", {
+            gameId,
+            gameDate,
+            roundId: roundData.gameId,
+          });
         }}
         size="icon"
         className="gap-1.5 font-bold md:h-auto md:w-auto md:px-2"
@@ -58,11 +64,11 @@ export function ResultsButton({
         title="Play previous games"
         asChild
       >
-        <Link href={`/play${path}/vault`} prefetch={false}>
+        <HoverPrefetchLink href={`/play${path}/vault`}>
           <VaultIcon className="h-[1.2rem] w-[1.2rem]" />
           <span className="hidden md:inline-block">Vault</span>
           <span className="sr-only">Vault</span>
-        </Link>
+        </HoverPrefetchLink>
       </Button>
     </>
   );

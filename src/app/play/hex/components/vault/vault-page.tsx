@@ -33,6 +33,8 @@ export default async function SaltongVaultPage({
           title="Saltong"
           name={name}
           icon={icon}
+          href="/"
+          prefetch={false}
         />
       </Navbar>
       <div className="mx-auto w-full max-w-prose">

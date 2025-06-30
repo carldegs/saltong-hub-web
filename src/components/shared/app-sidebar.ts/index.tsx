@@ -27,15 +27,17 @@ export async function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <Link href="/" className="flex items-center justify-center gap-2 py-2">
+        <div className="flex items-center justify-center gap-2 py-2">
           <NavbarBrand
             title="Saltong"
             subtitle="Hub"
             icon="/hub-light.svg"
             iconLight="/hub.svg"
             hideMenu
+            href="/"
+            prefetch={false}
           />
-        </Link>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -44,7 +46,7 @@ export async function AppSidebar() {
             className="mr-4 text-sm whitespace-nowrap hover:underline"
             asChild
           >
-            <Link href="/">
+            <Link href="/" prefetch={false}>
               <span>See All</span>
               <ChevronRightIcon />
             </Link>

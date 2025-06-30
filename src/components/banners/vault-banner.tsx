@@ -1,8 +1,8 @@
 import { VaultIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { VelocityScroll } from "@/components/magicui/scroll-based-velocity";
+import TrackedLink from "../shared/tracked-link";
 
 export default async function VaultsAlert() {
   const supabase = await createClient();
@@ -26,16 +26,32 @@ export default async function VaultsAlert() {
 
         {!data.user ? (
           <Button asChild size="lg" className="font-bold tracking-widest">
-            <Link href="/auth" prefetch={false}>
+            <TrackedLink
+              href="/auth"
+              prefetch={false}
+              event="button_click"
+              eventParams={{
+                location: "vault_banner",
+                action: "create_account",
+              }}
+            >
               CREATE ACCOUNT
-            </Link>
+            </TrackedLink>
           </Button>
         ) : (
           <Button asChild size="lg" className="font-bold tracking-wide">
-            <Link href="/play/vault">
+            <TrackedLink
+              href="/play/vault"
+              prefetch={false}
+              event="button_click"
+              eventParams={{
+                location: "vault_banner",
+                action: "play_now_vault",
+              }}
+            >
               <VaultIcon />
               PLAY NOW
-            </Link>
+            </TrackedLink>
           </Button>
         )}
       </div>

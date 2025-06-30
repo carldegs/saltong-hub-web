@@ -6,6 +6,7 @@ import { useState } from "react";
 import ContributeDialog from "../contribute-dialog";
 import { HandCoins } from "lucide-react";
 import { ColorModeToggle } from "../color-mode-toggle";
+import { sendEvent } from "@/lib/analytics";
 
 export function MoreSidebarMenu() {
   const [showContribution, setShowContribution] = useState(false);
@@ -13,12 +14,18 @@ export function MoreSidebarMenu() {
   return (
     <SidebarMenu>
       <SidebarMenuItem className="mb-2 flex items-center justify-between pr-1 pl-2 text-sm">
-        Color Mode <ColorModeToggle />
+        Color Mode <ColorModeToggle location="sidebar" />
       </SidebarMenuItem>
       {showContribution && (
         <ContributeDialog
           open={showContribution}
-          onOpenChange={setShowContribution}
+          onOpenChange={(open) => {
+            sendEvent("contribute_dialog", {
+              open,
+              location: "sidebar",
+            });
+            setShowContribution(open);
+          }}
         />
       )}
       <SidebarMenuItem className="flex w-full items-center justify-between text-base">
@@ -27,11 +34,6 @@ export function MoreSidebarMenu() {
           variant="secondary"
           onClick={() => {
             setShowContribution(true);
-            // sendEvent("open_contribute", {
-            //   source: "navbar_drawer",
-            //   path: pathname,
-            //   searchParams: searchParams.toString(),
-            // });
           }}
         >
           <HandCoins className="mr-3 size-4" />

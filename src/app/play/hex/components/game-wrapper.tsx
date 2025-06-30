@@ -18,6 +18,7 @@ import {
 import WordListCard from "./word-list-card";
 import ScoreTracker from "./score-tracker";
 import WordListBar from "./word-list-bar";
+import { sendEvent } from "@/lib/analytics";
 
 export default function GameWrapper({
   roundData,
@@ -91,6 +92,15 @@ export default function GameWrapper({
       const roundScore = getTotalScore(prev.guessedWords);
       const rank = getRank(roundScore + score, rankMap);
       const isTopRank = rank?.name === rankMap[rankMap.length - 1].name;
+
+      sendEvent("send_answer", {
+        gameId: "hex",
+        roundId: roundData.gameId,
+        date: roundData.date,
+        answer: inputWord,
+        score,
+        isLive,
+      });
 
       return {
         ...prev,

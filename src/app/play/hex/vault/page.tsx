@@ -38,6 +38,8 @@ export default async function SaltongHexVaultPage() {
           title="Saltong"
           name={name}
           icon={icon}
+          href="/"
+          prefetch={false}
         />
 
         <Button variant="outline" asChild>
