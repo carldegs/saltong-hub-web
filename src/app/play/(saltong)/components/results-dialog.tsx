@@ -96,8 +96,16 @@ const getShareDetails = ({
   };
 };
 
-function TimeCard({ gameId, gameDate }: { gameId: GameId; gameDate: string }) {
-  const [rounds] = useRoundAnswers(gameId);
+function TimeCard({
+  gameId,
+  gameDate,
+  userId,
+}: {
+  gameId: GameId;
+  gameDate: string;
+  userId?: string;
+}) {
+  const [rounds] = useRoundAnswers(gameId, userId);
   const isLive = useMemo(() => getFormattedDateInPh() === gameDate, [gameDate]);
 
   const round = useMemo(
@@ -358,14 +366,16 @@ export default function ResultsDialog({
   gameId,
   gameDate,
   roundData,
+  userId,
 }: Omit<RootCredenzaProps, "children"> & {
   gameId: GameId;
   gameDate: string;
   roundData: SaltongRound;
+  userId?: string;
 }) {
-  const [playerStats] = usePlayerStats();
+  const [playerStats] = usePlayerStats(userId);
   const stats = useMemo(() => playerStats[gameId], [gameId, playerStats]);
-  const roundStats = useRoundStats(gameId, gameDate);
+  const roundStats = useRoundStats(gameId, gameDate, userId);
 
   if (open) {
     return (

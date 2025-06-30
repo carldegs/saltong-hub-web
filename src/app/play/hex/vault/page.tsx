@@ -18,9 +18,11 @@ export default async function SaltongHexVaultPage() {
   const { colorScheme, name, icon } = SETTINGS;
 
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!data.user) {
+  if (!user) {
     return <UnauthorizedErrorPage {...SETTINGS} />;
   }
 
@@ -47,7 +49,7 @@ export default async function SaltongHexVaultPage() {
         </Button>
       </Navbar>
       <div className="mx-auto w-full max-w-prose">
-        <VaultCalendar />
+        <VaultCalendar userId={user?.id} />
       </div>
     </>
   );

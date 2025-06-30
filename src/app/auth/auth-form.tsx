@@ -6,7 +6,7 @@ import { EmailCard } from "./components/email-card";
 import { PasswordCard } from "./components/password-card";
 import { SignupCard } from "./components/signup-card";
 import { ForgotPasswordCard } from "./components/forgot-password-card";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 import { useState } from "react";
 import { Particles } from "@/components/magicui/particles";
 
@@ -24,7 +24,7 @@ export default function AuthForm({
     "email" | "password" | "signup" | "forgot-password"
   >(showSignup ? "signup" : "email");
   const [email, setEmail] = useState("");
-  const supabase = createClient();
+  const supabase = useSupabaseClient();
 
   // Handle OAuth
   function handleOAuth(provider: "google" | "discord" | "twitter") {

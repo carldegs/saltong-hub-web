@@ -21,12 +21,12 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 import { Profile } from "@/utils/user";
 import { sendEvent } from "@/lib/analytics";
 
 export function NavUser({ profile }: { profile?: Profile }) {
-  const supabase = createClient();
+  const supabase = useSupabaseClient();
   const { isMobile, setOpenMobile } = useSidebar();
   const currPathname = usePathname();
   const router = useRouter();

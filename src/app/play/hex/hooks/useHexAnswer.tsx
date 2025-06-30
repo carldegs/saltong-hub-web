@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import useHexAnswers from "./useHexAnswers";
 import { HexAnswerData } from "../types";
 
-export default function useHexAnswer(gameDate: string) {
-  const [rounds, setRounds] = useHexAnswers();
+export default function useHexAnswer(gameDate: string, userId?: string) {
+  const [rounds, setRounds] = useHexAnswers(userId);
   const [isInit, setIsInit] = useState(false);
 
   useEffect(() => {

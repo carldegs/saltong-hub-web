@@ -23,13 +23,18 @@ import { sendEvent } from "@/lib/analytics";
 export default function GameWrapper({
   roundData,
   isLive,
+  userId,
 }: {
   roundData: HexRound;
   isLive?: boolean;
+  userId?: string;
 }) {
   const { rootWord, centerLetter, words, date } = roundData;
   const parsedWords = useMemo(() => words?.split(",") ?? [], [words]);
-  const [playerAnswer, setPlayerAnswer] = useHexAnswer(date);
+  const [playerAnswer, setPlayerAnswer, { isInit }] = useHexAnswer(
+    date,
+    userId
+  );
 
   const { inputWord, setInputWord, letters } = useHexStore((store) => store);
 
@@ -167,7 +172,11 @@ export default function GameWrapper({
           isGameOver={playerAnswer.isRevealed}
         />
 
-        <WordListBar date={date} roundData={roundData} />
+        <WordListBar
+          roundData={roundData}
+          playerAnswer={playerAnswer}
+          isInit={isInit}
+        />
 
         <div className="relative mb-8 flex min-h-[60px] flex-col items-center justify-center gap-1 md:gap-16">
           {animate === "success" && (
@@ -246,7 +255,11 @@ export default function GameWrapper({
           />
         </div>
       </div>
-      <WordListCard date={date} roundData={roundData} />
+      <WordListCard
+        roundData={roundData}
+        playerAnswer={playerAnswer}
+        isInit={isInit}
+      />
     </div>
   );
 }

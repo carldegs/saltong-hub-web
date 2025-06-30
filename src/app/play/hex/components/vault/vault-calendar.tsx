@@ -51,7 +51,7 @@ const getMonthsBetweenDates = (startDate: Date, endDate: Date): MonthYear[] => {
   return months;
 };
 
-export default function VaultCalendar() {
+export default function VaultCalendar({ userId }: { userId?: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialDate = searchParams.get("d")
@@ -64,7 +64,7 @@ export default function VaultCalendar() {
   }));
 
   const [dates, setDates] = useState<HexDate[]>([]);
-  const [answers] = useHexAnswers();
+  const [answers] = useHexAnswers(userId);
 
   useEffect(() => {
     const fetchDates = () => {

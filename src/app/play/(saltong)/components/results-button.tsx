@@ -15,14 +15,16 @@ export function ResultsButton({
   path,
   gameDate,
   roundData,
+  userId,
 }: {
   gameId: GameId;
   path: string;
   gameDate: string;
   roundData: SaltongRound;
+  userId?: string;
 }) {
   const { isOpen, onOpenChange } = useModalStore((state) => state);
-  const [playerStats] = usePlayerStats();
+  const [playerStats] = usePlayerStats(userId);
 
   return (
     <>
@@ -32,6 +34,7 @@ export function ResultsButton({
         gameId={gameId}
         gameDate={gameDate}
         roundData={roundData}
+        userId={userId}
       />
       <Button
         variant="outline"

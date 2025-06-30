@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 import { getRedirectURL } from "@/lib/utils";
 
 interface ForgotPasswordCardProps {
@@ -17,7 +17,7 @@ export function ForgotPasswordCard({
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const supabase = createClient();
+  const supabase = useSupabaseClient();
 
   async function resetPassword() {
     setLoading(true);

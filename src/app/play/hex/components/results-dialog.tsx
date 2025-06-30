@@ -313,13 +313,15 @@ export default function ResultsDialog({
   open,
   onOpenChange,
   round = {} as HexRound,
+  userId,
 }: Omit<RootCredenzaProps, "children"> & {
   gameDate: string;
   round: HexRound;
+  userId?: string;
 }) {
   const { words, date } = round;
   const parsedWords = useMemo(() => words?.split(",") ?? [], [words]);
-  const [playerAnswer, setPlayerAnswer] = useHexAnswer(date);
+  const [playerAnswer, setPlayerAnswer] = useHexAnswer(date, userId);
 
   if (open) {
     return (

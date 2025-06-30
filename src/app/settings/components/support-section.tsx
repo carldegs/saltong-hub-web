@@ -19,12 +19,12 @@ import usePlayerStats from "@/app/play/(saltong)/hooks/usePlayerStats";
 import useRoundAnswers from "@/app/play/(saltong)/hooks/useRoundAnswers";
 import useHexAnswers from "@/app/play/hex/hooks/useHexAnswers";
 
-const useGameData = () => {
-  const playerStats = usePlayerStats();
-  const mainGameData = useRoundAnswers("saltong-main");
-  const miniGameData = useRoundAnswers("saltong-mini");
-  const maxGameData = useRoundAnswers("saltong-max");
-  const hexGameData = useHexAnswers();
+const useGameData = (userId?: string) => {
+  const playerStats = usePlayerStats(userId);
+  const mainGameData = useRoundAnswers("saltong-main", userId);
+  const miniGameData = useRoundAnswers("saltong-mini", userId);
+  const maxGameData = useRoundAnswers("saltong-max", userId);
+  const hexGameData = useHexAnswers(userId);
 
   const clearGameData = useCallback(() => {
     playerStats[2]();
@@ -39,12 +39,12 @@ const useGameData = () => {
   };
 };
 
-export default function SupportSection() {
+export default function SupportSection({ userId }: { userId?: string }) {
   const [open, setOpen] = useState(false);
   const handleResetGameData = () => {
     setOpen(true);
   };
-  const { clearGameData } = useGameData();
+  const { clearGameData } = useGameData(userId);
 
   const handleConfirm = () => {
     setOpen(false);
@@ -54,6 +54,7 @@ export default function SupportSection() {
   const handleCancel = () => {
     setOpen(false);
   };
+
   return (
     <section>
       <SettingsSectionHeader>Support</SettingsSectionHeader>

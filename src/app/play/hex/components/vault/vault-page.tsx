@@ -38,7 +38,7 @@ export default async function SaltongVaultPage({
         />
       </Navbar>
       <div className="mx-auto w-full max-w-prose">
-        <VaultMonthlyCalendar />
+        <VaultMonthlyCalendar userId={data?.user?.id} />
       </div>
     </>
   );

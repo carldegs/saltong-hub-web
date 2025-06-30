@@ -13,7 +13,7 @@ import {
   MenubarContent,
   MenubarItem,
 } from "@/components/ui/menubar";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 import { UserIdentity } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -41,13 +41,13 @@ export default function ProviderCard({
   const router = useRouter();
 
   const [isUnlinking, setIsUnlinking] = React.useState(false);
+  const supabase = useSupabaseClient();
 
   const handleUnlink = async () => {
     setIsUnlinking(true);
     try {
       await toast.promise(
         (async () => {
-          const supabase = createClient();
           const { data: identities, error: identitiesError } =
             await supabase.auth.getUserIdentities();
           if (!identitiesError) {

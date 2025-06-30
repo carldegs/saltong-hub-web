@@ -8,6 +8,7 @@ import { HexStoreProvider } from "./providers/hex-store-provider";
 import { Metadata } from "next";
 import { ResultsButton } from "./components/results-button";
 import { GAME_SETTINGS } from "../constants";
+import { createClient } from "@/lib/supabase/client";
 
 const SETTINGS = GAME_SETTINGS["hex"];
 
@@ -20,6 +21,9 @@ export default async function SaltongHexPage(props: {
 }) {
   const searchParams = await props.searchParams;
   const round = await getRound(SETTINGS.config.tableName, searchParams?.d);
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+
   const isLive = round?.date === getFormattedHexDateInPh();
 
   if (!round) {
@@ -45,7 +49,12 @@ export default async function SaltongHexPage(props: {
           prefetch={false}
         />
         <div className="flex gap-1.5">
-          <ResultsButton gameDate={round.date} isLive={isLive} round={round} />
+          <ResultsButton
+            gameDate={round.date}
+            isLive={isLive}
+            round={round}
+            userId={data?.user?.id}
+          />
         </div>
       </Navbar>
       <HexStoreProvider
@@ -53,7 +62,11 @@ export default async function SaltongHexPage(props: {
           letters,
         }}
       >
-        <GameWrapper roundData={round} isLive={isLive} />
+        <GameWrapper
+          roundData={round}
+          isLive={isLive}
+          userId={data?.user?.id}
+        />
       </HexStoreProvider>
     </div>
   );

@@ -5,13 +5,19 @@ import usePlayerStats from "./usePlayerStats";
 import { GameId, SaltongGameSettings } from "../../types";
 import { GAME_SETTINGS } from "../../constants";
 
-export default function useRoundAnswer(
-  gameId: GameId,
-  gameDate: string,
-  roundId?: number
-) {
-  const [rounds, setRounds] = useRoundAnswers(gameId);
-  const [, setStats] = usePlayerStats();
+export default function useRoundAnswer({
+  gameId,
+  gameDate,
+  roundId,
+  userId,
+}: {
+  gameId: GameId;
+  gameDate: string;
+  roundId?: number;
+  userId?: string;
+}) {
+  const [rounds, setRounds] = useRoundAnswers(gameId, userId);
+  const [, setStats] = usePlayerStats(userId);
 
   const updateStats = useCallback(
     (data: Omit<RoundAnswerData, "updatedAt">) => {

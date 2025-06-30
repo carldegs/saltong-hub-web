@@ -1,5 +1,5 @@
 export type GameId = "saltong-main" | "saltong-mini" | "saltong-max" | "hex";
-type GameType = "saltong" | "hex";
+export type GameType = "saltong" | "hex";
 
 export interface BaseGameSettings {
   id: GameId;

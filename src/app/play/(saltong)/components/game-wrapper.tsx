@@ -20,19 +20,22 @@ export default function GameWrapper({
   roundData,
   gameId,
   isLive,
+  userId,
 }: {
   maxTries: number;
   wordLen: number;
   roundData: SaltongRound;
   gameId: GameId;
   isLive?: boolean;
+  userId?: string;
 }) {
   const { dict, isLoading: isFetchingDict } = useDictionary(wordLen);
-  const [playerAnswer, setPlayerAnswer] = useRoundAnswer(
+  const [playerAnswer, setPlayerAnswer] = useRoundAnswer({
     gameId,
-    roundData.date,
-    roundData.gameId
-  );
+    gameDate: roundData.date,
+    roundId: roundData.gameId,
+    userId,
+  });
   const [inputData, setInputData] = useState<string>("");
   const isMounted = useIsMounted();
 

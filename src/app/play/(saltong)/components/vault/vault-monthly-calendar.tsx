@@ -24,16 +24,18 @@ export default function VaultMonthlyCalendar({
   path,
   startDate,
   focusedDate,
+  userId,
 }: {
   gameId: GameId;
   path: SaltongGameSettings["path"];
   startDate: SaltongGameSettings["config"]["startDate"];
   focusedDate: Date;
+  userId?: string;
 }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [answers] = useRoundAnswers(gameId);
+  const [answers] = useRoundAnswers(gameId, userId);
 
   const solvedDates = useMemo(() => {
     return Object.entries(answers)

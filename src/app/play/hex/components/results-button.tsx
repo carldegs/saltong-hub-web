@@ -11,10 +11,12 @@ import { sendEvent } from "@/lib/analytics";
 export function ResultsButton({
   gameDate,
   round,
+  userId,
 }: {
   gameDate: string;
   isLive: boolean;
   round: HexRound;
+  userId?: string;
 }) {
   const { isOpen, onOpenChange } = useModalStore((state) => state);
 
@@ -25,6 +27,7 @@ export function ResultsButton({
         onOpenChange={onOpenChange}
         gameDate={gameDate}
         round={round}
+        userId={userId}
       />
       <Button
         variant="outline"

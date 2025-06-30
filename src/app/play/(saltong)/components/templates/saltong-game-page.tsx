@@ -64,6 +64,7 @@ async function SaltongGamePage({
             gameId={gameId}
             gameDate={round.date}
             roundData={round}
+            userId={data?.user?.id}
           />
         </div>
       </Navbar>
@@ -73,6 +74,7 @@ async function SaltongGamePage({
         roundData={round}
         gameId={gameId}
         isLive={isLive}
+        userId={data?.user?.id}
       />
     </>
   );

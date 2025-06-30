@@ -3,8 +3,12 @@ import useRoundAnswers from "./useRoundAnswers";
 import { RoundStats } from "../types";
 import { GameId } from "../../types";
 
-export default function useRoundStats(gameId: GameId, roundDate: string) {
-  const [rounds] = useRoundAnswers(gameId);
+export default function useRoundStats(
+  gameId: GameId,
+  roundDate: string,
+  userId?: string
+) {
+  const [rounds] = useRoundAnswers(gameId, userId);
 
   const round = useMemo(
     () =>

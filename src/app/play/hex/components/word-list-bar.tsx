@@ -1,8 +1,7 @@
 "use client";
 
 import { ChevronDownIcon } from "lucide-react";
-import useHexAnswer from "../hooks/useHexAnswer";
-import { HexRound } from "../types";
+import { HexAnswerData, HexRound } from "../types";
 import { useMemo, useState, useRef, RefObject } from "react";
 import {
   Popover,
@@ -13,14 +12,15 @@ import WordListContent from "./word-list-content";
 import { useDebounceCallback, useResizeObserver } from "usehooks-ts";
 
 export default function WordListBar({
-  date,
   roundData,
+  playerAnswer,
+  isInit,
 }: {
-  date: string;
   roundData: HexRound;
+  playerAnswer: HexAnswerData;
+  isInit: boolean;
 }) {
   const { numWords } = roundData;
-  const [playerAnswer, , { isInit }] = useHexAnswer(date);
   const wordList = useMemo(
     () => [...playerAnswer.guessedWords.reverse()],
     [playerAnswer.guessedWords]

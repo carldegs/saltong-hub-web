@@ -58,6 +58,7 @@ export default async function SaltongVaultPage({
               ? new Date(Number(searchParams.d) * 100000)
               : new Date()
           }
+          userId={data.user.id}
         />
       </div>
     </>
