@@ -12,6 +12,7 @@ import { useModalStore } from "@/providers/modal/modal-provider";
 import { useDictionary } from "@/features/dictionary/hooks";
 import { getLetterStatusGrid } from "../utils";
 import { GameId } from "../../types";
+import { sendEvent } from "@/lib/analytics";
 
 export default function GameWrapper({
   maxTries,
@@ -111,6 +112,15 @@ export default function GameWrapper({
 
       setPlayerAnswer((prev) => {
         const grid = prev.grid + inputData;
+
+        sendEvent("send_answer", {
+          gameId,
+          roundId: roundData.gameId,
+          date: roundData.date,
+          isCorrect: isCurrAnswerCorrect,
+          isLive,
+          answer: inputData,
+        });
 
         return {
           ...prev,

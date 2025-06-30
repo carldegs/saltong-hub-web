@@ -56,6 +56,7 @@ async function SaltongGamePage({
           boxed={`#${round.gameId}`}
           icon={icon}
           name={name}
+          href="/"
         />
         <div className="flex gap-1.5">
           <ResultsButton
@@ -97,6 +98,7 @@ function SaltongGamePageLoading(gameSettings: SaltongGameSettings) {
             subtitle={name.split(" ")[1] || ""}
             icon={icon}
             isLoading
+            href="/"
           />
         </div>
       </Navbar>

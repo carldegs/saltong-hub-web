@@ -34,7 +34,7 @@ export default function ProfileForm({
     <form className="flex items-center gap-8">
       {(!!avatarUrl || avatarOptions?.length) && (
         <div className="flex flex-col items-center gap-4">
-          <Select value={avatarUrl} onValueChange={setAvatarUrl}>
+          <Select value={avatarUrl} onValueChange={setAvatarUrl} disabled>
             <SelectTrigger className="h-20 w-32">
               <SelectValue>
                 <div className="flex items-center gap-2">
@@ -76,6 +76,7 @@ export default function ProfileForm({
             id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            disabled
           />
         </div>
         <div className="flex flex-col gap-2">

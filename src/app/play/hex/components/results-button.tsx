@@ -6,6 +6,7 @@ import { VaultIcon, CrownIcon } from "lucide-react";
 import Link from "next/link";
 import ResultsDialog from "./results-dialog";
 import { HexRound } from "../types";
+import { sendEvent } from "@/lib/analytics";
 
 export function ResultsButton({
   gameDate,
@@ -28,6 +29,11 @@ export function ResultsButton({
       <Button
         variant="outline"
         onClick={() => {
+          sendEvent("open_results", {
+            gameId: "hex",
+            gameDate,
+            roundId: round.gameId,
+          });
           onOpenChange(true);
         }}
         size="icon"

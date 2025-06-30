@@ -27,19 +27,17 @@ export async function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <Link
-          href="/"
-          className="flex items-center justify-center gap-2 py-2"
-          prefetch={false}
-        >
+        <div className="flex items-center justify-center gap-2 py-2">
           <NavbarBrand
             title="Saltong"
             subtitle="Hub"
             icon="/hub-light.svg"
             iconLight="/hub.svg"
             hideMenu
+            href="/"
+            prefetch={false}
           />
-        </Link>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

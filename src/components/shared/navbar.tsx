@@ -4,6 +4,8 @@ import { VariantProps, cva } from "class-variance-authority";
 import Image from "next/image";
 import React from "react";
 import { Skeleton } from "../ui/skeleton";
+import { LinkProps } from "next/link";
+import HoverPrefetchLink from "./hover-prefetch-link";
 
 const navbarBrandTitleVariants = cva("", {
   variants: {
@@ -108,11 +110,15 @@ const NavbarBrand = ({
   hideBrand,
   isLoading,
   name,
+  href,
   ...props
-}: NavbarBrandProps & {
-  ref?: React.RefObject<HTMLDivElement>;
-}) => {
+}: NavbarBrandProps &
+  Partial<Pick<LinkProps, "href" | "prefetch">> & {
+    ref?: React.RefObject<HTMLDivElement>;
+  }) => {
   const [title, subtitle] = name?.split(" ") ?? [_title, _subtitle];
+
+  const Container = href ? HoverPrefetchLink : "div";
 
   return (
     <div
@@ -126,7 +132,7 @@ const NavbarBrand = ({
     >
       {!hideMenu && <SidebarTrigger />}
       {!hideBrand && (
-        <>
+        <Container href={href!} className="flex items-center gap-1.5">
           {icon && (
             <Image
               src={icon}
@@ -189,7 +195,7 @@ const NavbarBrand = ({
             )}
             {children}
           </h3>
-        </>
+        </Container>
       )}
     </div>
   );

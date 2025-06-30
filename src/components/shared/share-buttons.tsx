@@ -10,6 +10,7 @@ import {
   MenubarItem,
 } from "../ui/menubar";
 import { Button } from "../ui/button";
+import { sendEvent } from "@/lib/analytics";
 
 export default function ShareButtons(data: {
   title?: string;
@@ -22,6 +23,9 @@ export default function ShareButtons(data: {
       <Button
         className="h-12 min-h-12 w-full flex-1 border-r bg-teal-500 hover:bg-teal-600"
         onClick={() => {
+          sendEvent("share_results", {
+            action: "copy",
+          });
           copy();
         }}
       >
@@ -36,6 +40,10 @@ export default function ShareButtons(data: {
       <Button
         className="h-12 flex-1 border-r bg-teal-500 hover:bg-teal-600"
         onClick={() => {
+          sendEvent("share_results", {
+            action: "share",
+          });
+
           share().catch((err) => {
             if ((err as Error)?.name === "AbortError") {
               return;

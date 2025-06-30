@@ -2,12 +2,12 @@
 
 import useRoundAnswers from "@/app/play/(saltong)/hooks/useRoundAnswers";
 import { GameId, SaltongGameSettings } from "@/app/play/types";
+import HoverPrefetchLink from "@/components/shared/hover-prefetch-link";
 import { buttonVariants } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { DATE_FORMAT, getDateInPh } from "@/utils/time";
 import { differenceInCalendarDays, format } from "date-fns";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
 
@@ -105,10 +105,9 @@ export default function VaultMonthlyCalendar({
           DayButton: ({ day }) => {
             const gameCount = getGameCount(startDate, day.date);
             return (
-              <Link
+              <HoverPrefetchLink
                 className="h-full w-full"
                 href={`/play${path}?d=${format(day.date, DATE_FORMAT)}`}
-                prefetch={false}
               >
                 <div className="flex h-full w-full flex-col items-center justify-center">
                   <span>{day.date.getDate()}</span>
@@ -116,7 +115,7 @@ export default function VaultMonthlyCalendar({
                     {gameCount > 0 ? gameCount : "."}
                   </span>
                 </div>
-              </Link>
+              </HoverPrefetchLink>
             );
           },
         }}

@@ -2,12 +2,12 @@
 
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { ComponentProps } from "react";
 import { usePathname } from "next/navigation";
 import { Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GameSettings } from "../play/types";
+import HoverPrefetchLink from "@/components/shared/hover-prefetch-link";
 
 export default function UnauthorizedErrorPage(
   gameSettings: Pick<GameSettings, "colorScheme" | "name" | "icon">
@@ -28,6 +28,8 @@ export default function UnauthorizedErrorPage(
           }
           icon={icon}
           name={name}
+          href="/"
+          prefetch={false}
         />
       </Navbar>
       <div
@@ -127,15 +129,14 @@ export default function UnauthorizedErrorPage(
           </div>
           <div className="flex w-full flex-col items-center justify-center gap-4 sm:flex-row">
             <Button size="lg" asChild className="w-full sm:w-auto">
-              <Link
+              <HoverPrefetchLink
                 href={{
                   pathname: "/auth",
                   query: { next: currPathname },
                 }}
-                prefetch={false}
               >
                 Log in
-              </Link>
+              </HoverPrefetchLink>
             </Button>
             <Button
               size="lg"
@@ -143,15 +144,14 @@ export default function UnauthorizedErrorPage(
               asChild
               className="w-full sm:w-auto"
             >
-              <Link
+              <HoverPrefetchLink
                 href={{
                   pathname: "/auth",
                   query: { signup: "1", next: currPathname },
                 }}
-                prefetch={false}
               >
                 Sign up
-              </Link>
+              </HoverPrefetchLink>
             </Button>
           </div>
         </div>

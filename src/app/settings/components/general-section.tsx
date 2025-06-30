@@ -27,7 +27,7 @@ export default function GeneralSection() {
         <SettingsSectionList>
           <SettingsSectionItem>
             <span>Color Mode</span>
-            <ColorModeToggle />
+            <ColorModeToggle location="settings" />
           </SettingsSectionItem>
           <SettingsSectionItem
             className="gap-5"

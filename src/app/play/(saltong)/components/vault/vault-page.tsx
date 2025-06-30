@@ -40,6 +40,8 @@ export default async function SaltongVaultPage({
           title="Saltong"
           name={name}
           icon={icon}
+          href="/"
+          prefetch={false}
         />
 
         <Button variant="outline" asChild>

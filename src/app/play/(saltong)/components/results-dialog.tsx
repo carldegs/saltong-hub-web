@@ -31,6 +31,8 @@ import { GameId, SaltongGameSettings } from "../../types";
 import { getTitleSubtitle } from "../../utils";
 import ShareButtons from "@/components/shared/share-buttons";
 import { getLetterStatusGrid } from "../utils";
+import { sendEvent } from "@/lib/analytics";
+import { Button } from "@/components/ui/button";
 
 const OTHER_GAMES_LIST = [
   "saltong-main",
@@ -275,8 +277,12 @@ function ResultsDialogComponent({
             <TimeCard gameId={gameSettings.id} gameDate={gameDate} />
           </div>
           <ResultsChart playerStats={winTurns} />
-          {(status === "correct" || status === "incorrect") && (
+          {status === "correct" || status === "incorrect" ? (
             <ShareButtons {...shareDetails} />
+          ) : (
+            <Button disabled className="h-12 w-full bg-teal-700">
+              FINISH THE GAME TO SHARE RESULTS
+            </Button>
           )}
 
           <span className="text-center text-sm font-bold tracking-wider">
@@ -289,6 +295,11 @@ function ResultsDialogComponent({
                 key={gameId}
                 className="min-w-[90px] grow"
                 onClick={() => {
+                  sendEvent("button_click", {
+                    location: "results_dialog",
+                    action: "play_game",
+                    gameId,
+                  });
                   onOpenChange?.(false);
                 }}
               >
@@ -313,6 +324,10 @@ function ResultsDialogComponent({
             <Card
               onClick={() => {
                 setShowContribution(true);
+                sendEvent("button_click", {
+                  location: "results_dialog",
+                  action: "contribute",
+                });
               }}
               className="col-span-2 h-full cursor-pointer bg-cyan-100 p-0 text-cyan-700 shadow-none hover:bg-cyan-300 dark:bg-cyan-900/20 dark:text-cyan-100 dark:hover:bg-cyan-900"
             >

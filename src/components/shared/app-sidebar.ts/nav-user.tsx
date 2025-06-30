@@ -23,6 +23,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Profile } from "@/utils/user";
+import { sendEvent } from "@/lib/analytics";
 
 export function NavUser({ profile }: { profile?: Profile }) {
   const supabase = createClient();
@@ -47,6 +48,12 @@ export function NavUser({ profile }: { profile?: Profile }) {
               href={{
                 pathname: "/auth",
                 query: { next: currPathname },
+              }}
+              onClick={() => {
+                sendEvent("button_click", {
+                  location: "sidebar",
+                  action: "login",
+                });
               }}
             >
               Log in

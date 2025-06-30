@@ -1,10 +1,10 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { VaultIcon } from "lucide-react";
 import Image from "next/image";
 import { GameSettings } from "../play/types";
+import HoverPrefetchLink from "@/components/shared/hover-prefetch-link";
 
 export default async function GameCard({
   className,
@@ -51,16 +51,14 @@ export default async function GameCard({
             "bg-purple-500 dark:bg-purple-200": colorScheme === "purple",
           })}
         >
-          <Link href={`/play${path}`} prefetch={false}>
-            Play Game
-          </Link>
+          <HoverPrefetchLink href={`/play${path}`}>Play Game</HoverPrefetchLink>
         </Button>
         {data.user && (
           <Button className="flex-1" variant="outline" asChild>
-            <Link href={`/play${path}/vault`} prefetch={false}>
+            <HoverPrefetchLink href={`/play${path}/vault`}>
               <VaultIcon className="mr-1 size-5" />
               Vault
-            </Link>
+            </HoverPrefetchLink>
           </Button>
         )}
       </div>
