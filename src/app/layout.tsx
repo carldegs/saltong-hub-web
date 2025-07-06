@@ -14,6 +14,7 @@ const fontSans = FontSans({
 });
 import { VercelToolbar } from "@vercel/toolbar/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { ReactQueryClientProvider } from "@/components/providers/react-query-client-providers";
 
 export const metadata: Metadata = {
   title: "Saltong Hub",
@@ -37,26 +38,31 @@ export default async function RootLayout({
     sidebarState === undefined ? true : sidebarState === "true";
 
   return (
-    <html lang="en" suppressHydrationWarning>
-      <GoogleAnalytics gaId="G-Q2M6YCF07C" />
+    <ReactQueryClientProvider>
+      <html lang="en" suppressHydrationWarning>
+        <GoogleAnalytics gaId="G-Q2M6YCF07C" />
 
-      <body
-        className={cn("bg-background font-sans antialiased", fontSans.variable)}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
+        <body
+          className={cn(
+            "bg-background font-sans antialiased",
+            fontSans.variable
+          )}
         >
-          <SidebarProvider defaultOpen={defaultOpen}>
-            <AppSidebar />
-            <main className="flex min-h-dvh w-full flex-col">{children}</main>
-          </SidebarProvider>
-          <Toaster richColors />
-        </ThemeProvider>
-        {shouldInjectToolbar && <VercelToolbar />}
-      </body>
-    </html>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <SidebarProvider defaultOpen={defaultOpen}>
+              <AppSidebar />
+              <main className="flex min-h-dvh w-full flex-col">{children}</main>
+            </SidebarProvider>
+            <Toaster richColors />
+          </ThemeProvider>
+          {shouldInjectToolbar && <VercelToolbar />}
+        </body>
+      </html>
+    </ReactQueryClientProvider>
   );
 }

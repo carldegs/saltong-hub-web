@@ -10,7 +10,13 @@ export enum LetterStatus {
 
 export type SaltongRound = Tables<"saltong-main-rounds">;
 
-export interface RoundAnswerData {
+export interface SaltongRoundParams {
+  gameId: GameId;
+  userId: string;
+  gameDate: string;
+}
+
+export interface RoundAnswerData extends SaltongRoundParams {
   grid: string;
   answer?: string;
   updatedAt?: number;
@@ -29,6 +35,7 @@ export interface RoundStats {
 }
 
 export interface PlayerStats {
+  userId: string;
   gameId: GameId;
   totalWins: number;
   totalLosses: number;

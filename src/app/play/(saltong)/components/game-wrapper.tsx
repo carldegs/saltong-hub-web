@@ -4,15 +4,16 @@ import { useEffect, useMemo, useState } from "react";
 import { useEventListener, useIsMounted } from "usehooks-ts";
 import Keyboard from "./keyboard";
 import SaltongGrid from "./saltong-grid";
-import { LetterStatus, RoundAnswerData, SaltongRound } from "../types";
+import { LetterStatus, SaltongRound } from "../types";
 import { toast } from "sonner";
-import useRoundAnswer from "../hooks/useRoundAnswer";
 import { cn } from "@/lib/utils";
 import { useModalStore } from "@/providers/modal/modal-provider";
 import { useDictionary } from "@/features/dictionary/hooks";
 import { getLetterStatusGrid } from "../utils";
 import { GameId } from "../../types";
 import { sendEvent } from "@/lib/analytics";
+import { useSaltongAnswer } from "../hooks/useSaltongAnswers";
+import { useSaltongStat } from "../hooks/useSaltongStats";
 
 export default function GameWrapper({
   maxTries,
@@ -30,12 +31,17 @@ export default function GameWrapper({
   userId?: string;
 }) {
   const { dict, isLoading: isFetchingDict } = useDictionary(wordLen);
-  const [playerAnswer, setPlayerAnswer] = useRoundAnswer({
+  const [playerAnswer, setAnswer] = useSaltongAnswer({
+    userId: userId ?? "unauthenticated",
     gameId,
     gameDate: roundData.date,
-    roundId: roundData.gameId,
-    userId,
   });
+  const [, setStat] = useSaltongStat({
+    userId: userId ?? "unauthenticated",
+    gameId,
+    gameDate: roundData.date,
+  });
+
   const [inputData, setInputData] = useState<string>("");
   const isMounted = useIsMounted();
 
@@ -113,31 +119,34 @@ export default function GameWrapper({
         }, 500);
       }
 
-      setPlayerAnswer((prev) => {
-        const grid = prev.grid + inputData;
+      const grid = playerAnswer.grid + inputData;
+      const answerData = {
+        grid,
+        startedAt: playerAnswer.startedAt || Date.now(),
+        endedAt:
+          isCurrAnswerCorrect || isTriesExceeded ? Date.now() : undefined,
+        answer:
+          isCurrAnswerCorrect || isTriesExceeded ? roundData.word : undefined,
+        isCorrect: isCurrAnswerCorrect,
+        solvedLive: isCurrAnswerCorrect && isLive,
+        solvedTurn: isCurrAnswerCorrect ? grid.length / wordLen : undefined,
+      };
+      setAnswer(answerData);
 
-        sendEvent("send_answer", {
-          gameId,
-          roundId: roundData.gameId,
-          date: roundData.date,
-          isCorrect: isCurrAnswerCorrect,
-          isLive,
-          answer: inputData,
-        });
-
-        return {
-          ...prev,
-          grid: prev.grid + inputData,
-          startedAt: prev.startedAt || Date.now(),
-          endedAt:
-            isCurrAnswerCorrect || isTriesExceeded ? Date.now() : undefined,
-          answer:
-            isCurrAnswerCorrect || isTriesExceeded ? roundData.word : undefined,
-          isCorrect: isCurrAnswerCorrect,
-          solvedLive: isCurrAnswerCorrect && isLive,
-          solvedTurn: isCurrAnswerCorrect ? grid.length / wordLen : undefined,
-        } satisfies RoundAnswerData;
+      setStat({
+        ...answerData,
+        roundId: roundData.gameId,
       });
+
+      sendEvent("send_answer", {
+        gameId,
+        roundId: roundData.gameId,
+        date: roundData.date,
+        isCorrect: isCurrAnswerCorrect,
+        isLive,
+        answer: inputData,
+      });
+
       setInputData("");
       setIsLoading(false);
       return;
