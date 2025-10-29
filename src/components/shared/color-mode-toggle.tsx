@@ -6,13 +6,13 @@ import { useTheme } from "next-themes";
 
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { sendEvent } from "@/lib/analytics";
-import { useIsMounted } from "usehooks-ts";
+import { useIsClient } from "usehooks-ts";
 
 export function ColorModeToggle({ location }: { location?: string }) {
   const { theme, setTheme } = useTheme();
-  const mounted = useIsMounted();
+  const isClient = useIsClient();
 
-  if (!mounted()) {
+  if (!isClient) {
     return null;
   }
 
