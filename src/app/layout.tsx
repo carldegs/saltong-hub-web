@@ -15,6 +15,7 @@ const fontSans = FontSans({
 import { VercelToolbar } from "@vercel/toolbar/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { ReactQueryClientProvider } from "@/components/providers/react-query-client-providers";
+import GoogleAdSense from "@/components/ads/adsense";
 
 export const metadata: Metadata = {
   title: "Saltong Hub",
@@ -40,6 +41,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <GoogleAnalytics gaId="G-Q2M6YCF07C" />
+      <GoogleAdSense />
 
       <body
         className={cn("bg-background font-sans antialiased", fontSans.variable)}
