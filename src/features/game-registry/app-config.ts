@@ -16,7 +16,7 @@ export const RESULTS_DIALOG_FEATURED_GAME_LIST = [
       displayName,
       icon,
       colorScheme,
-      path,
+      path: `/play${path}`,
     })
   ),
   {
