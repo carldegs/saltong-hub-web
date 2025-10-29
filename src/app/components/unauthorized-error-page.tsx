@@ -6,13 +6,13 @@ import { ComponentProps } from "react";
 import { usePathname } from "next/navigation";
 import { Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { GameSettings } from "../play/types";
 import HoverPrefetchLink from "@/components/shared/hover-prefetch-link";
+import { BaseConfig } from "@/features/game-registry/types";
 
 export default function UnauthorizedErrorPage(
-  gameSettings: Pick<GameSettings, "colorScheme" | "name" | "icon">
+  gameSettings: Pick<BaseConfig, "colorScheme" | "displayName" | "icon">
 ) {
-  const { colorScheme, name, icon } = gameSettings;
+  const { colorScheme, displayName, icon } = gameSettings;
   const currPathname = usePathname();
 
   return (
@@ -27,7 +27,7 @@ export default function UnauthorizedErrorPage(
             colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
           }
           icon={icon}
-          name={name}
+          name={displayName}
           href="/"
           prefetch={false}
         />
@@ -107,8 +107,8 @@ export default function UnauthorizedErrorPage(
             Sorry po!
           </h1>
           <div className="text-muted-foreground mb-8 text-lg">
-            To access previous rounds of <b>{name}</b>, please log in or create
-            a free account.
+            To access previous rounds of <b>{displayName}</b>, please log in or
+            create a free account.
             <br />
             <span
               className={cn("font-semibold", {

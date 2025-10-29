@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { MAX_DICT_WORD_LENGTH, MIN_DICT_WORD_LENGTH } from "./constants";
 import { getDictionary } from "./api";
@@ -30,48 +30,90 @@ export const useDictionary = <W extends number | number[] = number[]>(
   const [status, setStatus] = useState<
     "idle" | "loading" | "error" | "success"
   >("idle");
-  const [isInitialized, setIsInitialized] = useState(false);
+  const hasFetchedRef = useRef(false);
 
   const isLoading = useMemo(() => status === "loading", [status]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const wlen = Array.isArray(wordLen) ? wordLen : [wordLen];
+    // Only run on the client
+    if (typeof window === "undefined") return;
 
-      const wlenToFetch = wlen.filter((len) => !cache[len] && len);
+    const requested = (Array.isArray(wordLen) ? wordLen : [wordLen])
+      .filter((len): len is number => typeof len === "number")
+      .filter(
+        (len) => len >= MIN_DICT_WORD_LENGTH && len <= MAX_DICT_WORD_LENGTH
+      );
 
-      if (wlenToFetch.length) {
-        setStatus("loading");
-        try {
-          const data = await Promise.all(
-            wlenToFetch.map((len) => getDictionary(len))
-          );
-          const newData = wlenToFetch.reduce(
-            (acc, len, idx) => ({ ...acc, [len]: data[idx] }),
-            {}
-          );
-          setCache({ ...cache, ...newData });
+    if (!requested.length) return;
+
+    // Step 1: Read localStorage directly to avoid fetching if data already exists
+    let lsData: Record<number, string[]> = {};
+    try {
+      const raw = localStorage.getItem("saltong/dict");
+      if (raw) {
+        lsData = JSON.parse(raw);
+      }
+    } catch (e) {
+      // If parsing fails, ignore and treat as empty
+      console.warn("Failed to parse localStorage for dictionary:", e);
+    }
+
+    // Sync localStorage data into hook cache if cache is empty or missing keys
+    if (Object.keys(lsData).length) {
+      setCache((prev) => ({ ...lsData, ...prev }));
+    }
+
+    const source: Record<number, string[]> = {
+      ...lsData,
+      ...cache,
+    };
+
+    // Determine which lengths are missing locally
+    const toFetch = requested.filter(
+      (len) => !source[len] || source[len]?.length === 0
+    );
+
+    if (!toFetch.length) return;
+
+    // Avoid duplicating fetches for the same run
+    if (hasFetchedRef.current) return;
+    hasFetchedRef.current = true;
+
+    let cancelled = false;
+    const run = async () => {
+      setStatus("loading");
+      try {
+        const results = await Promise.all(
+          toFetch.map((len) => getDictionary(len))
+        );
+        const merged: Record<number, string[]> = { ...source };
+        toFetch.forEach((len, idx) => {
+          merged[len] = results[idx];
+        });
+        if (!cancelled) {
+          setCache(merged);
           setStatus("success");
-        } catch (e) {
-          console.error(e);
-          setStatus("error");
         }
+      } catch (e) {
+        console.error(e);
+        if (!cancelled) setStatus("error");
       }
     };
 
-    if (!isInitialized) {
-      setIsInitialized(true);
-    } else {
-      fetchData();
-    }
+    run();
 
     return () => {
-      setStatus("idle");
+      cancelled = true;
+      hasFetchedRef.current = false;
     };
-  }, [cache, isInitialized, setCache, wordLen]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wordLen, setCache]);
 
   if (typeof wordLen === "number") {
-    return { dict: cache[wordLen], isLoading } as UseDictionaryResponse<W>;
+    return {
+      dict: cache[wordLen] ?? [],
+      isLoading,
+    } as UseDictionaryResponse<W>;
   }
 
   const filteredCache = wordLen.reduce(

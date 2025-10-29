@@ -38,16 +38,13 @@ export default async function RootLayout({
     sidebarState === undefined ? true : sidebarState === "true";
 
   return (
-    <ReactQueryClientProvider>
-      <html lang="en" suppressHydrationWarning>
-        <GoogleAnalytics gaId="G-Q2M6YCF07C" />
+    <html lang="en" suppressHydrationWarning>
+      <GoogleAnalytics gaId="G-Q2M6YCF07C" />
 
-        <body
-          className={cn(
-            "bg-background font-sans antialiased",
-            fontSans.variable
-          )}
-        >
+      <body
+        className={cn("bg-background font-sans antialiased", fontSans.variable)}
+      >
+        <ReactQueryClientProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -61,8 +58,8 @@ export default async function RootLayout({
             <Toaster richColors />
           </ThemeProvider>
           {shouldInjectToolbar && <VercelToolbar />}
-        </body>
-      </html>
-    </ReactQueryClientProvider>
+        </ReactQueryClientProvider>
+      </body>
+    </html>
   );
 }

@@ -1,3 +1,3 @@
-import NotFound from "./components/templates/game-not-found-page";
+import NotFound from "@/features/saltong/templates/game-not-found-page";
 
 export default NotFound;

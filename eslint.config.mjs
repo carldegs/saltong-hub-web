@@ -12,7 +12,11 @@ const eslintConfig = [
   }),
   eslintPluginPrettierRecommended,
   {
-    ignores: ["src/components/ui/*", "src/components/magicui/*"],
+    ignores: [
+      "src/components/ui/*",
+      "src/components/magicui/*",
+      "src/lib/supabase/types.ts",
+    ],
   },
 ];
 

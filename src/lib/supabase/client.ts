@@ -13,5 +13,5 @@ export function createClient() {
 }
 
 export function useSupabaseClient() {
-  return useMemo(createClient, []);
+  return useMemo(() => createClient(), []);
 }

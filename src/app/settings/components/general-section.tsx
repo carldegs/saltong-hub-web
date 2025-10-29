@@ -11,14 +11,13 @@ import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import { PowerIcon, PowerOffIcon } from "lucide-react";
-import { useLocalStorage } from "usehooks-ts";
-import { useIsMounted } from "@/hooks/use-is-mounted";
+import { useIsMounted, useLocalStorage } from "usehooks-ts";
 import useHighContrast from "@/hooks/use-high-contrast";
 
 export default function GeneralSection() {
   const { highContrast, setHighContrast } = useHighContrast();
   const [language, setLanguage] = useLocalStorage("language", "EN");
-  const mounted = useIsMounted();
+  const isMounted = useIsMounted();
 
   return (
     <section>
@@ -40,7 +39,7 @@ export default function GeneralSection() {
                 accessibility.
               </span>
             </div>
-            {mounted && (
+            {isMounted() && (
               <Button size="sm" variant={highContrast ? "default" : "outline"}>
                 <PowerIcon
                   className={cn({
@@ -60,7 +59,7 @@ export default function GeneralSection() {
           <SettingsSectionItem>
             {/* TODO: Implement Language */}
             <span>Language</span>
-            {mounted && (
+            {isMounted() && (
               <ToggleGroup
                 type="single"
                 value={language}
