@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRef, useEffect, useState } from "react";
 import { passwordSchema } from "../auth-schema";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 interface PasswordCardProps {
@@ -20,7 +20,7 @@ export function PasswordCard({
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const supabase = createClient();
+  const supabase = useSupabaseClient();
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 

@@ -1,36 +1,25 @@
 import { Metadata } from "next";
-import getRound from "../../api/getRound";
-import SaltongMainPageWithSuspense from "../components/templates/saltong-game-page";
-import { GAME_SETTINGS } from "../../constants";
+import { generateSaltongMetadata } from "@/features/saltong/utils/generateSaltongMetadata";
+import SaltongMainPageWithSuspense from "@/features/saltong/templates/saltong-game-page";
 
 interface Props {
   searchParams: Promise<{ d?: string }>;
 }
 
-const SETTINGS = GAME_SETTINGS["saltong-max"];
+const MODE = "max";
 
-export async function generateMetadata({
-  searchParams: _searchParams,
-}: Props): Promise<Metadata> {
-  const searchParams = await _searchParams;
-  const round = await getRound(SETTINGS.config.tableName, searchParams?.d);
-
-  if (!round) {
-    return {
-      title: "Saltong Mini",
-    };
-  }
-
-  return {
-    title: `Saltong Max #${round?.gameId}`,
-  };
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  return generateSaltongMetadata({
+    searchParams: props.searchParams,
+    mode: MODE,
+  });
 }
 
 export default async function SaltongMainPage(props: Props) {
   return (
     <SaltongMainPageWithSuspense
       searchParams={props.searchParams}
-      {...SETTINGS}
+      mode={MODE}
     />
   );
 }

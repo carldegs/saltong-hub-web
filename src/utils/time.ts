@@ -1,4 +1,4 @@
-import { GAME_SETTINGS } from "@/app/play/constants";
+import { HEX_CONFIG } from "@/features/hex/config";
 import {
   add,
   closestTo,
@@ -155,11 +155,10 @@ export function getNthTuesdayFriday(
   return nthOccurrence;
 }
 
-const START_DATE = GAME_SETTINGS.hex.config.startDate;
-
+const HEX_START_DATE = HEX_CONFIG.startDate;
 export const getHexDatesWithPagination = (year: number, month: number) => {
   let hexDates = [];
-  const start = new Date(START_DATE);
+  const start = new Date(HEX_START_DATE);
   const startDate = new Date(year, month, 1);
   const endDate = endOfMonth(startDate);
   const today = getDateInPh(new Date());
@@ -167,7 +166,7 @@ export const getHexDatesWithPagination = (year: number, month: number) => {
 
   // Calculate the initial iteration based on the start date and current date
   let currentIteration = getNthTuesdayFriday(
-    START_DATE,
+    HEX_START_DATE,
     formatInTimeZone(currentDate, PH_TIMEZONE, DATE_FORMAT)
   );
 

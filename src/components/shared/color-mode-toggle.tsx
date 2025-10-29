@@ -5,14 +5,14 @@ import { Moon, Sun, SunMoon } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-import { useIsMounted } from "@/hooks/use-is-mounted";
 import { sendEvent } from "@/lib/analytics";
+import { useIsMounted } from "usehooks-ts";
 
 export function ColorModeToggle({ location }: { location?: string }) {
   const { theme, setTheme } = useTheme();
   const mounted = useIsMounted();
 
-  if (!mounted) {
+  if (!mounted()) {
     return null;
   }
 

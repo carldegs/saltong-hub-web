@@ -3,6 +3,9 @@ import { Database } from "@/lib/supabase/types";
 import { getFormattedDateInPh, getFormattedHexDateInPh } from "@/utils/time";
 import { cache } from "react";
 
+/**
+ * @deprecated
+ */
 const getRound = cache(
   async <T extends keyof Database["public"]["Tables"]>(
     table: T,

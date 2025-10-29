@@ -3,17 +3,14 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { VaultIcon } from "lucide-react";
 import Image from "next/image";
-import { GameSettings } from "../play/types";
 import HoverPrefetchLink from "@/components/shared/hover-prefetch-link";
+import { BaseConfig } from "@/features/game-registry/types";
 
 export default async function GameCard({
   className,
   ...gameSettings
-}: { className?: string } & Pick<
-  GameSettings,
-  "icon" | "name" | "blurb" | "colorScheme" | "path"
->) {
-  const { icon, name, blurb, colorScheme, path } = gameSettings;
+}: { className?: string } & BaseConfig) {
+  const { icon, displayName, blurb, colorScheme, path } = gameSettings;
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
 
@@ -35,9 +32,9 @@ export default async function GameCard({
       )}
     >
       <div className="flex flex-1">
-        <Image alt={name} src={icon} width={64} height={64} />
+        <Image alt={displayName} src={icon} width={64} height={64} />
         <div className="ml-4 flex flex-col">
-          <span className="font-semibold">{name}</span>
+          <span className="font-semibold">{displayName}</span>
           <span className="text-base opacity-70">{blurb}</span>
         </div>
       </div>

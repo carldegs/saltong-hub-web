@@ -3,25 +3,25 @@ import { createClient } from "@/lib/supabase/server";
 import UnauthorizedErrorPage from "@/app/components/unauthorized-error-page";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { ComponentProps } from "react";
-import VaultCalendar from "../components/vault/vault-calendar";
+import VaultCalendar from "@/features/hex/components/vault/vault-calendar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { GAME_SETTINGS } from "../../constants";
+import { HEX_CONFIG } from "@/features/hex/config";
 
 export const metadata: Metadata = {
   title: "Saltong Hex Vault",
 };
 
-const SETTINGS = GAME_SETTINGS["hex"];
-
 export default async function SaltongHexVaultPage() {
-  const { colorScheme, name, icon } = SETTINGS;
+  const { colorScheme, icon } = HEX_CONFIG;
 
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!data.user) {
-    return <UnauthorizedErrorPage {...SETTINGS} />;
+  if (!user) {
+    return <UnauthorizedErrorPage {...HEX_CONFIG} />;
   }
 
   return (
@@ -36,7 +36,7 @@ export default async function SaltongHexVaultPage() {
             colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
           }
           title="Saltong"
-          name={name}
+          name="Hex"
           icon={icon}
           href="/"
           prefetch={false}
@@ -47,7 +47,7 @@ export default async function SaltongHexVaultPage() {
         </Button>
       </Navbar>
       <div className="mx-auto w-full max-w-prose">
-        <VaultCalendar />
+        <VaultCalendar userId={user?.id} />
       </div>
     </>
   );

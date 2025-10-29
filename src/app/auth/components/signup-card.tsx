@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { signupSchema } from "../auth-schema";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 import { getRedirectURL } from "@/lib/utils";
 
 interface SignupCardProps {
@@ -13,7 +13,7 @@ interface SignupCardProps {
 }
 
 export function SignupCard({ onBack }: SignupCardProps) {
-  const supabase = createClient();
+  const supabase = useSupabaseClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

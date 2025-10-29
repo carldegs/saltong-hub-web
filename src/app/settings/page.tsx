@@ -41,7 +41,7 @@ export default async function SettingsPage() {
             <AccountSection user={user} />
             <GeneralSection />
             <AboutSection />
-            <SupportSection />
+            <SupportSection userId={user?.id} />
             <BuildInfoSection />
           </CardContent>
         </Card>

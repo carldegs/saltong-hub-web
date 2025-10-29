@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, createContext, useContext, useRef } from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
 import { ModalStore, createModalStore } from "./modal-store";
 import { useStore } from "zustand";
 
@@ -15,14 +15,10 @@ export default function ModalStoreProvider({
 }: {
   children: ReactNode;
 }) {
-  const storeRef = useRef<ModalStoreApi>(undefined);
-
-  if (!storeRef.current) {
-    storeRef.current = createModalStore();
-  }
+  const [store] = useState(() => createModalStore());
 
   return (
-    <ModalStoreContext.Provider value={storeRef.current}>
+    <ModalStoreContext.Provider value={store}>
       {children}
     </ModalStoreContext.Provider>
   );

@@ -23,5 +23,9 @@ export function sendEvent(action: string, params: AnalyticsParams = {}) {
 }
 
 export function useAnalytics() {
-  return useCallback(sendEvent, []);
+  return useCallback(
+    (event: string, params?: Record<string, unknown>) =>
+      sendEvent(event, params),
+    []
+  );
 }

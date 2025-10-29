@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { passwordSchema } from "../auth-schema";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { AuthCard } from "./auth-card";
 import { getRedirectURL } from "@/lib/utils";
 
 export function ResetPasswordCard() {
-  const supabase = createClient();
+  const supabase = useSupabaseClient();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
