@@ -6,6 +6,7 @@ import HomeNavbarBrand from "./components/home-navbar-brand";
 import VaultBanner from "@/components/banners/vault-banner";
 import { SALTONG_CONFIG } from "@/features/saltong/config";
 import { HEX_CONFIG } from "@/features/hex/config";
+import CreateAccountBanner from "@/components/banners/create-account-banner";
 
 const GAME_LIST = [...Object.values(SALTONG_CONFIG.modes), HEX_CONFIG];
 
@@ -33,6 +34,9 @@ export default async function HomePage() {
               <GameCard key={config?.displayName} {...config} />
             ))}
           </div>
+        </div>
+        <div className="@container/bot mx-auto w-full max-w-5xl space-y-8 px-4 py-8">
+          <CreateAccountBanner />
         </div>
       </main>
     </div>
