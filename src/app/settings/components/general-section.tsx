@@ -8,15 +8,15 @@ import {
 } from "./settings-section";
 import { ColorModeToggle } from "@/components/shared/color-mode-toggle";
 import { Button } from "@/components/ui/button";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+// import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import { PowerIcon, PowerOffIcon } from "lucide-react";
-import { useIsClient, useLocalStorage } from "usehooks-ts";
+import { useIsClient } from "usehooks-ts";
 import useHighContrast from "@/hooks/use-high-contrast";
 
 export default function GeneralSection() {
   const { highContrast, setHighContrast } = useHighContrast();
-  const [language, setLanguage] = useLocalStorage("language", "EN");
+  // const [language, setLanguage] = useLocalStorage("language", "EN");
   const isClient = useIsClient();
 
   return (
@@ -56,8 +56,7 @@ export default function GeneralSection() {
               </Button>
             )}
           </SettingsSectionItem>
-          <SettingsSectionItem>
-            {/* TODO: Implement Language */}
+          {/* <SettingsSectionItem>
             <span>Language</span>
             {isClient && (
               <ToggleGroup
@@ -74,7 +73,7 @@ export default function GeneralSection() {
                 </ToggleGroupItem>
               </ToggleGroup>
             )}
-          </SettingsSectionItem>
+          </SettingsSectionItem> */}
         </SettingsSectionList>
       </SettingsSectionContent>
     </section>
