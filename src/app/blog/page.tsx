@@ -3,8 +3,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "../components/home-navbar-brand";
-import { getBlogPosts, formatDate } from "./utils";
-import { Calendar, ArrowRight } from "lucide-react";
+import { getBlogPosts } from "./utils";
+import { ArrowRight } from "lucide-react";
+import { BlogDate } from "./components/blog-date";
 
 export const metadata = {
   title: "Blog | Saltong Hub",
@@ -73,13 +74,7 @@ export default function BlogPage() {
                     <div className="flex flex-1 flex-col justify-between gap-3">
                       {/* Meta */}
                       <div className="text-muted-foreground flex flex-wrap items-center gap-3 text-sm">
-                        <time
-                          dateTime={post.metadata.publishedAt}
-                          className="flex items-center gap-1.5"
-                        >
-                          <Calendar size={14} />
-                          {formatDate(post.metadata.publishedAt)}
-                        </time>
+                        <BlogDate date={post.metadata.publishedAt} />
                       </div>
 
                       {/* Title & Summary */}

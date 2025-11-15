@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { format, formatDistanceToNow, differenceInDays } from "date-fns";
 
 export type BlogMetadata = {
   title: string;
@@ -80,36 +81,32 @@ export function getBlogPost(slug: string): BlogPost | undefined {
 }
 
 export function formatDate(date: string, includeRelative = false) {
-  const currentDate = new Date();
   const targetDate = new Date(date);
-
-  const yearsAgo = currentDate.getFullYear() - targetDate.getFullYear();
-  const monthsAgo = currentDate.getMonth() - targetDate.getMonth();
-  const daysAgo = currentDate.getDate() - targetDate.getDate();
-
-  let formattedDate = "";
+  const fullDate = format(targetDate, "MMMM d, yyyy");
+  const daysDifference = differenceInDays(new Date(), targetDate);
 
   if (includeRelative) {
-    if (yearsAgo > 0) {
-      formattedDate = `${yearsAgo}y ago`;
-    } else if (monthsAgo > 0) {
-      formattedDate = `${monthsAgo}mo ago`;
-    } else if (daysAgo > 0) {
-      formattedDate = `${daysAgo}d ago`;
-    } else {
-      formattedDate = "Today";
+    // For dates within the last week, show relative date with full date on hover
+    if (daysDifference <= 7) {
+      const relativeDate = formatDistanceToNow(targetDate, {
+        addSuffix: true,
+        includeSeconds: true,
+      });
+      return {
+        display: relativeDate,
+        full: fullDate,
+      };
     }
+
+    // For dates over a week old, just show the actual date
+    return {
+      display: fullDate,
+      full: fullDate,
+    };
   }
 
-  const fullDate = targetDate.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-
-  if (includeRelative) {
-    return `${fullDate} (${formattedDate})`;
-  }
-
-  return fullDate;
+  return {
+    display: fullDate,
+    full: fullDate,
+  };
 }

@@ -1,13 +1,14 @@
 import { notFound } from "next/navigation";
-import { getBlogPosts, formatDate } from "../utils";
+import { getBlogPosts } from "../utils";
 import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "@/app/components/home-navbar-brand";
-import { Calendar, User, ArrowLeft } from "lucide-react";
+import { User, ArrowLeft } from "lucide-react";
 import { CustomMDX } from "@/mdx-components";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { TableOfContents } from "./components/table-of-contents";
+import { BlogDate } from "../components/blog-date";
 
 // Extract headings from markdown content for table of contents
 function extractHeadings(content: string) {
@@ -138,12 +139,7 @@ export default async function BlogPost({
                         <span>{post.metadata.author}</span>
                       </div>
                     )}
-                    <div className="flex items-center gap-2">
-                      <Calendar size={16} />
-                      <time dateTime={post.metadata.publishedAt}>
-                        {formatDate(post.metadata.publishedAt)}
-                      </time>
-                    </div>
+                    <BlogDate date={post.metadata.publishedAt} iconSize={16} />
                   </div>
                 </div>
               </div>
