@@ -17,15 +17,16 @@ export default async function GameCard({
   return (
     <div
       className={cn(
-        "from-background/50 flex flex-col gap-4 rounded-lg border bg-linear-to-br to-gray-200 p-4 text-xl backdrop-blur-md dark:to-gray-400/50",
+        "relative flex transform-gpu flex-col gap-4 rounded-2xl border p-4 text-xl shadow-xl backdrop-blur-md transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:shadow-2xl",
         {
-          "from-green-300 to-green-50 dark:from-green-400/70 dark:to-green-700/70":
+          "border-saltong-green/30 bg-saltong-green/15":
             colorScheme === "green",
-          "from-red-300 to-red-50 dark:from-red-400/70 dark:to-red-700/70":
-            colorScheme === "red",
-          "from-blue-300 to-blue-50 dark:from-blue-400/70 dark:to-blue-700/70":
-            colorScheme === "blue",
-          "from-purple-300 to-purple-50 dark:from-purple-400/70 dark:to-purple-700/70":
+
+          "border-saltong-red/30 bg-saltong-red/15": colorScheme === "red",
+
+          "border-saltong-blue/30 bg-saltong-blue/15": colorScheme === "blue",
+
+          "border-saltong-purple/30 bg-saltong-purple/15":
             colorScheme === "purple",
         },
         className

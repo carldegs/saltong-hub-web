@@ -6,6 +6,9 @@ import { useState } from "react";
 import { signupSchema } from "../auth-schema";
 import { useSupabaseClient } from "@/lib/supabase/client";
 import { getRedirectURL } from "@/lib/utils";
+import GoogleIcon from "@/assets/auth/google.svg";
+import DiscordIcon from "@/assets/auth/discord.svg";
+import TwitterIcon from "@/assets/auth/twitter.svg";
 
 interface SignupCardProps {
   onBack: () => void;
@@ -27,6 +30,14 @@ export function SignupCard({ onBack }: SignupCardProps) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+
+  // Handle OAuth (same providers and behavior as login)
+  function handleOAuth(provider: "google" | "discord" | "twitter") {
+    supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: `${getRedirectURL()}auth/callback` },
+    });
+  }
 
   function handlePasswordChange(value: string) {
     setPassword(value);
@@ -185,6 +196,42 @@ export function SignupCard({ onBack }: SignupCardProps) {
           "Sign up"
         )}
       </Button>
+      <div className="my-4 flex w-full items-center justify-center gap-2">
+        <div className="bg-muted h-0.5 w-full" />
+        <span className="text-muted-foreground mx-2 text-sm font-bold tracking-wider text-nowrap whitespace-nowrap uppercase">
+          Or Sign up with
+        </span>
+        <div className="bg-muted h-0.5 w-full" />
+      </div>
+      <div className="flex w-full flex-col items-center justify-center gap-2 md:flex-row">
+        <Button
+          variant="secondary"
+          className="min-h-12 w-full flex-1"
+          onClick={() => handleOAuth("google")}
+          disabled={isSubmitting}
+        >
+          <GoogleIcon />
+          Google
+        </Button>
+        <Button
+          variant="secondary"
+          className="min-h-12 w-full flex-1"
+          onClick={() => handleOAuth("discord")}
+          disabled={isSubmitting}
+        >
+          <DiscordIcon />
+          Discord
+        </Button>
+        <Button
+          variant="secondary"
+          className="min-h-12 w-full flex-1"
+          onClick={() => handleOAuth("twitter")}
+          disabled={isSubmitting}
+        >
+          <TwitterIcon />
+          Twitter
+        </Button>
+      </div>
       <Button
         variant="outline"
         className="w-full"
