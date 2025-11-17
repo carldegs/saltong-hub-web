@@ -54,3 +54,28 @@ export interface SaltongAdditionalConfig {
   maxTries: number;
   wordLen: number;
 }
+
+/**
+ * Word difficulty score returned by AI
+ * Score scale: 0 = English (not Filipino/Tagalog), 1 = very common, 2 = common,
+ * 3 = moderately common, 4 = regional/specialized, 5 = very obscure
+ */
+export interface WordScore {
+  word: string;
+  score: number;
+  explanation: string;
+}
+
+export interface DraftRound {
+  date: string;
+  word: string;
+  roundId: number;
+  score?: number;
+  explanation?: string;
+}
+
+export interface RecentRound {
+  date: string;
+  word: string;
+  roundId: number;
+}
