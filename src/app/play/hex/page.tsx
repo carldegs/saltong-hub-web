@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { Navbar, NavbarBrand } from "../../../components/shared/navbar";
-import { getFormattedHexDateInPh } from "@/utils/time";
+import { getFormattedHexDateInPh, isFormattedDateInFuture } from "@/utils/time";
 import GameWrapper from "@/features/hex/components/game-wrapper";
 import { HexStoreProvider } from "@/features/hex/providers/hex-store-provider";
 import { Metadata } from "next";
@@ -15,6 +15,7 @@ import {
 } from "@tanstack/react-query";
 import { getCachedHexRound } from "@/features/hex/queries/getHexRound";
 import { getCachedHexUserRound } from "@/features/hex/queries/getHexUserRound";
+import { getCharSet } from "@/features/hex/utils";
 
 export const metadata: Metadata = {
   title: "Saltong Hex",
@@ -44,6 +45,11 @@ export default async function SaltongHexPage({
     searchParams?.d !== getFormattedHexDateInPh()
   ) {
     // TODO: Create custom unauthorized page for Hex
+    return notFound();
+  }
+
+  // TODO: Test if it works on different timezones
+  if (searchParams?.d && isFormattedDateInFuture(searchParams.d)) {
     return notFound();
   }
 
@@ -79,11 +85,8 @@ export default async function SaltongHexPage({
     });
   }
 
-  const letters = round?.rootWord
-    ? Array.from(new Set(round.rootWord.split(""))).filter(
-        (letter) => letter !== round.centerLetter
-      )
-    : [];
+  const rootLetters = getCharSet(round.rootWord ?? "");
+  const letters = rootLetters.filter((letter) => letter !== round.centerLetter);
 
   return (
     <div className="grid min-h-screen w-full grid-rows-[auto_1fr]">

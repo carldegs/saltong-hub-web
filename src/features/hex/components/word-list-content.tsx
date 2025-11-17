@@ -23,10 +23,12 @@ export default function WordListContent({
   isLoading,
   words,
   numWordsToGuess,
+  numLetters = 7,
 }: {
   isLoading: boolean;
   words: string[];
   numWordsToGuess: number;
+  numLetters?: number;
 }) {
   const mounted = useIsMounted();
   const [sortBy, setSortBy] =
@@ -53,8 +55,8 @@ export default function WordListContent({
   }, [sortBy, sortOrder, words]);
 
   const pangramWordsInList = useMemo(
-    () => wordList.filter((word) => isPangram(word)),
-    [wordList]
+    () => wordList.filter((word) => isPangram(word, numLetters)),
+    [wordList, numLetters]
   );
 
   if (!mounted()) {

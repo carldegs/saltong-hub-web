@@ -30,7 +30,7 @@ const Hex = ({
 }) => (
   <div
     className={cn("relative flex items-center justify-center", {
-      "pointer-events-none": disabled,
+      "pointer-events-none": disabled || !value,
       "opacity-50": disabled,
     })}
     onClick={() => {
