@@ -30,12 +30,10 @@ export default function AdUnit({
 }) {
   useEffect(() => {
     try {
-      console.log("Loading Adsense ad unit", adSlot);
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (e) {
       console.error("Adsense error", e);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

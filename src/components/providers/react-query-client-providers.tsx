@@ -43,7 +43,6 @@ export const ReactQueryClientProvider = ({
   children: React.ReactNode;
 }) => {
   const queryClient = getQueryClient();
-  console.log("queryClient", queryClient);
 
   return (
     <QueryClientProvider client={queryClient}>

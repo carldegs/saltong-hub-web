@@ -75,8 +75,6 @@ export default function VaultMonthlyCalendar({
       .map(([, { date }]) => new Date(`${date}T00:00:00+08:00`));
   }, [answers]);
 
-  console.log({ answers, solvedDates, failedDates, unfinishedDates });
-
   return (
     <div>
       <Calendar

@@ -29,17 +29,10 @@ async function SaltongGamePage({
   const gameSettings = SALTONG_CONFIG.modes[mode];
   const { maxTries, wordLen, colorScheme, displayName, icon, path } =
     gameSettings;
-  // eslint-disable-next-line react-hooks/purity -- Server component timing
-  const start = Date.now();
   const searchParams = await _searchParams;
   const supabase = await createClient();
   const { data: userData } = await supabase.auth.getUser();
   const queryClient = new QueryClient();
-
-  console.log(
-    // eslint-disable-next-line react-hooks/purity
-    `SaltongGamePage: Auth check took ${Date.now() - start}ms for mode: ${mode}`
-  );
 
   if (
     !userData?.user &&
@@ -61,13 +54,7 @@ async function SaltongGamePage({
     return notFound();
   }
 
-  console.log(
-    // eslint-disable-next-line react-hooks/purity
-    `SaltongGamePage: Round fetched in ${Date.now() - start}ms for mode: ${mode}`
-  );
-
   if (userData?.user?.id) {
-    console.log("Prefetching user round data...");
     await queryClient.prefetchQuery({
       queryKey: [
         "saltong-user-round",
@@ -81,9 +68,6 @@ async function SaltongGamePage({
             userData.user?.id ?? ""
           )
         )?.data;
-
-        // eslint-disable-next-line react-hooks/purity
-        console.log(`User round data prefetched in ${Date.now() - start}ms`);
 
         return data;
       },

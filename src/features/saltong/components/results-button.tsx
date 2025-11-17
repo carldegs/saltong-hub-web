@@ -28,8 +28,6 @@ export function ResultsButton({
     mode,
   });
 
-  console.log({ playerStats });
-
   return (
     <>
       <ResultsDialog
