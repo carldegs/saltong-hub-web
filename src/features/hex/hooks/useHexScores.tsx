@@ -10,26 +10,34 @@ import {
 export default function useHexScores({
   guessedWords = [],
   wordList = [],
+  numLetters = 7,
 }: {
   guessedWords: string[];
   wordList: string[];
+  numLetters?: number;
 }) {
-  const maxScore = useMemo(() => getTotalScore(wordList), [wordList]);
+  const maxScore = useMemo(
+    () => getTotalScore(wordList, numLetters),
+    [wordList, numLetters]
+  );
   const rankScoreMap = useMemo(() => getRankScoreMap(maxScore), [maxScore]);
 
-  const score = useMemo(() => getTotalScore(guessedWords), [guessedWords]);
+  const score = useMemo(
+    () => getTotalScore(guessedWords, numLetters),
+    [guessedWords, numLetters]
+  );
   const rank = useMemo(
     () => getRank(score, rankScoreMap),
     [score, rankScoreMap]
   );
   const wordScoreMap = useMemo(
-    () => getWordScoreMap(guessedWords),
-    [guessedWords]
+    () => getWordScoreMap(guessedWords, numLetters),
+    [guessedWords, numLetters]
   );
 
   const numPangrams = useMemo(
-    () => wordList.filter((word) => isPangram(word)).length,
-    [wordList]
+    () => wordList.filter((word) => isPangram(word, numLetters)).length,
+    [wordList, numLetters]
   );
 
   const nextRank = useMemo(

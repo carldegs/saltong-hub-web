@@ -25,7 +25,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { isPangram } from "../utils";
+import { isPangram, getNumLettersFromWordId } from "../utils";
 import ShareButtons from "@/components/shared/share-buttons";
 import { sendEvent } from "@/lib/analytics";
 import { HexRound } from "../types";
@@ -73,9 +73,14 @@ function ResultsDialogComponent({
   isRevealed: boolean;
   onRevealAnswers: () => void;
 }) {
+  const numLetters = useMemo(
+    () => getNumLettersFromWordId(round.wordId),
+    [round.wordId]
+  );
   const { score, rank, maxScore, rankScoreMap, numPangrams } = useHexScores({
     guessedWords,
     wordList,
+    numLetters,
   });
 
   const topScore = useMemo(
@@ -295,7 +300,7 @@ function ResultsDialogComponent({
                     >
                       {word}
                     </span>
-                    {isPangram(word) && (
+                    {isPangram(word, numLetters) && (
                       <StarIcon className="size-4 text-yellow-500 dark:text-yellow-400" />
                     )}
                   </div>

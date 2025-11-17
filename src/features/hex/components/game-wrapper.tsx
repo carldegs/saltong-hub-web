@@ -12,6 +12,7 @@ import {
   getRankScoreMap,
   getTotalScore,
   getWordScore,
+  getNumLettersFromWordId,
 } from "../utils";
 import WordListCard from "./word-list-card";
 import ScoreTracker from "./score-tracker";
@@ -29,8 +30,9 @@ export default function GameWrapper({
   isLive?: boolean;
   userId?: string;
 }) {
-  const { rootWord, centerLetter, words, date } = roundData;
+  const { rootWord, centerLetter, words, date, wordId } = roundData;
   const parsedWords = useMemo(() => words?.split(",") ?? [], [words]);
+  const numLetters = useMemo(() => getNumLettersFromWordId(wordId), [wordId]);
   const { data: userRound, isLoading } = useHexUserRound({
     date,
     userId: userId ?? "unauthenticated",
@@ -92,11 +94,11 @@ export default function GameWrapper({
       return;
     }
 
-    const score = getWordScore(inputWord);
+    const score = getWordScore(inputWord, numLetters);
     setLastScore(score);
     const prevGuessed = userRound?.guessedWords ?? [];
     const newGuessed = [...prevGuessed, inputWord];
-    const roundScore = getTotalScore(prevGuessed);
+    const roundScore = getTotalScore(prevGuessed, numLetters);
     const rank = getRank(roundScore + score, rankMap);
     const isTopRank = rank?.name === rankMap[rankMap.length - 1].name;
 
@@ -178,6 +180,7 @@ export default function GameWrapper({
           wordList={parsedWords}
           guessedWords={userRound?.guessedWords ?? []}
           isGameOver={!!userRound?.isRevealed}
+          numLetters={numLetters}
         />
 
         <WordListBar

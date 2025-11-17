@@ -23,4 +23,9 @@ export const HEX_CONFIG = {
     { name: "alamat", percentage: 0.7, icon: "👑" },
     { name: "bathala", percentage: 0.9, icon: "⚡" },
   ],
+  numWordsLimit: 150,
+  minPangramLetters: 6,
+  maxPangramLetters: 7,
+  minWordListLetters: 4,
+  maxWordListLetters: 19,
 } as const satisfies GameRegistry<HexAdditionalConfig>;

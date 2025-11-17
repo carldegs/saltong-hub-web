@@ -24,6 +24,7 @@ export type Database = {
           numWords: number | null;
           rootWord: string | null;
           roundId: number;
+          wordId: number | null;
           words: string | null;
         };
         Insert: {
@@ -35,6 +36,7 @@ export type Database = {
           numWords?: number | null;
           rootWord?: string | null;
           roundId: number;
+          wordId?: number | null;
           words?: string | null;
         };
         Update: {
@@ -46,6 +48,7 @@ export type Database = {
           numWords?: number | null;
           rootWord?: string | null;
           roundId?: number;
+          wordId?: number | null;
           words?: string | null;
         };
         Relationships: [];

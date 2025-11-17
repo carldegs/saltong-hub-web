@@ -23,6 +23,11 @@ export type ScoredHexRank = HexRank & { score: number };
 export interface HexAdditionalConfig {
   startDate: string;
   ranks: HexRank[];
+  numWordsLimit: number;
+  minPangramLetters: number;
+  maxPangramLetters: number;
+  minWordListLetters: number;
+  maxWordListLetters: number;
 }
 
 // Vault rounds typings
@@ -47,3 +52,28 @@ export type HexStoredUserRound = Pick<
 > & {
   guessedWords: string[]; // Already parsed in localStorage
 };
+
+// Lookup table types
+export interface HexWordBankItem {
+  word: string;
+  wordMask: number;
+  isPangram: boolean;
+}
+
+export interface HexLookupTableItem {
+  wordId: number;
+  centerLetter: string;
+  numWords: number;
+  numPangrams: number;
+  rootWord: string; // representative pangram if any
+  numLetters: number; // number of letters in the charset
+}
+
+export interface HexLookupTableMetadata {
+  status: "generating" | "completed" | "error";
+  startedAt: string;
+  completedAt?: string;
+  lastUpdatedAt: string;
+  error?: string;
+  recordCount?: number;
+}
