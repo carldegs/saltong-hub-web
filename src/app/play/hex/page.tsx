@@ -26,17 +26,10 @@ export default async function SaltongHexPage({
   searchParams: Promise<{ d?: string }>;
 }) {
   const gameSettings = HEX_CONFIG;
-  // eslint-disable-next-line react-hooks/purity
-  const start = Date.now();
   const searchParams = await _searchParams;
   const supabase = await createClient();
   const { data: userData } = await supabase.auth.getUser();
   const queryClient = new QueryClient();
-
-  console.log(
-    // eslint-disable-next-line react-hooks/purity
-    `SaltongHexPage: Auth check took ${Date.now() - start}ms`
-  );
 
   if (
     !userData?.user &&
@@ -54,13 +47,7 @@ export default async function SaltongHexPage({
     return notFound();
   }
 
-  console.log(
-    // eslint-disable-next-line react-hooks/purity
-    `SaltongHexPage: Round fetched in ${Date.now() - start}ms`
-  );
-
   if (userData?.user?.id) {
-    console.log("Prefetching user round data...");
     await queryClient.prefetchQuery({
       queryKey: [
         "hex-user-round",
@@ -68,11 +55,6 @@ export default async function SaltongHexPage({
       ],
       queryFn: async () => {
         const data = await getCachedHexUserRound(round.date, userData.user.id);
-
-        console.log(
-          // eslint-disable-next-line react-hooks/purity
-          `SaltongHexPage: User round fetched in ${Date.now() - start}ms`
-        );
 
         return data?.data;
       },

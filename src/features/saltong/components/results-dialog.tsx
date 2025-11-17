@@ -401,8 +401,6 @@ export default function ResultsDialog({
     [userRound]
   );
 
-  console.log({ extendedUserRound, userStats });
-
   if (open) {
     return (
       <ResultsDialogComponent

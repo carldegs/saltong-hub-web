@@ -139,11 +139,6 @@ export default function GameWrapper({
 
       // Update stats when the round ends
       if (isCurrAnswerCorrect || isTriesExceeded) {
-        console.log("Updating stats...", {
-          userId,
-          isCurrAnswerCorrect,
-          isTriesExceeded,
-        });
         setStats({
           userId: userId ?? "unauthenticated",
           mode: roundData.mode as SaltongMode,

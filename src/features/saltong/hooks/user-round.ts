@@ -47,7 +47,6 @@ export function useSaltongUserRound(params: SaltongUserRoundPrimaryKeys) {
             (round) =>
               round.mode === params.mode && round.userId === params.userId
           ) ?? null;
-        console.log({ data, localPlayerRound });
         return data;
       }
 
