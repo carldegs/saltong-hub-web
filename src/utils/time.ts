@@ -92,7 +92,7 @@ export const getPrevFormattedHexDateInPh = (date = new Date()) => {
 };
 
 export const getNextFormattedHexDateInPh = (date = new Date()) => {
-  const currDateInPh = getDateInPh();
+  const currDateInPh = getDateInPh(date);
 
   if (isTuesday(currDateInPh)) {
     return formatInTimeZone(nextFriday(date), PH_TIMEZONE, DATE_FORMAT);
@@ -120,6 +120,25 @@ export const getHexGameCountdown = (date = new Date()) => {
     end: nextHexDate,
   });
 };
+
+/**
+ * Gets the next N hex dates (Tuesdays and Fridays only) starting from a given date.
+ * @param startDate - The reference start date in 'yyyy-MM-dd' format.
+ * @param count - The number of hex dates to return.
+ * @returns An array of date strings in 'yyyy-MM-dd' format.
+ */
+export function getNextHexDates(startDate: string, count: number): string[] {
+  const dates: string[] = [];
+  let currentDate = parse(startDate, "yyyy-MM-dd", new Date());
+
+  for (let i = 0; i < count; i++) {
+    const nextDate = getNextFormattedHexDateInPh(currentDate);
+    dates.push(nextDate);
+    currentDate = parse(nextDate, "yyyy-MM-dd", new Date());
+  }
+
+  return dates;
+}
 
 /**
  * Gets the nth occurrence of Tuesdays and Fridays from a given start date.

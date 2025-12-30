@@ -5,14 +5,17 @@ export default function ScoreTracker({
   guessedWords,
   wordList,
   isGameOver,
+  numLetters = 7,
 }: {
   guessedWords: string[];
   wordList: string[];
   isGameOver?: boolean;
+  numLetters?: number;
 }) {
   const { score, rank, nextRank, rankScoreMap } = useHexScores({
     guessedWords,
     wordList,
+    numLetters,
   });
 
   if (isGameOver) {
