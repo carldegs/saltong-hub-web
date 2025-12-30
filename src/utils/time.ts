@@ -132,10 +132,8 @@ export function getNextHexDates(startDate: string, count: number): string[] {
   let currentDate = parse(startDate, "yyyy-MM-dd", new Date());
 
   for (let i = 0; i < count; i++) {
-    console.log("Current Date:", currentDate);
     const nextDate = getNextFormattedHexDateInPh(currentDate);
     dates.push(nextDate);
-    // currentDate = new Date(`${nextDate} 00:00:00 GMT+0800`);
     currentDate = parse(nextDate, "yyyy-MM-dd", new Date());
   }
 
