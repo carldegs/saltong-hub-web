@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/providers/modal/modal-provider";
 import { VaultIcon, CrownIcon } from "lucide-react";
 import Link from "next/link";
-import ResultsDialog from "./results-dialog";
+import ResultsDialog, { type HexResultsTab } from "./results-dialog";
 import { sendEvent } from "@/lib/analytics";
 import { HexRound } from "../types";
+import { useEffect } from "react";
+import { useLocalStorage } from "usehooks-ts";
 
 export function ResultsButton({
   gameDate,
@@ -19,6 +21,26 @@ export function ResultsButton({
   userId?: string;
 }) {
   const { isOpen, onOpenChange } = useModalStore((state) => state);
+  const [hasSeenHowToPlay, setHasSeenHowToPlay] = useLocalStorage(
+    "hex-results-has-seen-how-to-play",
+    false
+  );
+
+  useEffect(() => {
+    if (isOpen && !hasSeenHowToPlay) {
+      setHasSeenHowToPlay(true);
+    }
+  }, [isOpen, hasSeenHowToPlay, setHasSeenHowToPlay]);
+
+  useEffect(() => {
+    if (!hasSeenHowToPlay && !isOpen) {
+      onOpenChange(true);
+    }
+  }, [hasSeenHowToPlay, isOpen, onOpenChange]);
+
+  const defaultTab: HexResultsTab = hasSeenHowToPlay ? "share" : "how-to-play";
+
+  console.log({ hasSeenHowToPlay });
 
   return (
     <>
@@ -28,6 +50,7 @@ export function ResultsButton({
         gameDate={gameDate}
         round={round}
         userId={userId}
+        defaultTab={defaultTab}
       />
       <Button
         variant="outline"
