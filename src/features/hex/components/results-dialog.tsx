@@ -1,7 +1,7 @@
 "use client";
 
 import { RootCredenzaProps } from "@/components/ui/credenza";
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useHexScores from "../hooks/useHexScores";
 import {
   Dialog,
@@ -30,6 +30,7 @@ import ShareButtons from "@/components/shared/share-buttons";
 import { sendEvent } from "@/lib/analytics";
 import { HexRound } from "../types";
 import { useHexUserRound, useHexUserRoundMutation } from "../hooks/user-round";
+import HexHowToPlayAccordion from "./how-to-play-accordion";
 
 const OTHER_GAMES_LIST = [
   {
@@ -66,12 +67,14 @@ function ResultsDialogComponent({
   guessedWords,
   wordList,
   round,
+  defaultTab = "share",
 }: Omit<RootCredenzaProps, "children"> & {
   guessedWords: string[];
   wordList: string[];
   round: HexRound;
   isRevealed: boolean;
   onRevealAnswers: () => void;
+  defaultTab?: HexResultsTab;
 }) {
   const numLetters = useMemo(
     () => getNumLettersFromWordId(round.wordId),
@@ -82,6 +85,25 @@ function ResultsDialogComponent({
     wordList,
     numLetters,
   });
+  const wordCount = wordList.length;
+  const [activeTab, setActiveTab] = useState<HexResultsTab>(
+    defaultTab ?? "share"
+  );
+
+  const handleTabChange = useCallback(
+    (
+      tab: HexResultsTab,
+      { trackEvent = true }: { trackEvent?: boolean } = {}
+    ) => {
+      setActiveTab(tab);
+      if (trackEvent) {
+        sendEvent("hex_results_dialog_tag_change", {
+          tab,
+        });
+      }
+    },
+    [setActiveTab]
+  );
 
   const topScore = useMemo(
     () => rankScoreMap[rankScoreMap.length - 1]?.score ?? 0,
@@ -120,16 +142,13 @@ function ResultsDialogComponent({
           <DialogTitle className="mb-2 border-0 font-bold">Stats</DialogTitle>
         </DialogHeader>
         <Tabs
-          defaultValue="account"
+          value={activeTab}
           className="w-full"
-          onValueChange={(value) => {
-            sendEvent("hex_results_dialog_tag_change", {
-              tab: value,
-            });
-          }}
+          onValueChange={(value) => handleTabChange(value as HexResultsTab)}
         >
-          <TabsList className="w-full">
+          <TabsList className="grid w-full grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-0">
             <TabsTrigger value="share">Share</TabsTrigger>
+            <TabsTrigger value="how-to-play">How To Play</TabsTrigger>
             <TabsTrigger value="progress">Your Progress</TabsTrigger>
             <TabsTrigger value="answer">Answers</TabsTrigger>
           </TabsList>
@@ -229,23 +248,36 @@ function ResultsDialogComponent({
               </TableBody>
             </Table>
 
-            <Alert className="bg-muted mt-1">
+            <Alert className="bg-muted mt-4">
               <InfoIcon className="size-4" />
               <AlertTitle>How to earn points</AlertTitle>
               <AlertDescription>
                 <span>
-                  Each 4-letter word is worth 1 point, while longer words earn
-                  points equal to their length (e.g., DUWAG is worth 5 points,
-                  MANONG is worth 6 points, and so on).
-                </span>
-                <span>
-                  If a word is a pangram—meaning it uses all the given letters
-                  at least once—an additional 7 points is added to its score.
-                  This round has {numPangrams} pangram
+                  Earn 1 point for 4-letter words and 1 point per letter beyond
+                  that; pangrams add +7. This round has {numPangrams} pangram
                   {numPangrams !== 1 ? "s" : ""}.
                 </span>
+                <Button
+                  variant="link"
+                  className="px-0 text-sm underline"
+                  onClick={() =>
+                    handleTabChange("how-to-play", { trackEvent: false })
+                  }
+                >
+                  Read the full How To Play guide
+                </Button>
               </AlertDescription>
             </Alert>
+          </TabsContent>
+          <TabsContent value="how-to-play">
+            <HexHowToPlayAccordion
+              wordCount={wordCount}
+              maxScore={maxScore}
+              numPangrams={numPangrams}
+              onOpenProgressTab={() =>
+                handleTabChange("progress", { trackEvent: false })
+              }
+            />
           </TabsContent>
           <TabsContent value="answer">
             {!userGuessedAllWords && !isRevealed ? (
@@ -314,15 +346,19 @@ function ResultsDialogComponent({
   );
 }
 
+export type HexResultsTab = "share" | "progress" | "answer" | "how-to-play";
+
 export default function ResultsDialog({
   open,
   onOpenChange,
   round = {} as HexRound,
   userId,
+  defaultTab = "share",
 }: Omit<RootCredenzaProps, "children"> & {
   gameDate: string;
   round: HexRound;
   userId?: string;
+  defaultTab?: HexResultsTab;
 }) {
   const { words, date } = round;
   const parsedWords = useMemo(() => words?.split(",") ?? [], [words]);
@@ -341,6 +377,7 @@ export default function ResultsDialog({
         wordList={parsedWords}
         round={round}
         isRevealed={!!userRound?.isRevealed}
+        defaultTab={defaultTab}
         onRevealAnswers={() => {
           if (userRound) {
             setAnswer({

@@ -16,7 +16,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useMemo, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ResultsChart from "./results-chart";
 import Image from "next/image";
 import Link from "next/link";
@@ -39,6 +40,7 @@ import { getResultDialogFeaturedGameList } from "@/features/game-registry/utils/
 import { useSaltongUserRound } from "../hooks/user-round";
 import { useSaltongUserStats } from "../hooks/user-stats";
 import { differenceInMilliseconds } from "date-fns";
+import { SaltongHowToPlayCard } from "./how-to-play-card";
 
 const STATUS_TEXT: Record<SaltongUserRoundStatus, string> = {
   correct: "SOLVED!",
@@ -46,6 +48,8 @@ const STATUS_TEXT: Record<SaltongUserRoundStatus, string> = {
   partial: "Still Guessing...",
   idle: "Start Guessing!",
 };
+
+type SaltongResultsTab = "share" | "how-to-play";
 
 type ExtendedSaltongUserRound = SaltongUserRound & {
   isCorrect: boolean;
@@ -216,11 +220,13 @@ function ResultsDialogComponent({
   },
   gameDate,
   roundData,
+  defaultTab = "share",
 }: Omit<RootCredenzaProps, "children"> & {
   userRound: ExtendedSaltongUserRound;
   userStats?: SaltongUserStats;
   gameDate: string;
   roundData: SaltongRound;
+  defaultTab?: SaltongResultsTab;
 }) {
   const gameSettings =
     SALTONG_CONFIG.modes[roundData.mode as keyof typeof SALTONG_CONFIG.modes];
@@ -242,7 +248,10 @@ function ResultsDialogComponent({
       {
         title: "Win Rate",
         value:
-          ((totalWins / (totalWins + totalLosses)) * 100).toPrecision(3) + "%",
+          totalWins + totalLosses > 0
+            ? ((totalWins / (totalWins + totalLosses)) * 100).toPrecision(3) +
+              "%"
+            : "-",
       },
       {
         title: "Win Streak",
@@ -266,6 +275,20 @@ function ResultsDialogComponent({
   );
 
   const [showContribution, setShowContribution] = useState(false);
+  const [activeTab, setActiveTab] = useState<SaltongResultsTab>(defaultTab);
+  const prevOpenRef = useRef(open);
+
+  useEffect(() => {
+    if (open && !prevOpenRef.current) {
+      setActiveTab(defaultTab ?? "share");
+    }
+
+    if (!open && prevOpenRef.current) {
+      setActiveTab("share");
+    }
+
+    prevOpenRef.current = open;
+  }, [open, defaultTab]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -282,92 +305,118 @@ function ResultsDialogComponent({
             {STATUS_TEXT[status]}
           </DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-3 md:px-0">
-          <div className="flex flex-wrap gap-3">
-            {statBarData.map((data) => (
-              <Card
-                key={data.title}
-                className="min-w-[90px] grow p-0 shadow-none"
-              >
-                <CardHeader className="p-3">
-                  <CardTitle>{data.value}</CardTitle>
-                  <CardDescription>{data.title}</CardDescription>
-                </CardHeader>
-              </Card>
-            ))}
-            <TimeCard gameDate={gameDate} userRound={userRound} />
-          </div>
-          <ResultsChart playerStats={winTurns} />
-          {status === "correct" || status === "incorrect" ? (
-            <ShareButtons {...shareDetails} />
-          ) : (
-            <Button disabled className="h-12 w-full bg-teal-700">
-              FINISH THE GAME TO SHARE RESULTS
-            </Button>
-          )}
+        <Tabs
+          value={activeTab}
+          className="w-full"
+          onValueChange={(value) => {
+            const nextTab = value as SaltongResultsTab;
+            setActiveTab(nextTab);
+            sendEvent("saltong_results_tab_change", { tab: nextTab });
+          }}
+        >
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="share">Share</TabsTrigger>
+            <TabsTrigger value="how-to-play">How To Play</TabsTrigger>
+          </TabsList>
+          <TabsContent value="share" className="mt-4">
+            <div className="flex flex-col gap-3 md:px-0">
+              <div className="flex flex-wrap gap-3">
+                {statBarData.map((data) => (
+                  <Card
+                    key={data.title}
+                    className="min-w-[90px] grow p-0 shadow-none"
+                  >
+                    <CardHeader className="p-3">
+                      <CardTitle>{data.value}</CardTitle>
+                      <CardDescription>{data.title}</CardDescription>
+                    </CardHeader>
+                  </Card>
+                ))}
+                <TimeCard gameDate={gameDate} userRound={userRound} />
+              </div>
+              {winTurns?.length ? (
+                <ResultsChart playerStats={winTurns} />
+              ) : null}
+              {status === "correct" || status === "incorrect" ? (
+                <ShareButtons {...shareDetails} />
+              ) : (
+                <Button disabled className="h-12 w-full bg-teal-700">
+                  FINISH THE GAME TO SHARE RESULTS
+                </Button>
+              )}
 
-          <span className="text-center text-sm font-bold tracking-wider">
-            PLAY OTHER GAMES
-          </span>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {filteredGamesList.map(({ displayName, icon, path, id }) => (
-              <Link
-                href={path}
-                key={id}
-                className="min-w-[90px] grow"
-                onClick={() => {
-                  sendEvent("button_click", {
-                    location: "results_dialog",
-                    action: "play_game",
-                    id,
-                  });
-                  onOpenChange?.(false);
-                }}
-              >
-                <Card className="hover:bg-muted h-full p-0 shadow-none">
-                  <CardContent className="flex flex-col items-center justify-center p-3">
-                    <div className="relative mb-2 h-[36px] sm:mb-1">
-                      <Image src={icon} alt={id} width={36} height={36} />
-                      {id === "vault" && (
-                        <div className="absolute -top-2 -right-3 rounded-full bg-teal-700 p-1">
-                          <VaultIcon className="size-4 text-teal-50" />
+              <span className="text-center text-sm font-bold tracking-wider">
+                PLAY OTHER GAMES
+              </span>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {filteredGamesList.map(({ displayName, icon, path, id }) => (
+                  <Link
+                    href={path}
+                    key={id}
+                    className="min-w-[90px] grow"
+                    onClick={() => {
+                      sendEvent("button_click", {
+                        location: "results_dialog",
+                        action: "play_game",
+                        id,
+                      });
+                      onOpenChange?.(false);
+                    }}
+                  >
+                    <Card className="hover:bg-muted h-full p-0 shadow-none">
+                      <CardContent className="flex flex-col items-center justify-center p-3">
+                        <div className="relative mb-2 h-[36px] sm:mb-1">
+                          <Image src={icon} alt={id} width={36} height={36} />
+                          {id === "vault" && (
+                            <div className="absolute -top-2 -right-3 rounded-full bg-teal-700 p-1">
+                              <VaultIcon className="size-4 text-teal-50" />
+                            </div>
+                          )}
                         </div>
-                      )}
+                        <span className="w-full text-center text-sm font-bold tracking-wider uppercase">
+                          {displayName}
+                        </span>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+
+                <Card
+                  onClick={() => {
+                    setShowContribution(true);
+                    sendEvent("button_click", {
+                      location: "results_dialog",
+                      action: "contribute",
+                    });
+                  }}
+                  className="col-span-2 h-full cursor-pointer bg-cyan-100 p-0 text-cyan-700 shadow-none hover:bg-cyan-300 dark:bg-cyan-900/20 dark:text-cyan-100 dark:hover:bg-cyan-900"
+                >
+                  <CardContent className="flex h-full items-center justify-center gap-3 p-3">
+                    <div className="relative mb-2 h-[36px] sm:mb-1">
+                      <HandCoinsIcon size={36} />
                     </div>
-                    <span className="w-full text-center text-sm font-bold tracking-wider uppercase">
-                      {displayName}
-                    </span>
+                    <div className="flex flex-col">
+                      <span className="w-full text-sm font-bold tracking-wider uppercase">
+                        CONTRIBUTE
+                      </span>
+                      <span className="w-full text-sm">
+                        Help keep the site running!
+                      </span>
+                    </div>
                   </CardContent>
                 </Card>
-              </Link>
-            ))}
-
-            <Card
-              onClick={() => {
-                setShowContribution(true);
-                sendEvent("button_click", {
-                  location: "results_dialog",
-                  action: "contribute",
-                });
-              }}
-              className="col-span-2 h-full cursor-pointer bg-cyan-100 p-0 text-cyan-700 shadow-none hover:bg-cyan-300 dark:bg-cyan-900/20 dark:text-cyan-100 dark:hover:bg-cyan-900"
-            >
-              <CardContent className="flex h-full items-center justify-center gap-3 p-3">
-                <div className="relative mb-2 h-[36px] sm:mb-1">
-                  <HandCoinsIcon size={36} />
-                </div>
-                <div className="flex flex-col">
-                  <span className="w-full text-sm font-bold tracking-wider uppercase">
-                    CONTRIBUTE
-                  </span>
-                  <span className="w-full text-sm">
-                    Help keep the site running!
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent value="how-to-play" className="mt-4">
+            <SaltongHowToPlayCard
+              displayName={gameSettings.displayName}
+              maxTries={gameSettings.maxTries}
+              wordLen={gameSettings.wordLen}
+              examples={gameSettings.howToPlayExamples}
+            />
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );
@@ -379,10 +428,12 @@ export default function ResultsDialog({
   gameDate,
   roundData,
   userId,
+  defaultTab = "share",
 }: Omit<RootCredenzaProps, "children"> & {
   gameDate: string;
   roundData: SaltongRound;
   userId?: string;
+  defaultTab?: SaltongResultsTab;
 }) {
   // Use new hooks instead of deprecated ones
   const { data: userRound } = useSaltongUserRound({
@@ -410,6 +461,7 @@ export default function ResultsDialog({
         userStats={userStats ?? undefined}
         gameDate={gameDate}
         roundData={roundData}
+        defaultTab={defaultTab}
       />
     );
   }

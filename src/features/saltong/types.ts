@@ -49,10 +49,17 @@ export interface DetailedSaltongUserRound extends SaltongUserRound {
   timeSolvedInSec?: number;
 }
 
+export interface SaltongHowToPlayExample {
+  word: string;
+  description: string;
+  statuses: LetterStatus[];
+}
+
 export interface SaltongAdditionalConfig {
   startDate: string;
   maxTries: number;
   wordLen: number;
+  howToPlayExamples: SaltongHowToPlayExample[];
 }
 
 /**
