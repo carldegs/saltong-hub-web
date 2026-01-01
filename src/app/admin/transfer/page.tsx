@@ -1,3 +1,4 @@
+// WARNING: CODE BELOW IS AI SLOP. PLEASE REVIEW CAREFULLY BEFORE USING.
 import type { Metadata } from "next";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
