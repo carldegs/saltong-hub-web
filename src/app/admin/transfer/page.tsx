@@ -5,7 +5,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
-import UpdateUserRoundCard from "./components/update-user-round-card";
 import ImportLegacyStatsCard from "./components/import-legacy-stats-card";
 
 export const metadata: Metadata = {
@@ -44,7 +43,6 @@ export default function AdminTransferPage() {
       <Separator />
 
       <section className="space-y-6">
-        <UpdateUserRoundCard />
         <ImportLegacyStatsCard />
       </section>
     </div>
