@@ -7,6 +7,7 @@ import {
   format as formatDateFns,
   parseISO,
 } from "date-fns";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useDebounceCallback } from "usehooks-ts";
 
@@ -523,7 +524,7 @@ function StatsComparisonTable({ rows }: { rows: ModeComparisonRow[] }) {
             <StatsColumn
               title="Data to migrate"
               stats={toMigrate}
-              emptyLabel="Upload a legacy save file to populate."
+              emptyLabel="Load legacy save data to populate."
             />
             <StatsColumn
               title="New DB data (preview)"
@@ -547,12 +548,13 @@ export default function ImportLegacyStatsCard() {
   const [legacyInputError, setLegacyInputError] = useState<string | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [legacyInputMode, setLegacyInputMode] =
-    useState<LegacyInputMode>("file");
+    useState<LegacyInputMode>("text");
   const [manualTextInput, setManualTextInput] = useState("");
   const [parsedSource, setParsedSource] = useState<LegacyInputMode | null>(
     null
   );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
 
   const updateLookupEmail = useDebounceCallback((value: string) => {
     setLookupEmail(value);
@@ -615,6 +617,20 @@ export default function ImportLegacyStatsCard() {
     if (!parsedPayload) return "";
     return JSON.stringify(parsedPayload.modes, null, 2);
   }, [parsedPayload]);
+
+  const resetFormState = () => {
+    setEmailInput("");
+    setLookupEmail("");
+    setParsedPayload(null);
+    setLegacyInputError(null);
+    setSelectedFileName(null);
+    setLegacyInputMode("file");
+    setManualTextInput("");
+    setParsedSource(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   const handleLegacyInputModeChange = (mode: LegacyInputMode) => {
     setLegacyInputMode(mode);
@@ -712,7 +728,8 @@ export default function ImportLegacyStatsCard() {
       {
         onSuccess: () => {
           toast.success("Saltong stats saved to Supabase.");
-          refetch();
+          resetFormState();
+          router.refresh();
         },
         onError: (error) => {
           toast.error(error.message);
@@ -726,9 +743,9 @@ export default function ImportLegacyStatsCard() {
       <CardHeader>
         <CardTitle>Import Legacy Stats</CardTitle>
         <CardDescription>
-          Provide a user email and an exported save file. We will preview the
-          current Supabase values, the incoming legacy stats, and the merged row
-          that would be persisted.
+          Provide a user email and legacy save data (encoded text or .txt
+          export). We preview current Supabase values, incoming stats, and the
+          merged row that would be persisted.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
