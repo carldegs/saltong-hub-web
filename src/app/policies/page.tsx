@@ -36,6 +36,9 @@ export default function PoliciesPage() {
               <SettingsSectionItemLink href="/policies/privacy">
                 Privacy Policy
               </SettingsSectionItemLink>
+              <SettingsSectionItemLink href="/policies/cookies">
+                Cookie Policy
+              </SettingsSectionItemLink>
               <SettingsSectionItemLink href="/policies/terms">
                 Terms and Conditions
               </SettingsSectionItemLink>
