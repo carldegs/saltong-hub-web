@@ -16,6 +16,7 @@ import { VercelToolbar } from "@vercel/toolbar/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { ReactQueryClientProvider } from "@/components/providers/react-query-client-providers";
 import GoogleAdSense from "@/components/ads/adsense";
+import { ConsentManager } from "./consent-manager";
 
 export const metadata: Metadata = {
   title: "Saltong Hub",
@@ -46,21 +47,25 @@ export default async function RootLayout({
       <body
         className={cn("bg-background font-sans antialiased", fontSans.variable)}
       >
-        <ReactQueryClientProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <SidebarProvider defaultOpen={defaultOpen}>
-              <AppSidebar />
-              <main className="flex min-h-dvh w-full flex-col">{children}</main>
-            </SidebarProvider>
-            <Toaster richColors />
-          </ThemeProvider>
-          {shouldInjectToolbar && <VercelToolbar />}
-        </ReactQueryClientProvider>
+        <ConsentManager>
+          <ReactQueryClientProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <SidebarProvider defaultOpen={defaultOpen}>
+                <AppSidebar />
+                <main className="flex min-h-dvh w-full flex-col">
+                  {children}
+                </main>
+              </SidebarProvider>
+              <Toaster richColors />
+            </ThemeProvider>
+            {shouldInjectToolbar && <VercelToolbar />}
+          </ReactQueryClientProvider>
+        </ConsentManager>
       </body>
     </html>
   );

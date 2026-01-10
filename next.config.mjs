@@ -1,6 +1,7 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import data from "./package.json" with { type: "json" };
 import createMDX from "@next/mdx";
+import remarkGfm from "remark-gfm";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -38,7 +39,11 @@ const nextConfig = {
 };
 
 import { withVercelToolbar } from "@vercel/toolbar/plugins/next";
-const withMDX = createMDX();
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [remarkGfm],
+  },
+});
 
 export default withSentryConfig(withMDX(withVercelToolbar()(nextConfig)), {
   // For all available options, see:
