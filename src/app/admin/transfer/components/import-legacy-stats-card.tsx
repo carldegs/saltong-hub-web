@@ -7,6 +7,7 @@ import {
   format as formatDateFns,
   parseISO,
 } from "date-fns";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useDebounceCallback } from "usehooks-ts";
 
@@ -23,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import { SALTONG_MODES } from "@/features/saltong/constants";
 import { SaltongMode, SaltongUserStats } from "@/features/saltong/types";
 import { cn } from "@/lib/utils";
@@ -79,6 +81,8 @@ type StatKey =
   | "lastGameDate"
   | "lastRoundId"
   | "winTurns";
+
+type LegacyInputMode = "file" | "text";
 
 const STAT_FIELDS: Array<{
   key: StatKey;
@@ -520,7 +524,7 @@ function StatsComparisonTable({ rows }: { rows: ModeComparisonRow[] }) {
             <StatsColumn
               title="Data to migrate"
               stats={toMigrate}
-              emptyLabel="Upload a legacy save file to populate."
+              emptyLabel="Load legacy save data to populate."
             />
             <StatsColumn
               title="New DB data (preview)"
@@ -541,9 +545,16 @@ export default function ImportLegacyStatsCard() {
   const [parsedPayload, setParsedPayload] = useState<LegacySavePayload | null>(
     null
   );
-  const [fileError, setFileError] = useState<string | null>(null);
+  const [legacyInputError, setLegacyInputError] = useState<string | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [legacyInputMode, setLegacyInputMode] =
+    useState<LegacyInputMode>("text");
+  const [manualTextInput, setManualTextInput] = useState("");
+  const [parsedSource, setParsedSource] = useState<LegacyInputMode | null>(
+    null
+  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
 
   const updateLookupEmail = useDebounceCallback((value: string) => {
     setLookupEmail(value);
@@ -559,6 +570,7 @@ export default function ImportLegacyStatsCard() {
 
   const normalizedInputEmail = emailInput.trim().toLowerCase();
   const canLookup = normalizedInputEmail.length > 3;
+  const isManualTextReady = manualTextInput.trim().length > 0;
 
   const statsFromDb = supabaseData?.stats ?? EMPTY_DB_STATS;
   const legacyStats = parsedPayload?.modes ?? EMPTY_LEGACY_STATS;
@@ -606,14 +618,64 @@ export default function ImportLegacyStatsCard() {
     return JSON.stringify(parsedPayload.modes, null, 2);
   }, [parsedPayload]);
 
+  const resetFormState = () => {
+    setEmailInput("");
+    setLookupEmail("");
+    setParsedPayload(null);
+    setLegacyInputError(null);
+    setSelectedFileName(null);
+    setLegacyInputMode("file");
+    setManualTextInput("");
+    setParsedSource(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleLegacyInputModeChange = (mode: LegacyInputMode) => {
+    setLegacyInputMode(mode);
+    setLegacyInputError(null);
+    if (mode === "text") {
+      setSelectedFileName(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleManualTextLoad = () => {
+    const trimmedPayload = manualTextInput.trim();
+    if (!trimmedPayload) {
+      setParsedPayload(null);
+      setLegacyInputError("Paste a legacy save string before loading.");
+      setParsedSource(null);
+      return;
+    }
+
+    try {
+      const parsed = parseLegacySave(trimmedPayload);
+      setParsedPayload(parsed);
+      setLegacyInputError(null);
+      setSelectedFileName(null);
+      setParsedSource("text");
+    } catch (error) {
+      setParsedPayload(null);
+      setLegacyInputError(
+        error instanceof Error ? error.message : "Failed to parse save text"
+      );
+      setParsedSource(null);
+    }
+  };
+
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.currentTarget.files?.[0];
     if (!file) {
       setParsedPayload(null);
-      setFileError(null);
+      setLegacyInputError(null);
       setSelectedFileName(null);
+      setParsedSource(null);
       return;
     }
 
@@ -621,12 +683,15 @@ export default function ImportLegacyStatsCard() {
       const rawText = await file.text();
       const parsed = parseLegacySave(rawText);
       setParsedPayload(parsed);
-      setFileError(null);
+      setLegacyInputError(null);
+      setParsedSource("file");
+      setManualTextInput("");
     } catch (error) {
       setParsedPayload(null);
-      setFileError(
+      setLegacyInputError(
         error instanceof Error ? error.message : "Failed to parse save file"
       );
+      setParsedSource(null);
     }
 
     setSelectedFileName(file.name);
@@ -634,8 +699,9 @@ export default function ImportLegacyStatsCard() {
 
   const clearFileSelection = () => {
     setParsedPayload(null);
-    setFileError(null);
+    setLegacyInputError(null);
     setSelectedFileName(null);
+    setParsedSource(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -662,7 +728,8 @@ export default function ImportLegacyStatsCard() {
       {
         onSuccess: () => {
           toast.success("Saltong stats saved to Supabase.");
-          refetch();
+          resetFormState();
+          router.refresh();
         },
         onError: (error) => {
           toast.error(error.message);
@@ -676,9 +743,9 @@ export default function ImportLegacyStatsCard() {
       <CardHeader>
         <CardTitle>Import Legacy Stats</CardTitle>
         <CardDescription>
-          Provide a user email and an exported save file. We will preview the
-          current Supabase values, the incoming legacy stats, and the merged row
-          that would be persisted.
+          Provide a user email and legacy save data (encoded text or .txt
+          export). We preview current Supabase values, incoming stats, and the
+          merged row that would be persisted.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
@@ -748,38 +815,103 @@ export default function ImportLegacyStatsCard() {
         <Separator />
 
         <section className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="legacyFile">Legacy save file</Label>
-            <Input
-              ref={fileInputRef}
-              id="legacyFile"
-              type="file"
-              onChange={handleFileChange}
-            />
-            <p className="text-muted-foreground text-xs">
-              Use the .txt file produced by the legacy Transfer Data modal. Data
-              decoding stays in your browser.
-            </p>
-            <div className="text-muted-foreground flex items-center justify-between text-sm">
-              <span>
-                {selectedFileName
-                  ? `Loaded: ${selectedFileName}`
-                  : "No file selected"}
-              </span>
-              {selectedFileName && (
+          <div className="space-y-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="space-y-1">
+                <Label>Legacy save data</Label>
+                <p className="text-muted-foreground text-xs">
+                  Upload the .txt export or paste the encoded string from the
+                  legacy Transfer Data modal. Parsing stays in the browser.
+                </p>
+              </div>
+              <div className="flex gap-2">
                 <Button
                   type="button"
-                  variant="ghost"
+                  variant={legacyInputMode === "file" ? "default" : "outline"}
                   size="sm"
-                  onClick={clearFileSelection}
+                  onClick={() => handleLegacyInputModeChange("file")}
+                  aria-pressed={legacyInputMode === "file"}
                 >
-                  Clear file
+                  Upload file
                 </Button>
-              )}
+                <Button
+                  type="button"
+                  variant={legacyInputMode === "text" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleLegacyInputModeChange("text")}
+                  aria-pressed={legacyInputMode === "text"}
+                >
+                  Paste text
+                </Button>
+              </div>
             </div>
-            {fileError && (
+
+            {legacyInputMode === "file" ? (
+              <div className="space-y-2">
+                <Input
+                  ref={fileInputRef}
+                  id="legacyFile"
+                  type="file"
+                  onChange={handleFileChange}
+                />
+                <p className="text-muted-foreground text-xs">
+                  Select the export named like <em>saltong-save.txt</em>.
+                </p>
+                <div className="text-muted-foreground flex items-center justify-between text-sm">
+                  <span>
+                    {selectedFileName
+                      ? `Loaded: ${selectedFileName}`
+                      : parsedSource === "file"
+                        ? "Parsed file in memory"
+                        : "No file selected"}
+                  </span>
+                  {selectedFileName && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={clearFileSelection}
+                    >
+                      Clear file
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Label htmlFor="legacyText">Legacy save text</Label>
+                <Textarea
+                  id="legacyText"
+                  value={manualTextInput}
+                  onChange={(event) =>
+                    setManualTextInput(event.currentTarget.value)
+                  }
+                  placeholder="Paste the exported legacy save text here"
+                  spellCheck={false}
+                  autoComplete="off"
+                  className="h-40"
+                />
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-muted-foreground text-sm">
+                    {parsedSource === "text"
+                      ? "Current payload loaded from text input."
+                      : "Paste the encoded string and load to preview."}
+                  </p>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={handleManualTextLoad}
+                    disabled={!isManualTextReady}
+                  >
+                    Load text
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {legacyInputError && (
               <p className="text-destructive text-sm font-medium">
-                {fileError}
+                {legacyInputError}
               </p>
             )}
           </div>
