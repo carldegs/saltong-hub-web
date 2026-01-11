@@ -85,8 +85,6 @@ export const getUserProfile = (user?: User | null): Profile | undefined => {
       : {}),
   };
 
-  console.log({ mainIdentity, selectedProfile });
-
   return {
     ...getProileFromIdentityData({
       provider: mainProvider,

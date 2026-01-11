@@ -32,11 +32,11 @@ async function getDictionaryWithRetry(
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      console.log(
+      console.info(
         `Fetching dictionary for length ${length} (attempt ${attempt}/${maxRetries})`
       );
       const dict = await getDictionary(length);
-      console.log(
+      console.info(
         `Successfully fetched dictionary for length ${length}: ${dict.length} words`
       );
       return dict;
@@ -50,7 +50,7 @@ async function getDictionaryWithRetry(
       // Wait before retrying (exponential backoff)
       if (attempt < maxRetries) {
         const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
-        console.log(`Retrying in ${delay}ms...`);
+        console.info(`Retrying in ${delay}ms...`);
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
@@ -64,7 +64,7 @@ async function getDictionaryWithRetry(
 async function getAllDictionaries(
   lengths: number[] = DEFAULT_LENGTHS
 ): Promise<string[]> {
-  console.log(`Fetching ${lengths.length} dictionaries...`);
+  console.info(`Fetching ${lengths.length} dictionaries...`);
 
   const results: string[] = [];
 
@@ -75,7 +75,7 @@ async function getAllDictionaries(
       results.push(...dict);
 
       if ((i + 1) % 5 === 0) {
-        console.log(
+        console.info(
           `Progress: ${i + 1}/${lengths.length} dictionaries fetched`
         );
       }
@@ -84,7 +84,7 @@ async function getAllDictionaries(
     }
   }
 
-  console.log(`Total words fetched: ${results.length}`);
+  console.info(`Total words fetched: ${results.length}`);
   return results;
 }
 
@@ -171,7 +171,7 @@ function getHexLookupTable(dict: string[]): HexLookupTableItem[] {
     (a, b) => a[1].localeCompare(b[1])
   );
 
-  console.log(
+  console.info(
     `Processing ${pangramCharSetList.length} pangram charsets with ${wordBank.length} words in word bank`
   );
 
@@ -180,15 +180,15 @@ function getHexLookupTable(dict: string[]): HexLookupTableItem[] {
     const lookupItems = getCharsetLookupItems(charSet, mask, wordBank);
     lookupTable.push(...lookupItems);
 
-    // Log every 100th iteration
+    // info every 100th iteration
     if ((i + 1) % 100 === 0) {
-      console.log(
+      console.info(
         `Processed ${i + 1}/${pangramCharSetList.length} charsets (${Math.round(((i + 1) / pangramCharSetList.length) * 100)}%)`
       );
     }
   }
 
-  console.log(
+  console.info(
     `Completed processing all ${pangramCharSetList.length} charsets. Generated ${lookupTable.length} lookup items.`
   );
 
@@ -336,7 +336,7 @@ async function generateLookupTableInBackground(
       "application/json"
     );
 
-    console.log(
+    console.info(
       `Hex lookup table generated successfully: ${lookupTable.length} records`
     );
   } catch (error) {
