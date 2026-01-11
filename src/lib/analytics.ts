@@ -13,7 +13,7 @@ export function sendEvent(action: string, params: AnalyticsParams = {}) {
   const path = typeof window !== "undefined" ? window.location.pathname : "";
 
   if (process.env.NODE_ENV === "development") {
-    console.log("Analytics Event:", action, { ...params, path });
+    console.info("Analytics Event:", action, { ...params, path });
   }
 
   sendGAEvent("event", action, {

@@ -72,7 +72,6 @@ const Hex = ({
   );
 
   if (isEmpty) {
-    console.log("EMPTY");
     return (
       <Tooltip>
         <TooltipTrigger>{hexElement}</TooltipTrigger>

@@ -18,6 +18,11 @@ const eslintConfig = [
       "src/lib/supabase/types.ts",
     ],
   },
+  {
+    rules: {
+      "no-console": ["error", { allow: ["warn", "error", "info"] }],
+    },
+  },
 ];
 
 export default eslintConfig;

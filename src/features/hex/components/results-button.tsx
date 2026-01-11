@@ -40,8 +40,6 @@ export function ResultsButton({
 
   const defaultTab: HexResultsTab = hasSeenHowToPlay ? "share" : "how-to-play";
 
-  console.log({ hasSeenHowToPlay });
-
   return (
     <>
       <ResultsDialog
