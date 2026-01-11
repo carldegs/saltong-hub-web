@@ -5,6 +5,7 @@ import { NumberTicker } from "../../ui/number-ticker";
 import OrbitingCircleIcons from "./orbiting-circle-icons";
 import { createClient } from "@/lib/supabase/server";
 
+// MagicUI
 export default async function CreateAccountBanner() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();

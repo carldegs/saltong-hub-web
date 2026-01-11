@@ -8,15 +8,20 @@ import {
   RadarChart,
 } from "recharts";
 
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Button } from "@/components/ui/button";
-import { HelpCircleIcon } from "lucide-react";
+import { useMemo } from "react";
 
 const chartConfig = {
   you: {
@@ -32,22 +37,45 @@ const chartConfig = {
 export default function ResultsChart({
   playerStats,
   totalStats,
+  className,
 }: {
   playerStats: number[];
   totalStats?: number[];
+  className?: string;
 }) {
-  const chartData = playerStats.map((stat, idx) => ({
-    turn: `Turn ${idx + 1}`,
-    you: stat,
-    avg: totalStats ? totalStats[idx] : undefined,
-  }));
+  const chartData = useMemo(
+    () =>
+      playerStats.map((stat, idx) => ({
+        turn: `Turn ${idx + 1}`,
+        you: stat,
+        avg: totalStats ? totalStats[idx] : undefined,
+      })),
+    [playerStats, totalStats]
+  );
+
+  const avgTurnsToWin = useMemo(() => {
+    const totalWinTurns = !playerStats
+      ? 0
+      : (playerStats as number[])?.reduce(
+          (prev, curr, i) => prev + curr * (i + 1),
+          0
+        ) || 0;
+
+    const totalWins = playerStats.reduce((prev, curr) => prev + curr, 0);
+    return playerStats ? totalWinTurns / totalWins : undefined;
+  }, [playerStats]);
 
   return (
-    <Card>
+    <Card className={className}>
+      <CardHeader>
+        <CardTitle>Turns To Win</CardTitle>
+        {!!avgTurnsToWin && (
+          <CardDescription>
+            On average, you win at <b>Turn {Math.round(avgTurnsToWin)}</b>
+          </CardDescription>
+        )}
+      </CardHeader>
       <CardContent className="relative px-2 pb-0">
-        <Button size="icon" variant="ghost" className="absolute -top-3 right-4">
-          <HelpCircleIcon size={20} />
-        </Button>
         <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[350px]"

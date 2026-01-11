@@ -6,6 +6,7 @@ import {
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Settings, BookOpen, Info, User, Shield } from "lucide-react";
+import NewFeatureBadge from "../new-feature-badge";
 
 export async function SettingsSidebarMenu() {
   const supabase = await createClient();
@@ -18,6 +19,23 @@ export async function SettingsSidebarMenu() {
 
   return (
     <SidebarMenu>
+      {data?.user && (
+        <SidebarMenuItem>
+          <SidebarMenuButton className="h-auto py-1.5" asChild>
+            <Link
+              href={`/u/${data.user.id}`}
+              className="flex w-full items-center gap-3"
+            >
+              <User className="h-4 w-4" />
+              <span className="flex items-center">
+                <span className="text-sm">Profile</span>
+                <NewFeatureBadge />
+              </span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      )}
+
       <SidebarMenuItem>
         <SidebarMenuButton className="h-auto py-1.5" asChild>
           <Link
@@ -56,20 +74,6 @@ export async function SettingsSidebarMenu() {
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
-
-      {data?.user && (
-        <SidebarMenuItem>
-          <SidebarMenuButton className="h-auto py-1.5" asChild>
-            <Link
-              href="/settings/account"
-              className="flex w-full items-center gap-3"
-            >
-              <User className="h-4 w-4" />
-              <span className="text-sm">Account</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      )}
 
       {isAdmin && (
         <SidebarMenuItem>

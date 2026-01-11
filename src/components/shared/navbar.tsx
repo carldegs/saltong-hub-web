@@ -7,7 +7,7 @@ import { Skeleton } from "../ui/skeleton";
 import { LinkProps } from "next/link";
 import HoverPrefetchLink from "./hover-prefetch-link";
 
-const navbarBrandTitleVariants = cva("", {
+export const navbarBrandTitleVariants = cva("", {
   variants: {
     colorScheme: {
       green: "text-saltong-green",

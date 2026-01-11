@@ -1,6 +1,11 @@
 "use client";
 
-import { BadgeCheck, ChevronsUpDown, LogOut, SettingsIcon } from "lucide-react";
+import {
+  ChevronsUpDown,
+  LogOut,
+  SettingsIcon,
+  UserCircle2Icon,
+} from "lucide-react";
 
 import {
   DropdownMenu,
@@ -24,6 +29,7 @@ import { useSupabaseClient } from "@/lib/supabase/client";
 import { Profile } from "@/utils/user";
 import { sendEvent } from "@/lib/analytics";
 import ProfileAvatar from "@/app/components/profile-avatar";
+import NewFeatureBadge from "../new-feature-badge";
 
 export function NavUser({ profile }: { profile?: Profile }) {
   const supabase = useSupabaseClient();
@@ -113,19 +119,20 @@ export function NavUser({ profile }: { profile?: Profile }) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Link href="/settings" className="w-full" prefetch={false}>
-                  <SettingsIcon className="mr-4 inline size-5" />
-                  Settings
+                <Link
+                  href={`/u/${profile.userId}`}
+                  className="flex w-full items-center"
+                  prefetch={false}
+                >
+                  <UserCircle2Icon className="mr-4 inline size-5" />
+                  View Profile
+                  <NewFeatureBadge />
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Link
-                  href="/settings/account"
-                  className="w-full"
-                  prefetch={false}
-                >
-                  <BadgeCheck className="mr-4 inline size-5" />
-                  Account
+                <Link href="/settings" className="w-full" prefetch={false}>
+                  <SettingsIcon className="mr-4 inline size-5" />
+                  Settings
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
