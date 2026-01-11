@@ -27,8 +27,8 @@ export function OtherGamesSidebarMenu() {
               <Image
                 src={game.icon}
                 alt={`${game.name} Logo`}
-                width={32}
-                height={32}
+                width={28}
+                height={28}
               />
               <span className="text-base">{game.name}</span>
             </a>

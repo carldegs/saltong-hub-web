@@ -42,6 +42,7 @@ export default function Keyboard({
                         status?.[key] === LetterStatus.Partial,
                       "bg-cell-correct text-cell-primary-foreground":
                         status?.[key] === LetterStatus.Correct,
+                      "bg-secondary dark:bg-gray-500": !status?.[key],
                     }
                   )}
                   onClick={(e) => {
