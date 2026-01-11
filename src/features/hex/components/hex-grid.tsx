@@ -1,5 +1,11 @@
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
+import { CircleOffIcon } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import React from "react";
 
 const hexVariants = cva(
@@ -27,35 +33,56 @@ const Hex = ({
   onClick: (value: string) => void;
   center?: boolean;
   disabled?: boolean;
-}) => (
-  <div
-    className={cn("relative flex items-center justify-center", {
-      "pointer-events-none": disabled || !value,
-      "opacity-50": disabled,
-    })}
-    onClick={() => {
-      if (!disabled) {
-        onClick(value);
-      }
-    }}
-  >
-    <svg
-      version="1.1"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 173.20508075688772 200"
-      className={cn(hexVariants({ center }))}
-      {...props}
+}) => {
+  const isEmpty = !value;
+
+  const hexElement = (
+    <div
+      className={cn("relative flex items-center justify-center", {
+        "pointer-events-none": disabled || !value,
+        "opacity-50": disabled,
+      })}
+      onClick={() => {
+        if (!disabled) {
+          onClick(value);
+        }
+      }}
     >
-      <path
-        fill="currentColor"
-        d="M79.67433714816835 3.9999999999999996Q86.60254037844386 0 93.53074360871938 3.9999999999999996L166.27687752661222 46Q173.20508075688772 50 173.20508075688772 58L173.20508075688772 142Q173.20508075688772 150 166.27687752661222 154L93.53074360871938 196Q86.60254037844386 200 79.67433714816835 196L6.92820323027551 154Q0 150 0 142L0 58Q0 50 6.92820323027551 46Z"
-      ></path>
-    </svg>
-    <span className="absolute mt-0 cursor-pointer text-4xl font-bold opacity-80 select-none">
-      {value?.toUpperCase()}
-    </span>
-  </div>
-);
+      <svg
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 173.20508075688772 200"
+        className={cn(hexVariants({ center }))}
+        {...props}
+      >
+        <path
+          fill={value ? "currentColor" : "none"}
+          stroke={value ? "none" : "currentColor"}
+          strokeWidth={value ? 0 : 2}
+          strokeDasharray={value ? "0" : "8 4"}
+          d="M79.67433714816835 3.9999999999999996Q86.60254037844386 0 93.53074360871938 3.9999999999999996L166.27687752661222 46Q173.20508075688772 50 173.20508075688772 58L173.20508075688772 142Q173.20508075688772 150 166.27687752661222 154L93.53074360871938 196Q86.60254037844386 200 79.67433714816835 196L6.92820323027551 154Q0 150 0 142L0 58Q0 50 6.92820323027551 46Z"
+        ></path>
+      </svg>
+      <span className="absolute mt-0 cursor-pointer text-4xl font-bold opacity-80 select-none">
+        {value?.toUpperCase() ?? (
+          <CircleOffIcon size={20} className="text-saltong-purple" />
+        )}
+      </span>
+    </div>
+  );
+
+  if (isEmpty) {
+    console.log("EMPTY");
+    return (
+      <Tooltip>
+        <TooltipTrigger>{hexElement}</TooltipTrigger>
+        <TooltipContent>This round only has 6 letters</TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return hexElement;
+};
 
 const rowVariants = cva("flex justify-center gap-2", {
   variants: {

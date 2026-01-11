@@ -8,6 +8,22 @@ export interface Profile {
   mainProvider: string;
 }
 
+export interface MetadataProfile {
+  selected_username?: string;
+  selected_avatar_url?: string;
+}
+
+export const BORING_AVATAR_COLORS = [
+  "#38E18C",
+  "#183426",
+  "#8759F3",
+  "#35225F",
+  "#E23B3B",
+  "#5E2525",
+  "#499AEE",
+  "#102943",
+];
+
 export const getProileFromIdentityData = ({
   provider,
   data,
@@ -65,9 +81,11 @@ export const getUserProfile = (user?: User | null): Profile | undefined => {
       ? { username: user.user_metadata.selected_username }
       : {}),
     ...(user.user_metadata?.avatar_url
-      ? { avatarUrl: user.user_metadata.avatar_url }
+      ? { avatarUrl: user.user_metadata.selected_avatar_url }
       : {}),
   };
+
+  console.log({ mainIdentity, selectedProfile });
 
   return {
     ...getProileFromIdentityData({

@@ -1,14 +1,16 @@
 import { notFound } from "next/navigation";
-import { getBlogPosts } from "../utils";
+import { getBlogPosts, getBlogPost, isAdmin } from "../utils";
 import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "@/app/components/home-navbar-brand";
-import { User, ArrowLeft } from "lucide-react";
+import { User, ArrowLeft, Info } from "lucide-react";
 import { CustomMDX } from "@/mdx-components";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { TableOfContents } from "./components/table-of-contents";
 import { BlogDate } from "../components/blog-date";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { createClient } from "@/lib/supabase/server";
 
 // Extract headings from markdown content for table of contents
 function extractHeadings(content: string) {
@@ -43,7 +45,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getBlogPosts().find((post) => post.slug === slug);
+  const supabase = await createClient();
+  const isAdminUser = await isAdmin(supabase);
+  const post = getBlogPost(slug, isAdminUser);
   if (!post) {
     return;
   }
@@ -69,7 +73,9 @@ export default async function BlogPost({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getBlogPosts().find((post) => post.slug === slug);
+  const supabase = await createClient();
+  const isAdminUser = await isAdmin(supabase);
+  const post = getBlogPost(slug, isAdminUser);
 
   if (!post) {
     notFound();
@@ -170,6 +176,16 @@ export default async function BlogPost({
           <div className="flex gap-12">
             {/* Article Content */}
             <article className="min-w-0 flex-1">
+              {/* Draft Banner */}
+              {post.metadata.draft && (
+                <Alert className="mb-8 border-yellow-500/50 bg-yellow-50 dark:bg-yellow-950/20">
+                  <Info className="h-4 w-4 text-yellow-600 dark:text-yellow-500" />
+                  <AlertDescription className="text-yellow-800 dark:text-yellow-200">
+                    This is a draft post and is only visible to administrators.
+                  </AlertDescription>
+                </Alert>
+              )}
+
               {/* Summary */}
               {post.metadata.summary && (
                 <p className="text-muted-foreground mb-8 text-xl leading-relaxed">

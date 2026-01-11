@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import GoogleIcon from "@/assets/auth/google.svg";
 import DiscordIcon from "@/assets/auth/discord.svg";
 import TwitterIcon from "@/assets/auth/twitter.svg";
@@ -17,6 +16,7 @@ import { useSupabaseClient } from "@/lib/supabase/client";
 import { UserIdentity } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import ProfileAvatar from "@/app/components/profile-avatar";
 
 export interface ProviderCardProps {
   identity: UserIdentity;
@@ -93,10 +93,11 @@ export default function ProviderCard({
     >
       <div className="flex min-w-0 flex-1 items-center gap-4">
         <div className="flex min-w-0 items-center gap-3">
-          <Avatar className="size-10 border bg-white">
-            <AvatarImage src={avatar} alt={name} />
-            <AvatarFallback>{name[0]}</AvatarFallback>
-          </Avatar>
+          <ProfileAvatar
+            path={avatar}
+            fallback={email}
+            className="size-10 border bg-white"
+          />
           <div className="flex min-w-0 flex-col">
             <span className="truncate text-base font-medium">{name}</span>
             {email && (

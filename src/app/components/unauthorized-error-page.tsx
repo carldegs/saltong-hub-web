@@ -10,9 +10,12 @@ import HoverPrefetchLink from "@/components/shared/hover-prefetch-link";
 import { BaseConfig } from "@/features/game-registry/types";
 
 export default function UnauthorizedErrorPage(
-  gameSettings: Pick<BaseConfig, "colorScheme" | "displayName" | "icon">
+  gameSettings: Pick<BaseConfig, "colorScheme" | "icon"> & {
+    displayName?: string;
+    description?: string;
+  }
 ) {
-  const { colorScheme, displayName, icon } = gameSettings;
+  const { colorScheme, displayName, icon, description } = gameSettings;
   const currPathname = usePathname();
 
   return (
@@ -107,8 +110,12 @@ export default function UnauthorizedErrorPage(
             Sorry po!
           </h1>
           <div className="text-muted-foreground mb-8 text-lg">
-            To access previous rounds of <b>{displayName}</b>, please log in or
-            create a free account.
+            {description ?? (
+              <>
+                To access previous rounds of <b>{displayName}</b>, please log in
+                or create a free account.
+              </>
+            )}
             <br />
             <span
               className={cn("font-semibold", {
