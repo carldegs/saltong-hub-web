@@ -12,6 +12,7 @@ import HomeNavbarBrand from "@/app/components/home-navbar-brand";
 import { getUserProfile } from "@/utils/user";
 import ProfileForm from "./profile-form";
 import ProviderCard from "./provider-card";
+import { notFound } from "next/navigation";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -27,6 +28,10 @@ export default async function SettingsPage() {
       label: identity.provider?.toUpperCase() ?? "",
     }))
     .filter(({ value }) => value);
+
+  if (!user) {
+    return notFound();
+  }
 
   return (
     <>

@@ -74,6 +74,7 @@ export default function AuthForm({
               <Button
                 variant="secondary"
                 className="min-h-12 w-full flex-1"
+                // TODO: Move to use "x" provider once issue is fixed in supabase ssr
                 onClick={() => handleOAuth("twitter")}
               >
                 <TwitterIcon />

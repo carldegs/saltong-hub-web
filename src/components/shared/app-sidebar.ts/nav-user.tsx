@@ -2,7 +2,6 @@
 
 import { BadgeCheck, ChevronsUpDown, LogOut, SettingsIcon } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +23,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSupabaseClient } from "@/lib/supabase/client";
 import { Profile } from "@/utils/user";
 import { sendEvent } from "@/lib/analytics";
+import ProfileAvatar from "@/app/components/profile-avatar";
 
 export function NavUser({ profile }: { profile?: Profile }) {
   const supabase = useSupabaseClient();
@@ -73,14 +73,11 @@ export function NavUser({ profile }: { profile?: Profile }) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={profile.avatarUrl} alt={profile.username} />
-                <AvatarFallback className="rounded-lg">
-                  {profile.username?.charAt(0).toUpperCase() ??
-                    profile.email?.charAt(0).toUpperCase() ??
-                    "?"}
-                </AvatarFallback>
-              </Avatar>
+              <ProfileAvatar
+                path={profile.avatarUrl}
+                fallback={profile.email || "?"}
+                className="size-8 rounded-lg"
+              />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
                   {profile.username ?? profile.email}
@@ -100,10 +97,11 @@ export function NavUser({ profile }: { profile?: Profile }) {
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={profile.avatarUrl} alt={profile.username} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
+                <ProfileAvatar
+                  path={profile.avatarUrl}
+                  fallback={profile.email || "?"}
+                  className="size-10 rounded-lg"
+                />
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
                     {profile.username}
