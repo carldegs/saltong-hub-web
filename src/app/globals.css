@@ -70,7 +70,7 @@
   --chart-2: hsl(340 75% 55%);
 
   --cell-correct: var(--color-green-700);
-  --cell-incorrect: var(--color-slate-600);
+  --cell-incorrect: var(--color-slate-700);
   --cell-partial: var(--color-orange-600);
   --cell-primary-foreground: hsl(0 0% 98% / 70%);
 }

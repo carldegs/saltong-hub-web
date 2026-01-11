@@ -58,15 +58,22 @@ export default function GameWrapper({
   );
 
   const keyboardStatus = useMemo(() => {
-    let res: Record<string, string> = {};
+    const res: Record<string, string> = {};
     userRoundGrid.split("").forEach((letter, i) => {
-      res = {
-        ...res,
-        [letter]:
-          res?.[letter] === LetterStatus.Correct
-            ? LetterStatus.Correct
-            : status[i],
-      };
+      const currentStatus = res?.[letter];
+      const newStatus = status[i];
+
+      // Priority: Correct > Partial > Incorrect
+      if (currentStatus === LetterStatus.Correct) {
+        return;
+      } else if (
+        currentStatus === LetterStatus.Partial &&
+        newStatus !== LetterStatus.Correct
+      ) {
+        return;
+      }
+
+      res[letter] = newStatus;
     });
 
     return res;

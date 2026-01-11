@@ -6,6 +6,7 @@ export interface Profile {
   avatarUrl: string;
   email: string;
   mainProvider: string;
+  userId: string;
 }
 
 export interface MetadataProfile {
@@ -27,7 +28,7 @@ export const BORING_AVATAR_COLORS = [
 export const getProileFromIdentityData = ({
   provider,
   data,
-}: IdentityProviderMap): Omit<Profile, "mainProvider"> => {
+}: IdentityProviderMap): Omit<Profile, "mainProvider" | "userId"> => {
   switch (provider) {
     case "google":
       return {
@@ -92,6 +93,7 @@ export const getUserProfile = (user?: User | null): Profile | undefined => {
     } as IdentityProviderMap),
     ...selectedProfile,
     mainProvider,
+    userId: user.id,
   };
 };
 

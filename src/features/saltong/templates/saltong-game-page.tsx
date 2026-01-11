@@ -13,6 +13,7 @@ import { SaltongMode } from "../types";
 import { SALTONG_CONFIG } from "../config";
 import { getCachedSaltongRound } from "../queries/getSaltongRound";
 import { getCachedSaltongUserRound } from "../queries/getSaltongUserRound";
+import AutoRefreshOnNewDay from "../components/auto-refresh-on-new-day.client";
 import {
   dehydrate,
   HydrationBoundary,
@@ -100,6 +101,8 @@ async function SaltongGamePage({
           />
         </div>
       </Navbar>
+      {/* Client-side: refresh when PH date != game date and no `d` override */}
+      <AutoRefreshOnNewDay gameDate={round.date} />
       <HydrationBoundary state={dehydrate(queryClient)}>
         <GameWrapper
           maxTries={maxTries}
