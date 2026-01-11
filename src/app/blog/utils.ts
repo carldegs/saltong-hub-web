@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { format, formatDistanceToNow, differenceInDays } from "date-fns";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 export type BlogMetadata = {
   title: string;
@@ -10,6 +11,7 @@ export type BlogMetadata = {
   tags?: string[];
   image?: string;
   heroImage?: string;
+  draft?: boolean;
 };
 
 export type BlogPost = {
@@ -71,13 +73,32 @@ function getMDXData(dir: string): BlogPost[] {
   });
 }
 
-export function getBlogPosts(): BlogPost[] {
-  return getMDXData(path.join(process.cwd(), "src", "app", "blog", "posts"));
+export function getBlogPosts(isAdmin: boolean = false): BlogPost[] {
+  const allPosts = getMDXData(
+    path.join(process.cwd(), "src", "app", "blog", "posts")
+  );
+  // Filter out draft posts unless user is admin
+  if (isAdmin) {
+    return allPosts;
+  }
+  return allPosts.filter((post) => !post.metadata.draft);
 }
 
-export function getBlogPost(slug: string): BlogPost | undefined {
-  const posts = getBlogPosts();
-  return posts.find((post) => post.slug === slug);
+export function getBlogPost(
+  slug: string,
+  isAdmin: boolean = false
+): BlogPost | undefined {
+  const allPosts = getMDXData(
+    path.join(process.cwd(), "src", "app", "blog", "posts")
+  );
+  const post = allPosts.find((post) => post.slug === slug);
+
+  // Return undefined for draft posts unless user is admin (will trigger 404)
+  if (post?.metadata.draft && !isAdmin) {
+    return undefined;
+  }
+
+  return post;
 }
 
 export function formatDate(date: string, includeRelative = false) {
@@ -109,4 +130,24 @@ export function formatDate(date: string, includeRelative = false) {
     display: fullDate,
     full: fullDate,
   };
+}
+
+export async function isAdmin(supabase: SupabaseClient): Promise<boolean> {
+  try {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+
+    if (error || !user) {
+      return false;
+    }
+
+    const allowedAdmins =
+      process.env.ADMIN_USER_IDS?.split(",").map((id) => id.trim()) || [];
+
+    return allowedAdmins.includes(user.id);
+  } catch {
+    return false;
+  }
 }

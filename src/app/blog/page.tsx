@@ -3,9 +3,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "../components/home-navbar-brand";
-import { getBlogPosts } from "./utils";
+import { getBlogPosts, isAdmin } from "./utils";
 import { ArrowRight } from "lucide-react";
 import { BlogDate } from "./components/blog-date";
+import { Badge } from "@/components/ui/badge";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
   title: "Blog | Saltong Hub",
@@ -13,8 +15,10 @@ export const metadata = {
     "Read the latest updates, announcements, and stories from Saltong Hub",
 };
 
-export default function BlogPage() {
-  const posts = getBlogPosts().sort(
+export default async function BlogPage() {
+  const supabase = await createClient();
+  const isAdminUser = await isAdmin(supabase);
+  const posts = getBlogPosts(isAdminUser).sort(
     (a, b) =>
       new Date(b.metadata.publishedAt).getTime() -
       new Date(a.metadata.publishedAt).getTime()
@@ -75,6 +79,11 @@ export default function BlogPage() {
                       {/* Meta */}
                       <div className="text-muted-foreground flex flex-wrap items-center gap-3 text-sm">
                         <BlogDate date={post.metadata.publishedAt} />
+                        {post.metadata.draft && (
+                          <Badge variant="secondary" className="text-xs">
+                            DRAFT
+                          </Badge>
+                        )}
                       </div>
 
                       {/* Title & Summary */}
