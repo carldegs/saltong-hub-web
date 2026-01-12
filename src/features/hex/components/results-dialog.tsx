@@ -195,6 +195,7 @@ function ResultsDialogComponent({
                       });
                       onOpenChange?.(false);
                     }}
+                    prefetch={false}
                   >
                     <Card className="hover:bg-muted h-full p-0 shadow-none">
                       <CardContent className="flex flex-col items-center justify-center p-3">

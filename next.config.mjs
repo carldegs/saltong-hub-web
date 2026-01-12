@@ -32,6 +32,28 @@ const nextConfig = {
 
     return config;
   },
+  async headers() {
+    return [
+      {
+        source: "/favicon.ico",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        source: "/:filename(main|max|mini|hex).svg",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=2592000, immutable",
+          },
+        ],
+      },
+    ];
+  },
   publicRuntimeConfig: {
     version: data.version,
   },

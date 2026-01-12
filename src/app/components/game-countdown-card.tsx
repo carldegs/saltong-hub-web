@@ -51,6 +51,7 @@ export default function GameCountdownCard({
             )}
             key={name}
             href={href}
+            prefetch={false}
           >
             <div className="h-[60px] w-[60px]">
               <Image src={icon} alt={`${name} Logo`} width={60} height={60} />

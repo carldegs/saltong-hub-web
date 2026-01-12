@@ -111,7 +111,6 @@ const NavbarBrand = ({
   isLoading,
   name,
   href,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   prefetch,
   ...props
 }: NavbarBrandProps &
@@ -134,7 +133,11 @@ const NavbarBrand = ({
     >
       {!hideMenu && <SidebarTrigger />}
       {!hideBrand && (
-        <Container href={href!} className="flex items-center gap-1.5">
+        <Container
+          href={href!}
+          className="flex items-center gap-1.5"
+          prefetch={prefetch}
+        >
           {icon && (
             <Image
               src={icon}
