@@ -24,6 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     siteName: "Saltong Hub",
     url: "https://saltong.com",
+    description: "The place for Filipino word games",
   },
 };
 

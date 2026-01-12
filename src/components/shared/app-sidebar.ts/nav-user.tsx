@@ -61,6 +61,7 @@ export function NavUser({ profile }: { profile?: Profile }) {
                   action: "login",
                 });
               }}
+              prefetch={false}
             >
               Log in
             </Link>

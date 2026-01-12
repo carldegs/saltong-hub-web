@@ -67,7 +67,7 @@ const A: React.FC<React.AnchorHTMLAttributes<HTMLAnchorElement>> = ({
   ].join(" ");
   if (isInternal) {
     return (
-      <Link href={href} className={classes}>
+      <Link href={href} className={classes} prefetch={false}>
         {children}
       </Link>
     );

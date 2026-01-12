@@ -20,6 +20,7 @@ export default function TrackedLink({
           sendEvent(event, { ...eventParams });
         }
       }}
+      prefetch={false}
     >
       {children}
     </Link>

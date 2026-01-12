@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import Image from "next/image";
 
 import { Button } from "../ui/button";
 import {
@@ -42,12 +43,12 @@ export default function ContributeDialog({
             <TabsTrigger value="kofi">Paypal/Cards</TabsTrigger>
           </TabsList>
           <TabsContent value="gcash">
-            <div className="aspect-w-1 aspect-h-1 w-full">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+            <div className="relative mx-auto aspect-square w-full max-w-[200px]">
+              <Image
                 src="/gcash.jpg"
                 alt="GCash QR Code"
-                className="mx-auto rounded-lg object-cover"
+                fill
+                className="rounded-lg object-cover"
               />
             </div>
 
