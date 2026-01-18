@@ -6,13 +6,13 @@ export const getResultDialogFeaturedGameList = (id: string) => {
       return {
         ...game,
         id: "vault",
-        href: `/play${game.path}/vault`,
+        href: `${game.path}/vault`,
       };
     }
 
     return {
       ...game,
-      href: `/play${game.path}`,
+      href: game.path,
     };
   });
 };

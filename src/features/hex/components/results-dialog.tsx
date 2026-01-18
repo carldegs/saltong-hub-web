@@ -10,7 +10,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
-import { VaultIcon, InfoIcon, StarIcon } from "lucide-react";
+import {
+  VaultIcon,
+  InfoIcon,
+  StarIcon,
+  Share2Icon,
+  BadgeHelpIcon,
+  LucideChartNoAxesCombined,
+  BadgeCheckIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -31,6 +39,13 @@ import { sendEvent } from "@/lib/analytics";
 import { HexRound } from "../types";
 import { useHexUserRound, useHexUserRoundMutation } from "../hooks/user-round";
 import HexHowToPlayAccordion from "./how-to-play-accordion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const OTHER_GAMES_LIST = [
   {
@@ -56,6 +71,29 @@ const OTHER_GAMES_LIST = [
     name: "Saltong Mini",
     icon: "/mini.svg",
     href: "/play/mini",
+  },
+];
+
+const TABS = [
+  {
+    value: "share",
+    label: "Share",
+    icon: Share2Icon,
+  },
+  {
+    value: "how-to-play",
+    label: "How To Play",
+    icon: BadgeHelpIcon,
+  },
+  {
+    value: "progress",
+    label: "Progress",
+    icon: LucideChartNoAxesCombined,
+  },
+  {
+    value: "answer",
+    label: "Answers",
+    icon: BadgeCheckIcon,
   },
 ];
 
@@ -138,7 +176,7 @@ function ResultsDialogComponent({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-full overflow-y-auto sm:max-h-[90dvh]">
-        <DialogHeader className="px-0">
+        <DialogHeader className="hidden px-0">
           <DialogTitle className="mb-2 border-0 font-bold">Stats</DialogTitle>
         </DialogHeader>
         <Tabs
@@ -146,12 +184,33 @@ function ResultsDialogComponent({
           className="w-full"
           onValueChange={(value) => handleTabChange(value as HexResultsTab)}
         >
-          <TabsList className="grid w-full grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-0">
-            <TabsTrigger value="share">Share</TabsTrigger>
-            <TabsTrigger value="how-to-play">How To Play</TabsTrigger>
-            <TabsTrigger value="progress">Your Progress</TabsTrigger>
-            <TabsTrigger value="answer">Answers</TabsTrigger>
+          <TabsList className="hidden w-full gap-2 overflow-auto sm:inline-flex">
+            {TABS.map(({ value, label, icon: Icon }) => (
+              <TabsTrigger value={value} key={value}>
+                <Icon /> {label}
+              </TabsTrigger>
+            ))}
           </TabsList>
+          <Select
+            value={TABS.find(({ value }) => value === activeTab)?.value}
+            onValueChange={(value) => handleTabChange(value as HexResultsTab)}
+          >
+            <SelectTrigger className="border-primary mx-auto mt-4 w-full cursor-pointer rounded-none border-t-0 border-r-0 border-l-0 stroke-1 text-lg shadow-none sm:hidden">
+              <SelectValue placeholder="Select View" />
+            </SelectTrigger>
+            <SelectContent>
+              {TABS.map(({ value, label, icon: Icon }) => (
+                <SelectItem
+                  value={value}
+                  key={value}
+                  className="flex items-center justify-center"
+                >
+                  <Icon />
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <TabsContent value="share">
             <div className="flex flex-col gap-3 md:px-0">
               <div className="bg-accent flex flex-col items-center justify-center gap-6 rounded-md px-4 py-8">
