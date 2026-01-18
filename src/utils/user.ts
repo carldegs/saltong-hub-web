@@ -1,6 +1,10 @@
+import { profileValidationSchema } from "@/features/profiles/schemas";
 import { IdentityProviderMap } from "@/lib/supabase/provider-types";
 import { User } from "@supabase/supabase-js";
 
+/**
+ * @deprecated Use type from profiles table instead
+ */
 export interface Profile {
   username: string;
   avatarUrl: string;
@@ -25,6 +29,9 @@ export const BORING_AVATAR_COLORS = [
   "#102943",
 ];
 
+/**
+ * @deprecated Get profile from profiles table instead
+ */
 export const getProileFromIdentityData = ({
   provider,
   data,
@@ -63,6 +70,9 @@ export const getProileFromIdentityData = ({
   }
 };
 
+/**
+ * @deprecated Get profile from profiles table instead
+ */
 export const getUserProfile = (user?: User | null): Profile | undefined => {
   if (!user) {
     return undefined;
@@ -94,6 +104,68 @@ export const getUserProfile = (user?: User | null): Profile | undefined => {
     ...selectedProfile,
     mainProvider,
     userId: user.id,
+  };
+};
+
+export const getAvatarOptionsFromUser = (user?: User | null) => {
+  if (!user) {
+    return [];
+  }
+
+  return (user?.identities || [])
+    .map((identity) => ({
+      value: identity.identity_data?.avatar_url,
+      label: identity.provider?.toUpperCase() ?? "",
+    }))
+    .filter(({ value }) => value);
+};
+
+export const getBoringAvatarUrl = (value: string) => {
+  return `ba://${value}`;
+};
+
+export const isBoringAvatarUrl = (url = "") => {
+  return url.startsWith("ba://");
+};
+
+export const getSuggestedProfileFromUser = (user?: User | null) => {
+  if (!user) {
+    return null;
+  }
+
+  const {
+    name,
+    user_name,
+    full_name,
+    preferred_username,
+    selected_username,
+    selected_avatar_url,
+  } = user.user_metadata || {};
+
+  const username = [
+    selected_username,
+    user_name,
+    preferred_username,
+    user.email?.split("@")[0]?.replaceAll("+", "-"),
+  ].find(
+    (uname) =>
+      !!uname && profileValidationSchema.shape.username.safeParse(uname).success
+  );
+
+  const displayName = [name, full_name, username].find(
+    (dname) =>
+      !!dname &&
+      profileValidationSchema.shape.display_name.safeParse(dname).success
+  );
+
+  const avatarUrl =
+    selected_avatar_url ?? (user?.email ? getBoringAvatarUrl(user.email) : "");
+
+  return {
+    username,
+    displayName,
+    avatarUrl,
+    avatarOptions: getAvatarOptionsFromUser(user),
   };
 };
 
