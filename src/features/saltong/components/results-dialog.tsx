@@ -270,8 +270,8 @@ function ResultsDialogComponent({
   });
 
   const filteredGamesList = useMemo(
-    () => getResultDialogFeaturedGameList(gameSettings.displayName),
-    [gameSettings.displayName]
+    () => getResultDialogFeaturedGameList(roundData.mode),
+    [roundData.mode]
   );
 
   const [showContribution, setShowContribution] = useState(false);
@@ -349,9 +349,9 @@ function ResultsDialogComponent({
                 PLAY OTHER GAMES
               </span>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {filteredGamesList.map(({ displayName, icon, path, id }) => (
+                {filteredGamesList.map(({ displayName, icon, href, id }) => (
                   <Link
-                    href={path}
+                    href={href}
                     key={id}
                     className="min-w-[90px] grow"
                     onClick={() => {
@@ -375,7 +375,7 @@ function ResultsDialogComponent({
                           )}
                         </div>
                         <span className="w-full text-center text-sm font-bold tracking-wider uppercase">
-                          {displayName}
+                          {id === "vault" ? "PLAY OTHER ROUNDS" : displayName}
                         </span>
                       </CardContent>
                     </Card>
