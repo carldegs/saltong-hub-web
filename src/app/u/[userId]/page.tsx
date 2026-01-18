@@ -9,18 +9,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import getSaltongProfileStats from "@/features/profiles/queries/getProfile";
+import getSaltongProfileStats from "@/features/profiles/queries/get-profile-stats";
 import ResultsChart from "@/features/saltong/components/results-chart";
 import { SALTONG_CONFIG } from "@/features/saltong/config";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
-import { getUserProfile } from "@/utils/user";
 import { PencilIcon, PlayIcon } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { WinRateChart } from "./components/win-rate-chart";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import Link from "next/link";
+import { getProfileById } from "@/features/profiles/queries/get-profile";
 
 // For now, only the user can view their own profile. Need to setup a public table for profiles later.
 
@@ -33,7 +33,7 @@ export default async function UserProfile() {
     error,
   } = await supabase.auth.getUser();
 
-  const profile = getUserProfile(user);
+  const { data: profile } = await getProfileById(supabase, user?.id || "");
 
   if (error || !user || !profile) {
     return notFound();
@@ -84,13 +84,19 @@ export default async function UserProfile() {
       </Navbar>
       <main className="dark:from-background dark:via-muted/60 dark:to-muted/80 @container/top h-full w-full bg-gradient-to-br from-[#f8fafc] via-[#e0e7ef] to-[#f1f5f9] px-4 py-6">
         <div className="mb-8 flex flex-col items-center justify-center gap-2">
-          <ProfileAvatar
-            path={profile.avatarUrl}
-            fallback={profile.email}
-            className="size-20"
-          />
-          <div className="text-2xl font-bold">{profile.username}</div>
-          <Button asChild variant="outline" size="sm">
+          <div className="flex flex-col items-center justify-center gap-4 md:flex-row">
+            <ProfileAvatar
+              path={profile.avatar_url ?? ""}
+              fallback={user.email ?? ""}
+              className="size-20"
+            />
+            <div className="align-center flex flex-col items-center gap-0 md:items-start">
+              <div className="text-2xl font-bold">{profile.display_name}</div>
+              <div className="text-base">@{profile.username}</div>
+            </div>
+          </div>
+
+          <Button asChild variant="outline" size="sm" className="mt-2">
             <Link href="/settings/account">
               <PencilIcon />
               Edit

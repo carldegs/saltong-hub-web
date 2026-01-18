@@ -1,12 +1,8 @@
-"use client";
-
 import { cn } from "@/lib/utils";
-import { formatShortDuration } from "@/utils/time";
 import { Duration } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { useInterval } from "usehooks-ts";
+import { CountdownTimer } from "./countdown-timer";
 
 interface Game {
   href: string;
@@ -26,12 +22,6 @@ export default function GameCountdownCard({
   countdown,
   className,
 }: GameCountdownCardProps) {
-  const [timeLeft, setTimeLeft] = useState(countdown());
-
-  useInterval(() => {
-    setTimeLeft(countdown());
-  }, 1000);
-
   return (
     <div
       className={cn(
@@ -39,9 +29,7 @@ export default function GameCountdownCard({
         className
       )}
     >
-      <span>
-        Ends in <b suppressHydrationWarning>{formatShortDuration(timeLeft)}</b>
-      </span>
+      <CountdownTimer countdown={countdown} />
       <div className="mx-auto mt-5 flex w-full max-w-[400px] justify-center gap-4">
         {games.map(({ href, icon, name, className }) => (
           <Link

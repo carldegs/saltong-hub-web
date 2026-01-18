@@ -9,17 +9,26 @@ import {
 } from "@/components/ui/card";
 import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "@/app/components/home-navbar-brand";
-import { getUserProfile } from "@/utils/user";
-import ProfileForm from "./profile-form";
 import ProviderCard from "./provider-card";
 import { notFound } from "next/navigation";
+import { getProfileById } from "@/features/profiles/queries/get-profile";
+import AccountSettingsProfileForm from "../components/account-settings-profile-form";
+import { getSuggestedProfileFromUser } from "@/utils/user";
+import CompleteProfileDialog from "@/features/profiles/components/complete-profile";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const profile = getUserProfile(user);
+
+  if (!user) {
+    return notFound();
+  }
+
+  const { data: profile } = await getProfileById(supabase, user?.id || "");
 
   // Build avatar options from user identities
   const avatarOptions = (user?.identities || [])
@@ -50,15 +59,31 @@ export default async function SettingsPage() {
             <section>
               <h3 className="text-xl font-semibold">Profile</h3>
               <span className="text-muted-foreground mb-4 block text-sm">
-                By default, details from your primary provider will be used for
-                your profile but you may change your details here.
+                Update your profile information, including your username and
+                avatar.
               </span>
-              <ProfileForm
-                username={profile?.username || ""}
-                avatarUrl={profile?.avatarUrl || avatarOptions[0]?.value || ""}
-                email={profile?.email || ""}
-                avatarOptions={avatarOptions}
-              />
+              {profile ? (
+                <AccountSettingsProfileForm
+                  profile={profile}
+                  avatarOptions={avatarOptions}
+                />
+              ) : (
+                <Alert>
+                  <AlertTitle>Setup your Profile</AlertTitle>
+                  <AlertDescription>
+                    You haven&apos;t set up your profile yet. Please complete
+                    your profile to access all social features.
+                    <CompleteProfileDialog
+                      userId={user.id}
+                      {...getSuggestedProfileFromUser(user)}
+                      avatarOptions={avatarOptions}
+                      action="close"
+                    >
+                      <Button className="mt-4">Complete Profile</Button>
+                    </CompleteProfileDialog>
+                  </AlertDescription>
+                </Alert>
+              )}
             </section>
             <section className="mt-8">
               <h3 className="text-xl font-semibold">Providers</h3>
@@ -71,7 +96,7 @@ export default async function SettingsPage() {
                   <ProviderCard
                     key={identity.id}
                     identity={identity}
-                    isMain={identity.provider === profile?.mainProvider}
+                    isMain={false}
                     enableUnlink={
                       !!(user.identities && user.identities?.length > 1)
                     }

@@ -11,7 +11,11 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import BoringAvatar from "boring-avatars";
 import { RefreshCwIcon } from "lucide-react";
-import { BORING_AVATAR_COLORS } from "@/utils/user";
+import {
+  BORING_AVATAR_COLORS,
+  getBoringAvatarUrl,
+  isBoringAvatarUrl,
+} from "@/utils/user";
 
 interface AvatarSelectionModalProps {
   open: boolean;
@@ -38,7 +42,7 @@ export default function AvatarSelectionModal({
 
   // Get the initial generated avatar seed
   const getInitialGeneratedSeed = () => {
-    if (currentAvatarUrl?.startsWith("ba://")) {
+    if (isBoringAvatarUrl(currentAvatarUrl)) {
       return currentAvatarUrl.slice(5);
     }
     return email;
@@ -47,7 +51,7 @@ export default function AvatarSelectionModal({
   const [generatedAvatarSeed, setGeneratedAvatarSeed] = React.useState(
     getInitialGeneratedSeed()
   );
-  const generatedAvatarUrl = `ba://${generatedAvatarSeed}`;
+  const generatedAvatarUrl = getBoringAvatarUrl(generatedAvatarSeed);
   const defaultAvatar = currentAvatarUrl || generatedAvatarUrl;
   const [selectedAvatar, setSelectedAvatar] = React.useState(defaultAvatar);
   const selectedRef = React.useRef<HTMLButtonElement>(null);
@@ -57,7 +61,7 @@ export default function AvatarSelectionModal({
     if (open) {
       const initialSeed = getInitialGeneratedSeed();
       setGeneratedAvatarSeed(initialSeed);
-      setSelectedAvatar(currentAvatarUrl || `ba://${initialSeed}`);
+      setSelectedAvatar(currentAvatarUrl || getBoringAvatarUrl(initialSeed));
       // Scroll to selected avatar after a short delay to ensure DOM is ready
       setTimeout(() => {
         selectedRef.current?.scrollIntoView({
@@ -71,7 +75,7 @@ export default function AvatarSelectionModal({
   const handleRegenerateAvatar = () => {
     const newSeed = generateUUID();
     setGeneratedAvatarSeed(newSeed);
-    setSelectedAvatar(`ba://${newSeed}`);
+    setSelectedAvatar(getBoringAvatarUrl(newSeed));
   };
 
   const handleSave = () => {

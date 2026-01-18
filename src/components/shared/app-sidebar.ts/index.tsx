@@ -9,7 +9,6 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { GamesSidebarMenu } from "./games";
-import { OtherGamesSidebarMenu } from "./other-games";
 import { NavUser } from "./nav-user";
 import { SettingsSidebarMenu } from "./settings";
 import { MoreSidebarMenu } from "./more";
@@ -53,10 +52,10 @@ export async function AppSidebar() {
           </SidebarGroupAction>
           <GamesSidebarMenu />
         </SidebarGroup>
-        <SidebarGroup>
+        {/* <SidebarGroup>
           <SidebarGroupLabel>OTHER GAMES</SidebarGroupLabel>
           <OtherGamesSidebarMenu />
-        </SidebarGroup>
+        </SidebarGroup> */}
         <SidebarGroup>
           <SidebarGroupLabel>MORE</SidebarGroupLabel>
           <SettingsSidebarMenu />

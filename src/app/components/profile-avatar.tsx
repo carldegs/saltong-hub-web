@@ -1,5 +1,5 @@
 import { AvatarImage, Avatar } from "@/components/ui/avatar";
-import { BORING_AVATAR_COLORS } from "@/utils/user";
+import { BORING_AVATAR_COLORS, isBoringAvatarUrl } from "@/utils/user";
 
 import BoringAvatar from "boring-avatars";
 
@@ -13,8 +13,7 @@ export default function ProfileAvatar({
   className?: string;
   fallbackClassName?: string;
 }) {
-  // Check if path is a BoringAvatar URL (ba://<email>)
-  const isBoringAvatar = path?.startsWith("ba://");
+  const isBoringAvatar = isBoringAvatarUrl(path);
   const boringAvatarName = isBoringAvatar ? path.slice(5) : fallback;
 
   const sizeMatch = className?.match(/size-(\d+)/);
