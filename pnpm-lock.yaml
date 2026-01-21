@@ -92,6 +92,9 @@ importers:
       date-fns-tz:
         specifier: ^3.2.0
         version: 3.2.0(date-fns@4.1.0)
+      embla-carousel-react:
+        specifier: 9.0.0-rc01
+        version: 9.0.0-rc01(react@19.1.0)
       lucide-react:
         specifier: ^0.562.0
         version: 0.562.0(react@19.1.0)
@@ -113,6 +116,9 @@ importers:
       pako:
         specifier: ^2.1.0
         version: 2.1.0
+      qrcode.react:
+        specifier: ^4.0.1
+        version: 4.2.0(react@19.1.0)
       radix-ui:
         specifier: ^1.4.2
         version: 1.4.2(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -4528,8 +4534,18 @@ packages:
   electron-to-chromium@1.5.171:
     resolution: {integrity: sha512-scWpzXEJEMrGJa4Y6m/tVotb0WuvNmasv3wWVzUAeCgKU0ToFOhUW6Z+xWnRQANMYGxN4ngJXIThgBJOqzVPCQ==}
 
-  electron-to-chromium@1.5.267:
-    resolution: {integrity: sha512-0Drusm6MVRXSOJpGbaSVgcQsuB4hEkMpHXaVstcPmhu5LIedxs1xNK/nIxmQIU/RPC0+1/o0AVZfBTkTNJOdUw==}
+  embla-carousel-react@9.0.0-rc01:
+    resolution: {integrity: sha512-2ik9QtVm3UXJWkVdEEm6bInmxNSmxq9Z2q5GWuJx3v2vZvujmlDzcrIE6bvh+wWgPmDn6jekJCRHm1eEl/N0SA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.1 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+
+  embla-carousel-reactive-utils@9.0.0-rc01:
+    resolution: {integrity: sha512-RnW0NMrL7wVAQb9jro+l96hLI2JairyFHS2Jv+fvXakveD/c5aD9aoNH94YRbTmi0G7PxrKSxydmCpTy5eFmrA==}
+    peerDependencies:
+      embla-carousel: 9.0.0-rc01
+
+  embla-carousel@9.0.0-rc01:
+    resolution: {integrity: sha512-4BTERU1gAXgg4Vl0m7hQ1GzePGLNNfM2j030ww8i9idiPXumyRUpaNUDfT2zx1Hv8um1Ew7QKBy/HdNPz8L30g==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -6177,6 +6193,11 @@ packages:
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
+
+  qrcode.react@4.2.0:
+    resolution: {integrity: sha512-QpgqWi8rD9DsS9EP3z7BT+5lY5SFhsqGjpgW5DY/i3mK4M9DTBNz3ErMi8BWYEfI3L0d8GIbGmcdFAS1uIRGjA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -12086,7 +12107,17 @@ snapshots:
 
   electron-to-chromium@1.5.171: {}
 
-  electron-to-chromium@1.5.267: {}
+  embla-carousel-react@9.0.0-rc01(react@19.1.0):
+    dependencies:
+      embla-carousel: 9.0.0-rc01
+      embla-carousel-reactive-utils: 9.0.0-rc01(embla-carousel@9.0.0-rc01)
+      react: 19.1.0
+
+  embla-carousel-reactive-utils@9.0.0-rc01(embla-carousel@9.0.0-rc01):
+    dependencies:
+      embla-carousel: 9.0.0-rc01
+
+  embla-carousel@9.0.0-rc01: {}
 
   emoji-regex@8.0.0: {}
 
@@ -14040,6 +14071,10 @@ snapshots:
   proxy-from-env@1.1.0: {}
 
   punycode@2.3.1: {}
+
+  qrcode.react@4.2.0(react@19.1.0):
+    dependencies:
+      react: 19.1.0
 
   queue-microtask@1.2.3: {}
 

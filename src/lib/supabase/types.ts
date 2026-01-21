@@ -14,6 +14,74 @@ export type Database = {
   };
   public: {
     Tables: {
+      group_members: {
+        Row: {
+          groupId: string;
+          joinedAt: string;
+          role: string;
+          userId: string;
+        };
+        Insert: {
+          groupId: string;
+          joinedAt?: string;
+          role?: string;
+          userId: string;
+        };
+        Update: {
+          groupId?: string;
+          joinedAt?: string;
+          role?: string;
+          userId?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "group_members_groupId_fkey";
+            columns: ["groupId"];
+            isOneToOne: false;
+            referencedRelation: "groups";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      groups: {
+        Row: {
+          avatarUrl: string | null;
+          createdAt: string;
+          createdBy: string | null;
+          id: string;
+          inviteCode: string;
+          invitesEnabled: boolean | null;
+          isPublic: boolean | null;
+          memberCount: number | null;
+          name: string;
+          updatedAt: string;
+        };
+        Insert: {
+          avatarUrl?: string | null;
+          createdAt?: string;
+          createdBy?: string | null;
+          id?: string;
+          inviteCode: string;
+          invitesEnabled?: boolean | null;
+          isPublic?: boolean | null;
+          memberCount?: number | null;
+          name: string;
+          updatedAt?: string;
+        };
+        Update: {
+          avatarUrl?: string | null;
+          createdAt?: string;
+          createdBy?: string | null;
+          id?: string;
+          inviteCode?: string;
+          invitesEnabled?: boolean | null;
+          isPublic?: boolean | null;
+          memberCount?: number | null;
+          name?: string;
+          updatedAt?: string;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           avatar_url: string | null;
@@ -308,7 +376,14 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      is_group_admin: {
+        Args: { p_group: string; p_user: string };
+        Returns: boolean;
+      };
+      is_group_member: {
+        Args: { p_group: string; p_user: string };
+        Returns: boolean;
+      };
     };
     Enums: {
       [_ in never]: never;
