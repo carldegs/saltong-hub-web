@@ -9,12 +9,14 @@ interface PasswordCardProps {
   email: string;
   onBack: () => void;
   onForgotPassword?: () => void;
+  returnTo?: string;
 }
 
 export function PasswordCard({
   email,
   onBack,
   onForgotPassword,
+  returnTo = "/",
 }: PasswordCardProps) {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -51,7 +53,7 @@ export function PasswordCard({
     if (error) {
       setError(error.message);
     } else {
-      router.refresh();
+      router.push(returnTo);
     }
   }
 

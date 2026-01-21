@@ -84,7 +84,13 @@ export default async function JoinGroupPage({ params }: JoinGroupPageProps) {
             </EmptyDescription>
             <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
               <Button asChild size="lg" className="w-full sm:w-auto">
-                <Link href="/auth?signup=1">Sign up</Link>
+                <Link
+                  href={`/auth?signup=1&returnTo=${encodeURIComponent(
+                    `/j/${inviteCode}`
+                  )}`}
+                >
+                  Sign up
+                </Link>
               </Button>
               <Button
                 asChild
@@ -92,7 +98,13 @@ export default async function JoinGroupPage({ params }: JoinGroupPageProps) {
                 size="lg"
                 className="w-full sm:w-auto"
               >
-                <Link href="/auth">Log in</Link>
+                <Link
+                  href={`/auth?returnTo=${encodeURIComponent(
+                    `/j/${inviteCode}`
+                  )}`}
+                >
+                  Log in
+                </Link>
               </Button>
             </div>
           </EmptyContent>

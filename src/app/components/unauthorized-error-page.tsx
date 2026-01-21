@@ -139,7 +139,7 @@ export default function UnauthorizedErrorPage(
               <HoverPrefetchLink
                 href={{
                   pathname: "/auth",
-                  query: { next: currPathname },
+                  query: { returnTo: currPathname },
                 }}
               >
                 Log in
@@ -154,7 +154,7 @@ export default function UnauthorizedErrorPage(
               <HoverPrefetchLink
                 href={{
                   pathname: "/auth",
-                  query: { signup: "1", next: currPathname },
+                  query: { signup: "1", returnTo: currPathname },
                 }}
               >
                 Sign up

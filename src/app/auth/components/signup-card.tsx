@@ -10,9 +10,10 @@ import { getRedirectURL } from "@/lib/utils";
 interface SignupCardProps {
   onBack: () => void;
   onSuccess: () => void;
+  returnTo?: string;
 }
 
-export function SignupCard({ onBack }: SignupCardProps) {
+export function SignupCard({ onBack, returnTo = "/" }: SignupCardProps) {
   const supabase = useSupabaseClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,7 +53,11 @@ export function SignupCard({ onBack }: SignupCardProps) {
       email,
       password,
       options: {
-        emailRedirectTo: getRedirectURL(),
+        emailRedirectTo: `${getRedirectURL()}auth/callback${
+          returnTo && returnTo !== "/"
+            ? `?returnTo=${encodeURIComponent(returnTo)}`
+            : ""
+        }`,
       },
     });
     if (error) {
