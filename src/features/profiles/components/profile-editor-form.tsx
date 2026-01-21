@@ -37,6 +37,7 @@ interface ProfileEditorFormProps {
     label?: string;
   }[];
   submitText?: string;
+  submitText?: string;
 }
 
 export default function ProfileEditorForm({
@@ -154,7 +155,7 @@ export default function ProfileEditorForm({
                   onChange={(e) => field.onChange(e.target.value.toLowerCase())}
                 />
               </FormControl>
-              <FormDescription>
+              <FormDescription className="text-start leading-tight">
                 2–32 chars: lowercase letters, numbers, and symbols (_-.) only.
               </FormDescription>
               <FormMessage />
@@ -171,7 +172,9 @@ export default function ProfileEditorForm({
               <FormControl>
                 <Input placeholder="Juan D." disabled={isLoading} {...field} />
               </FormControl>
-              <FormDescription>Up to 32 characters</FormDescription>
+              <FormDescription className="text-start leading-tight">
+                Up to 32 characters
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

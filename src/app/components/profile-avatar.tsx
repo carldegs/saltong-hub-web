@@ -28,6 +28,7 @@ export default function ProfileAvatar({
   fallback,
   className,
   profileType = "user",
+  fallbackClassName,
 }: {
   path: string;
   fallback: string;
@@ -52,6 +53,7 @@ export default function ProfileAvatar({
         variant={variantMap[profileType]}
         colors={colorsMap[profileType]}
         size={boringAvatarSize}
+        className={fallbackClassName}
       />
     </Avatar>
   );

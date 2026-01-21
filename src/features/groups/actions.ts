@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { generateInviteCode } from "./utils/code";
+import { getProfileById } from "../profiles/queries/get-profile";
 
 export async function createGroupAction(groupName: string) {
   const supabase = await createClient();
@@ -39,5 +40,67 @@ export async function createGroupAction(groupName: string) {
 
   return {
     group: groupData,
+  };
+}
+
+export async function getGroupByInviteCode(inviteCode: string) {
+  const supabase = await createClient({
+    global: {
+      headers: {
+        "x-supabase-request-invite-code": inviteCode,
+      },
+    },
+  });
+
+  const { data: group } = await supabase
+    .from("groups")
+    .select("name, id, avatarUrl, memberCount")
+    .eq("inviteCode", inviteCode)
+    .maybeSingle();
+
+  if (!group) {
+    throw new Error("Group not found");
+  }
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    if (userError) {
+      console.error("Failed to get user:", userError);
+    }
+    return {
+      group,
+      user: null,
+    };
+  }
+
+  const { data: profile } = await getProfileById(supabase, user.id);
+
+  const { data: isMember, error: isMemberError } = await supabase.rpc(
+    "is_group_member",
+    {
+      p_group: group.id,
+      p_user: user.id,
+    }
+  );
+
+  if (isMemberError) {
+    console.error("Failed to check group membership:", isMemberError);
+    return {
+      group,
+      user,
+      profile,
+      isMember: false,
+    };
+  }
+
+  return {
+    group,
+    user,
+    profile,
+    isMember: !!isMember,
   };
 }

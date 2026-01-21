@@ -30,13 +30,11 @@ export default function InviteLink({
         <Button
           className="flex-grow"
           onClick={() => {
-            copyToClipboard(`Join my SaltongHub group ${label}: ${value}`).then(
-              (value) => {
-                if (value) {
-                  toast.success("Invite link copied to clipboard!");
-                }
+            copyToClipboard(value).then((value) => {
+              if (value) {
+                toast.success("Invite link copied to clipboard!");
               }
-            );
+            });
           }}
         >
           <CopyIcon /> Copy Link
