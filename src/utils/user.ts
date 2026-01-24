@@ -1,6 +1,6 @@
 import { profileValidationSchema } from "@/features/profiles/schemas";
 import { IdentityProviderMap } from "@/lib/supabase/provider-types";
-import { User } from "@supabase/supabase-js";
+import { JwtPayload, User } from "@supabase/supabase-js";
 
 /**
  * @deprecated Use type from profiles table instead
@@ -126,6 +126,48 @@ export const getBoringAvatarUrl = (value: string) => {
 
 export const isBoringAvatarUrl = (url = "") => {
   return url.startsWith("ba://");
+};
+
+export const getSuggestedProfileFromClaims = (claims?: JwtPayload) => {
+  if (!claims) {
+    return null;
+  }
+
+  const {
+    name,
+    user_name,
+    full_name,
+    preferred_username,
+    selected_username,
+    selected_avatar_url,
+  } = claims.user_metadata || {};
+
+  const username = [
+    selected_username,
+    user_name,
+    preferred_username,
+    claims.email?.split("@")[0]?.replaceAll("+", "-"),
+  ].find(
+    (uname) =>
+      !!uname && profileValidationSchema.shape.username.safeParse(uname).success
+  );
+
+  const displayName = [name, full_name, username].find(
+    (dname) =>
+      !!dname &&
+      profileValidationSchema.shape.display_name.safeParse(dname).success
+  );
+
+  const avatarUrl =
+    selected_avatar_url ??
+    (claims.email ? getBoringAvatarUrl(claims.email) : "");
+
+  return {
+    username,
+    displayName,
+    avatarUrl,
+    avatarOptions: [],
+  };
 };
 
 export const getSuggestedProfileFromUser = (user?: User | null) => {

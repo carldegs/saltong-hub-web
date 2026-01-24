@@ -13,9 +13,9 @@ export default async function LoginPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getClaims();
 
-  if (data?.user) {
+  if (data?.claims) {
     redirect("/", RedirectType.replace);
   }
 

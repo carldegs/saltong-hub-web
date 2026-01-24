@@ -10,26 +10,29 @@ import NewFeatureBadge from "../new-feature-badge";
 import { getCachedProfileById } from "@/features/profiles/queries/get-profile";
 import { Profile } from "@/features/profiles/types";
 import CompleteProfileDialog from "@/features/profiles/components/complete-profile";
-import { getSuggestedProfileFromUser } from "@/utils/user";
+import { getSuggestedProfileFromClaims } from "@/utils/user";
 
 export async function SettingsSidebarMenu() {
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getClaims();
+
+  const userId = data?.claims?.sub;
+
   let profile: Profile | null = null;
 
-  if (data?.user) {
-    const profileResult = await getCachedProfileById(data.user.id);
+  if (!!userId) {
+    const profileResult = await getCachedProfileById(userId);
     profile = profileResult?.data;
   }
 
   // Check if user is an admin
   const allowedAdmins =
     process.env.ADMIN_USER_IDS?.split(",").map((id) => id.trim()) || [];
-  const isAdmin = data?.user && allowedAdmins.includes(data.user.id);
+  const isAdmin = userId && allowedAdmins.includes(userId);
 
   return (
     <SidebarMenu>
-      {data?.user && (
+      {!!userId && (
         <SidebarMenuItem>
           <SidebarMenuButton className="h-auto py-1.5" asChild>
             {profile ? (
@@ -45,9 +48,9 @@ export async function SettingsSidebarMenu() {
               </Link>
             ) : (
               <CompleteProfileDialog
-                userId={data.user.id}
+                userId={userId}
                 action="redirect"
-                {...getSuggestedProfileFromUser(data.user)}
+                {...getSuggestedProfileFromClaims(data.claims)}
               >
                 <a className="flex w-full cursor-pointer items-center gap-3 px-2 py-1.5">
                   <User className="h-4 w-4" />

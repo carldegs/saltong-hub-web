@@ -12,7 +12,7 @@ export default async function GameCard({
 }: { className?: string } & BaseConfig) {
   const { icon, displayName, blurb, colorScheme, path } = gameSettings;
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getClaims();
 
   return (
     <div
@@ -50,7 +50,7 @@ export default async function GameCard({
         >
           <HoverPrefetchLink href={`/play${path}`}>Play Game</HoverPrefetchLink>
         </Button>
-        {data.user && (
+        {data?.claims && (
           <Button className="flex-1" variant="outline" asChild>
             <HoverPrefetchLink href={`/play${path}/vault`}>
               <VaultIcon className="mr-1 size-5" />

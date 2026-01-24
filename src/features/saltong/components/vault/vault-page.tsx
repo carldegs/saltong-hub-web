@@ -20,9 +20,9 @@ export default async function SaltongVaultPage({
   const { colorScheme, icon, path, startDate, displayName } = gameSettings;
 
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getClaims();
 
-  if (!data.user) {
+  if (!data?.claims) {
     return <UnauthorizedErrorPage {...gameSettings} />;
   }
 
@@ -58,7 +58,7 @@ export default async function SaltongVaultPage({
               ? new Date(Number(searchParams.d) * 100000)
               : new Date()
           }
-          userId={data.user.id}
+          userId={data?.claims?.sub}
         />
       </div>
     </>

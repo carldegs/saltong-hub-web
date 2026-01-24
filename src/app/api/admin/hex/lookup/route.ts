@@ -7,6 +7,7 @@ import {
 import { getDictionary } from "@/features/dictionary/api";
 import { createClient } from "@/lib/supabase/server";
 import { HEX_CONFIG } from "@/features/hex/config";
+import { isAllowedAdmin } from "../../utils/is-allowed-admin";
 import type {
   HexWordBankItem,
   HexLookupTableItem,
@@ -284,13 +285,11 @@ async function generateLookupTableInBackground(
 
   try {
     // Verify user is authenticated
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
+    const { data, error: authError } = await supabase.auth.getClaims();
+    const userId = data?.claims?.sub;
 
-    if (authError || !user) {
-      throw new Error("User not authenticated");
+    if (authError || !userId || !isAllowedAdmin(userId)) {
+      throw new Error("User not authorized");
     }
 
     // Write initial metadata with "generating" status
@@ -371,12 +370,11 @@ export async function GET() {
     const supabase = await createClient();
 
     // Verify user is authenticated
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
+    const { data: authData, error: authError } =
+      await supabase.auth.getClaims();
+    const userId = authData?.claims?.sub;
 
-    if (authError || !user) {
+    if (authError || !userId || !isAllowedAdmin(userId)) {
       return NextResponse.json(
         { error: "Authentication required" },
         { status: 401 }
@@ -416,12 +414,11 @@ export async function POST(request: NextRequest) {
   try {
     // Verify user is authenticated before starting generation
     const supabase = await createClient();
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
+    const { data: authData, error: authError } =
+      await supabase.auth.getClaims();
+    const userId = authData?.claims?.sub;
 
-    if (authError || !user) {
+    if (authError || !userId || !isAllowedAdmin(userId)) {
       return NextResponse.json(
         { error: "Authentication required" },
         { status: 401 }

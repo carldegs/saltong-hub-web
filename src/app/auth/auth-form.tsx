@@ -96,7 +96,7 @@ export default function AuthForm({
           <SignupCard
             onBack={() => setStep("email")}
             onSuccess={() => {
-              supabase.auth.getUser();
+              supabase.auth.getClaims();
               setStep("email");
             }}
           />

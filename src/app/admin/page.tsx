@@ -1,18 +1,8 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-
-import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function AdminLandingPage() {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data?.user) {
-    redirect("/login");
-  }
-
   return (
     <div className="container mx-auto max-w-3xl p-6">
       <div className="mb-10">

@@ -132,21 +132,19 @@ export function formatDate(date: string, includeRelative = false) {
   };
 }
 
+// TODO: Utilize this everywhere admin check is needed
 export async function isAdmin(supabase: SupabaseClient): Promise<boolean> {
   try {
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser();
+    const { data, error } = await supabase.auth.getClaims();
 
-    if (error || !user) {
+    if (error || !data?.claims) {
       return false;
     }
 
     const allowedAdmins =
       process.env.ADMIN_USER_IDS?.split(",").map((id) => id.trim()) || [];
 
-    return allowedAdmins.includes(user.id);
+    return allowedAdmins.includes(data.claims.sub);
   } catch {
     return false;
   }
