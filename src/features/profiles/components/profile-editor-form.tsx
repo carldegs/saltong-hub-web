@@ -37,7 +37,6 @@ interface ProfileEditorFormProps {
     label?: string;
   }[];
   submitText?: string;
-  submitText?: string;
 }
 
 export default function ProfileEditorForm({

@@ -14,16 +14,13 @@ import Link from "next/link";
 
 export async function GroupsSidebarMenu() {
   const supabase = await createClient();
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getClaims();
 
-  if (error || !user) {
+  if (error || !data?.claims) {
     return null;
   }
 
-  const recentGroups = await getRecentUserGroups(supabase, user.id);
+  const recentGroups = await getRecentUserGroups(supabase, data.claims.sub);
 
   return (
     <SidebarGroup>

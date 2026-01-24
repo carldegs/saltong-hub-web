@@ -25,8 +25,10 @@ interface JoinGroupPageProps {
 export default async function JoinGroupPage({ params }: JoinGroupPageProps) {
   const { inviteCode } = await params;
 
-  const { group, user, profile, isMember } =
+  const { group, claims, profile, isMember } =
     await getGroupByInviteCode(inviteCode);
+
+  const userId = claims?.sub;
 
   if (isMember) {
     return redirect(`/groups/${group.id}`);
@@ -63,7 +65,7 @@ export default async function JoinGroupPage({ params }: JoinGroupPageProps) {
                 </span>
               </EmptyDescription>
             </EmptyHeader>
-            {!!user?.id && !!profile?.id && (
+            {!!userId && !!profile?.id && (
               <EmptyContent>
                 {/* TODO: Handle joining the group */}
                 <Button size="lg">
@@ -78,15 +80,15 @@ export default async function JoinGroupPage({ params }: JoinGroupPageProps) {
                 </Button>
               </EmptyContent>
             )}
-            {!!user?.id && !profile?.id && (
+            {!!userId && !profile?.id && (
               <EmptyContent className="w-full">
                 <EmptyDescription className="mb-4 text-center">
                   Please complete your profile to join this group.
                 </EmptyDescription>
-                <JoinGroupProfileForm user={user} groupId={group.id} />
+                <JoinGroupProfileForm claims={claims} groupId={group.id} />
               </EmptyContent>
             )}
-            {!user?.id && (
+            {!userId && (
               <EmptyContent className="w-full space-y-3">
                 <EmptyDescription className="text-center">
                   A Saltong account is required to join this group.

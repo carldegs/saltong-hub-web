@@ -5,16 +5,16 @@ import { useInsertProfileMutation } from "@/features/profiles/hooks/profile";
 import { Profile } from "@/features/profiles/types";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { User } from "@supabase/supabase-js";
-import { getSuggestedProfileFromUser } from "@/utils/user";
+import { JwtPayload } from "@supabase/supabase-js";
+import { getTemporaryProfileFromClaims } from "@/features/profiles/utils";
 
 interface JoinGroupProfileFormProps {
-  user: User;
+  claims: JwtPayload;
   groupId: string;
 }
 
 export default function JoinGroupProfileForm({
-  user,
+  claims,
 }: JoinGroupProfileFormProps) {
   const router = useRouter();
   const insertProfileMutation = useInsertProfileMutation();
@@ -24,7 +24,7 @@ export default function JoinGroupProfileForm({
   ) => {
     // TODO: Implement joining the group after profile creation
     await insertProfileMutation.mutateAsync({
-      id: user.id,
+      id: claims.sub,
       ...data,
     });
   };
@@ -38,8 +38,8 @@ export default function JoinGroupProfileForm({
     toast.error(error.message || "Failed to create profile");
   };
 
-  const { username, avatarUrl, displayName } =
-    getSuggestedProfileFromUser(user) ?? {};
+  const { username, avatar_url, display_name } =
+    getTemporaryProfileFromClaims(claims) ?? {};
 
   return (
     <div className="w-full max-w-md">
@@ -51,8 +51,8 @@ export default function JoinGroupProfileForm({
         submitText="Save Profile and Join"
         initialData={{
           username: username || "",
-          avatar_url: avatarUrl || "",
-          display_name: displayName || "",
+          avatar_url: avatar_url || "",
+          display_name: display_name || "",
         }}
       />
     </div>
