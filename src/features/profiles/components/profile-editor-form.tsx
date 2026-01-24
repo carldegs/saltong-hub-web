@@ -36,6 +36,7 @@ interface ProfileEditorFormProps {
     value: string;
     label?: string;
   }[];
+  submitText?: string;
 }
 
 export default function ProfileEditorForm({
@@ -45,6 +46,7 @@ export default function ProfileEditorForm({
   onError,
   isLoading,
   avatarOptions = [],
+  submitText = "Save Profile",
 }: ProfileEditorFormProps) {
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
   const form = useForm<ProfileFormData>({
@@ -153,9 +155,7 @@ export default function ProfileEditorForm({
                 />
               </FormControl>
               <FormDescription>
-                2-32 characters: lowercase letters, numbers, underscores,
-                dashes, periods. Cannot start/end with period or have
-                consecutive periods.
+                2–32 chars: lowercase letters, numbers, and symbols (_-.) only.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -171,14 +171,14 @@ export default function ProfileEditorForm({
               <FormControl>
                 <Input placeholder="Juan D." disabled={isLoading} {...field} />
               </FormControl>
-              <FormDescription>1-32 characters.</FormDescription>
+              <FormDescription>Up to 32 characters</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
         <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? "Saving..." : "Save Profile"}
+          {isLoading ? "Saving..." : submitText}
         </Button>
       </form>
     </Form>

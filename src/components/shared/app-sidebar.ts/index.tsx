@@ -21,6 +21,7 @@ import { getUserProfile } from "@/utils/user";
 export async function AppSidebar() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
+  // TODO: use new profile data
   const profile = getUserProfile(data.user);
 
   return (
@@ -35,6 +36,7 @@ export async function AppSidebar() {
             hideMenu
             href="/"
             prefetch={false}
+            forceLarge
           />
         </div>
       </SidebarHeader>

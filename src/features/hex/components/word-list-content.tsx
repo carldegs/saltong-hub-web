@@ -14,7 +14,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SortAscIcon, SortDescIcon, StarIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import { isPangram } from "../utils";
-import { useIsMounted } from "usehooks-ts";
 
 const SORT_BY_VALUES = ["Guess Order", "Alphabetical", "Word Length"];
 const SORT_ORDER_VALUES = ["Ascending", "Descending"];
@@ -30,7 +29,6 @@ export default function WordListContent({
   numWordsToGuess: number;
   numLetters?: number;
 }) {
-  const mounted = useIsMounted();
   const [sortBy, setSortBy] =
     useState<(typeof SORT_BY_VALUES)[number]>("Guess Order");
   const [sortOrder, setSortOrder] =
@@ -58,19 +56,6 @@ export default function WordListContent({
     () => wordList.filter((word) => isPangram(word, numLetters)),
     [wordList, numLetters]
   );
-
-  if (!mounted()) {
-    return (
-      <>
-        <Skeleton className="mx-6 h-5 w-full" />
-        <div className="grid grid-cols-2 gap-x-2 overflow-auto px-6 pb-6">
-          {[...Array(10)].map((_, idx) => (
-            <Skeleton key={idx} className="mb-2 h-5 w-full" />
-          ))}
-        </div>
-      </>
-    );
-  }
 
   return (
     <>
@@ -128,18 +113,14 @@ export default function WordListContent({
         <Skeleton className="mx-6 h-5 w-full" />
       )}
       <div className="grid grid-cols-2 gap-x-2 overflow-auto px-6 pb-6">
-        {!isLoading
-          ? wordList.map((word) => (
-              <span key={word} className="h-fit opacity-80">
-                {word}
-                {pangramWordsInList.includes(word) && (
-                  <StarIcon className="-mt-[0.5] ml-1 inline-block size-4 text-yellow-500 dark:text-yellow-400" />
-                )}
-              </span>
-            ))
-          : [...Array(10)].map((_, idx) => (
-              <Skeleton key={idx} className="mb-2 h-5 w-full" />
-            ))}
+        {wordList.map((word) => (
+          <span key={word} className="h-fit opacity-80">
+            {word}
+            {pangramWordsInList.includes(word) && (
+              <StarIcon className="-mt-[0.5] ml-1 inline-block size-4 text-yellow-500 dark:text-yellow-400" />
+            )}
+          </span>
+        ))}
       </div>
     </>
   );

@@ -20,6 +20,7 @@ export default function GameNotFound() {
             icon={"/hub.svg"}
             href="/"
             prefetch={false}
+            forceLarge
           />
         </div>
       </Navbar>
