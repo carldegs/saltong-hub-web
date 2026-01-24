@@ -27,7 +27,7 @@ import {
 //   };
 // };
 
-export default function SupportSection({}: { userId?: string }) {
+export default function SupportSection() {
   // const [open, setOpen] = useState(false);
   // const handleResetGameData = () => {
   //   setOpen(true);
