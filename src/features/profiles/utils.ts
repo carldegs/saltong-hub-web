@@ -56,7 +56,8 @@ export function getAvatarOptionsFromIdentities(identities: UserIdentity[]) {
 
 export async function getProfileFormData(
   client: DbClient,
-  claims?: JwtPayload
+  claims?: JwtPayload,
+  onlyFetchIdentiesDataOnTemporaryProfile = false
 ) {
   if (!claims) {
     return null;
@@ -65,6 +66,15 @@ export async function getProfileFormData(
   const { data: profileData } = await getCachedProfileById(claims.sub);
   const isTemporaryProfile = !profileData;
   const profile = profileData ?? getTemporaryProfileFromClaims(claims);
+
+  if (isTemporaryProfile && onlyFetchIdentiesDataOnTemporaryProfile) {
+    return {
+      profile,
+      isTemporaryProfile,
+      avatarOptions: [],
+      identitiesData: null,
+    };
+  }
 
   const { data: identitiesData } = await client.auth.getUserIdentities();
 
@@ -76,5 +86,6 @@ export async function getProfileFormData(
     profile,
     isTemporaryProfile,
     avatarOptions,
+    identitiesData,
   };
 }

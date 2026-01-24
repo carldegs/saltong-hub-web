@@ -69,43 +69,6 @@ export const getProileFromIdentityData = ({
   }
 };
 
-/**
- * @deprecated Get profile from profiles table instead
- */
-export const getUserProfile = (user?: User | null): Profile | undefined => {
-  if (!user) {
-    return undefined;
-  }
-
-  const mainProvider =
-    user.app_metadata?.provider ||
-    user.app_metadata?.providers?.[0] ||
-    "unknown";
-
-  const mainIdentity = user.identities?.find(
-    (identity) => identity.provider === mainProvider
-  );
-
-  const selectedProfile: Partial<Omit<Profile, "mainProvider" | "email">> = {
-    ...(user.user_metadata?.selected_username
-      ? { username: user.user_metadata.selected_username }
-      : {}),
-    ...(user.user_metadata?.avatar_url
-      ? { avatarUrl: user.user_metadata.selected_avatar_url }
-      : {}),
-  };
-
-  return {
-    ...getProileFromIdentityData({
-      provider: mainProvider,
-      data: mainIdentity?.identity_data,
-    } as IdentityProviderMap),
-    ...selectedProfile,
-    mainProvider,
-    userId: user.id,
-  };
-};
-
 export const getAvatarOptionsFromUser = (user?: User | null) => {
   if (!user) {
     return [];

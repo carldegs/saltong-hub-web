@@ -9,21 +9,14 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { GamesSidebarMenu } from "./games";
-import { NavUser } from "./nav-user";
 import { SettingsSidebarMenu } from "./settings";
 import { MoreSidebarMenu } from "./more";
 import { ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
 import { NavbarBrand } from "../navbar";
-import { createClient } from "@/lib/supabase/server";
-import { getUserProfile } from "@/utils/user";
+import NavUser from "./nav-user";
 
 export async function AppSidebar() {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-  // TODO: use new profile data
-  const profile = getUserProfile(data.user);
-
   return (
     <Sidebar>
       <SidebarHeader>
@@ -66,8 +59,7 @@ export async function AppSidebar() {
 
       <SidebarFooter>
         <MoreSidebarMenu />
-
-        <NavUser profile={profile} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

@@ -21,13 +21,12 @@ export default async function SettingsPage() {
   const supabase = await createClient();
   const { data: claimsData, error: claimsError } =
     await supabase.auth.getClaims();
-  const { data: identitiesData } = await supabase.auth.getUserIdentities();
 
   if (!claimsData?.claims || claimsError) {
     return notFound();
   }
 
-  const { profile, isTemporaryProfile, avatarOptions } =
+  const { profile, isTemporaryProfile, avatarOptions, identitiesData } =
     (await getProfileFormData(supabase, claimsData.claims)) ?? {};
 
   return (
