@@ -13,9 +13,9 @@ export default async function SaltongVaultPage({
   const { colorScheme, icon } = gameConfig;
 
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getClaims();
 
-  if (!data.user) {
+  if (!data?.claims) {
     return <UnauthorizedErrorPage {...gameConfig} />;
   }
 
@@ -38,7 +38,7 @@ export default async function SaltongVaultPage({
         />
       </Navbar>
       <div className="mx-auto w-full max-w-prose">
-        <VaultMonthlyCalendar userId={data?.user?.id} />
+        <VaultMonthlyCalendar userId={data?.claims?.sub} />
       </div>
     </>
   );

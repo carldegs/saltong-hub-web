@@ -2,7 +2,13 @@
 import { NavbarBrand } from "@/components/shared/navbar";
 import { useSidebar } from "@/components/ui/sidebar";
 
-export default function HomeNavbarBrand() {
+export default function HomeNavbarBrand({
+  hideMenu = false,
+  hideBrand,
+}: {
+  hideMenu?: boolean;
+  hideBrand?: boolean;
+}) {
   const { open, isMobile } = useSidebar();
   return (
     <NavbarBrand
@@ -10,9 +16,11 @@ export default function HomeNavbarBrand() {
       subtitle="Hub"
       icon="/hub-light.svg"
       iconLight="/hub.svg"
-      hideBrand={open && !isMobile}
+      hideBrand={hideBrand ?? (open && !isMobile)}
+      hideMenu={hideMenu}
       href="/"
       prefetch={false}
+      forceLarge
     />
   );
 }

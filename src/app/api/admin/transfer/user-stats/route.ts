@@ -9,6 +9,7 @@ import { SALTONG_MODES } from "@/features/saltong/constants";
 import { SaltongMode, SaltongUserStats } from "@/features/saltong/types";
 import { createServiceRoleClient } from "@/lib/supabase/admin-server";
 import { createClient } from "@/lib/supabase/server";
+import { isAllowedAdmin } from "../../utils/is-allowed-admin";
 
 type AdminClient = ReturnType<typeof createServiceRoleClient>;
 
@@ -102,15 +103,6 @@ function sanitizeStatsRow(
   } satisfies SanitizedStatsRow;
 }
 
-function isAllowedAdmin(userId: string | undefined | null) {
-  if (!userId) return false;
-
-  const allowedAdmins =
-    process.env.ADMIN_USER_IDS?.split(",").map((id) => id.trim()) ?? [];
-
-  return allowedAdmins.includes(userId);
-}
-
 async function findUserByEmailPaginated(
   adminClient: AdminClient,
   email: string,
@@ -151,16 +143,13 @@ async function findUserByEmailPaginated(
 export async function POST(request: Request) {
   try {
     const supabase = await createClient();
-    const {
-      data: { user: requester },
-      error: requesterError,
-    } = await supabase.auth.getUser();
+    const { data, error: requesterError } = await supabase.auth.getClaims();
 
-    if (requesterError || !requester) {
+    if (requesterError || !data?.claims) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!isAllowedAdmin(requester.id)) {
+    if (!isAllowedAdmin(data.claims.sub)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -205,16 +194,13 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const supabase = await createClient();
-    const {
-      data: { user: requester },
-      error: requesterError,
-    } = await supabase.auth.getUser();
+    const { data, error: requesterError } = await supabase.auth.getClaims();
 
-    if (requesterError || !requester) {
+    if (requesterError || !data?.claims) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!isAllowedAdmin(requester.id)) {
+    if (!isAllowedAdmin(data.claims.sub)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

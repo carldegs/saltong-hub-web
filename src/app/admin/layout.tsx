@@ -5,12 +5,9 @@ async function checkAdminAccess() {
   const supabase = await createClient();
 
   // Check if user is authenticated
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getClaims();
 
-  if (error || !user) {
+  if (error || !data?.claims) {
     return { isAdmin: false };
   }
 
@@ -19,7 +16,7 @@ async function checkAdminAccess() {
     process.env.ADMIN_USER_IDS?.split(",").map((id) => id.trim()) || [];
 
   // Check if user's ID is in the allowed list
-  const isAdmin = allowedAdmins.includes(user.id);
+  const isAdmin = allowedAdmins.includes(data.claims.sub);
 
   return { isAdmin };
 }

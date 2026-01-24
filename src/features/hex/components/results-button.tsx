@@ -70,7 +70,7 @@ export function ResultsButton({
       <Button
         variant="outline"
         size="icon"
-        className="gap-1.5 font-bold md:h-auto md:w-auto md:px-2"
+        className="gap-1.5 font-bold md:w-auto md:px-2"
         title="Play previous games"
         asChild
       >

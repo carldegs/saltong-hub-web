@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { SaltongMode } from "../../types";
 import { SALTONG_CONFIG } from "../../config";
+import NavbarUser from "@/components/shared/navbar-user";
 
 export default async function SaltongVaultPage({
   searchParams,
@@ -20,9 +21,9 @@ export default async function SaltongVaultPage({
   const { colorScheme, icon, path, startDate, displayName } = gameSettings;
 
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getClaims();
 
-  if (!data.user) {
+  if (!data?.claims) {
     return <UnauthorizedErrorPage {...gameSettings} />;
   }
 
@@ -32,6 +33,7 @@ export default async function SaltongVaultPage({
         colorScheme={
           colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
         }
+        hideUserDropdown
       >
         <NavbarBrand
           colorScheme={
@@ -44,9 +46,12 @@ export default async function SaltongVaultPage({
           prefetch={false}
         />
 
-        <Button variant="outline" asChild>
-          <Link href={`/play${path}`}>Play Latest Game</Link>
-        </Button>
+        <div className="flex gap-1.5">
+          <Button variant="outline" asChild>
+            <Link href={`/play${path}`}>Play Latest Game</Link>
+          </Button>
+          <NavbarUser />
+        </div>
       </Navbar>
       <div className="mx-auto w-full max-w-prose">
         <VaultMonthlyCalendar
@@ -58,7 +63,7 @@ export default async function SaltongVaultPage({
               ? new Date(Number(searchParams.d) * 100000)
               : new Date()
           }
-          userId={data.user.id}
+          userId={data?.claims?.sub}
         />
       </div>
     </>

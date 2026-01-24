@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { isAllowedAdmin } from "../../../utils/is-allowed-admin";
 
 const ADMIN_BUCKET = "admin";
 const METADATA_FILE = "hex-lookup-table-meta.json";
@@ -18,12 +19,14 @@ export async function GET() {
     const supabase = await createClient();
 
     // Verify user is authenticated
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
+    const { data: authData, error: authError } =
+      await supabase.auth.getClaims();
 
-    if (authError || !user) {
+    if (
+      authError ||
+      !authData?.claims ||
+      !isAllowedAdmin(authData.claims.sub)
+    ) {
       return NextResponse.json(
         { error: "Authentication required" },
         { status: 401 }

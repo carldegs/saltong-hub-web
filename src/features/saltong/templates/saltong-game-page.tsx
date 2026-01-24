@@ -19,6 +19,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
+import NavbarUser from "@/components/shared/navbar-user";
 
 async function SaltongGamePage({
   searchParams: _searchParams,
@@ -32,11 +33,11 @@ async function SaltongGamePage({
     gameSettings;
   const searchParams = await _searchParams;
   const supabase = await createClient();
-  const { data: userData } = await supabase.auth.getUser();
+  const { data: claimsData } = await supabase.auth.getClaims();
   const queryClient = new QueryClient();
 
   if (
-    !userData?.user &&
+    !claimsData?.claims &&
     searchParams?.d &&
     searchParams?.d !== getFormattedDateInPh()
   ) {
@@ -55,18 +56,18 @@ async function SaltongGamePage({
     return notFound();
   }
 
-  if (userData?.user?.id) {
+  if (claimsData?.claims?.sub) {
     await queryClient.prefetchQuery({
       queryKey: [
         "saltong-user-round",
-        { userId: userData.user.id, date: round.date, mode },
+        { userId: claimsData.claims.sub, date: round.date, mode },
       ],
       queryFn: async () => {
         const data = (
           await getCachedSaltongUserRound(
             round.date,
             mode,
-            userData.user?.id ?? ""
+            claimsData.claims.sub ?? ""
           )
         )?.data;
 
@@ -81,6 +82,7 @@ async function SaltongGamePage({
         colorScheme={
           colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
         }
+        hideUserDropdown
       >
         <NavbarBrand
           colorScheme={
@@ -97,8 +99,9 @@ async function SaltongGamePage({
             mode={mode}
             gameDate={round.date}
             roundData={round}
-            userId={userData?.user?.id}
+            userId={claimsData?.claims.sub}
           />
+          <NavbarUser />
         </div>
       </Navbar>
       {/* Client-side: refresh when PH date != game date and no `d` override */}
@@ -109,7 +112,7 @@ async function SaltongGamePage({
           wordLen={wordLen}
           roundData={round}
           isLive={isLive}
-          userId={userData?.user?.id}
+          userId={claimsData?.claims?.sub}
         />
       </HydrationBoundary>
     </>

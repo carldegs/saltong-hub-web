@@ -2,7 +2,7 @@ import { Badge } from "../ui/badge";
 
 const NewFeatureBadge = () => {
   return (
-    <Badge className="ml-2 bg-blue-200 py-[1px] text-[0.6rem] text-blue-800">
+    <Badge className="ml-2 bg-blue-200 py-[1px] text-[0.6rem] text-blue-800 hover:bg-blue-400 hover:text-white">
       NEW
     </Badge>
   );

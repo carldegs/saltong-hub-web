@@ -4,9 +4,10 @@ import { createClient } from "@/lib/supabase/server";
 import { VelocityScroll } from "@/components/magicui/scroll-based-velocity";
 import TrackedLink from "../shared/tracked-link";
 
+// TODO: Check if better to make this a static server component
 export default async function VaultsAlert() {
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getClaims();
 
   return (
     <div className="relative flex w-full flex-col items-center justify-center overflow-hidden rounded-xl border border-teal-300 bg-linear-to-br from-teal-200 to-teal-100 py-6 dark:from-teal-600/20 dark:to-teal-500/50">
@@ -24,7 +25,7 @@ export default async function VaultsAlert() {
           Just sign up to get started.
         </span>
 
-        {!data.user ? (
+        {!data?.claims ? (
           <Button asChild size="lg" className="font-bold tracking-widest">
             <TrackedLink
               href="/auth"

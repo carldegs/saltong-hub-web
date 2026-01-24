@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -41,12 +41,12 @@ export default function AvatarSelectionModal({
   const generateUUID = () => crypto.randomUUID();
 
   // Get the initial generated avatar seed
-  const getInitialGeneratedSeed = () => {
+  const getInitialGeneratedSeed = useCallback(() => {
     if (isBoringAvatarUrl(currentAvatarUrl)) {
       return currentAvatarUrl.slice(5);
     }
     return email;
-  };
+  }, [currentAvatarUrl, email]);
 
   const [generatedAvatarSeed, setGeneratedAvatarSeed] = React.useState(
     getInitialGeneratedSeed()
@@ -57,11 +57,14 @@ export default function AvatarSelectionModal({
   const selectedRef = React.useRef<HTMLButtonElement>(null);
 
   // Update selected avatar when modal opens with current value or default to generated
-  React.useEffect(() => {
+  useEffect(() => {
     if (open) {
       const initialSeed = getInitialGeneratedSeed();
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setGeneratedAvatarSeed(initialSeed);
       setSelectedAvatar(currentAvatarUrl || getBoringAvatarUrl(initialSeed));
+
+      // TODO: Improve.
       // Scroll to selected avatar after a short delay to ensure DOM is ready
       setTimeout(() => {
         selectedRef.current?.scrollIntoView({
@@ -70,7 +73,7 @@ export default function AvatarSelectionModal({
         });
       }, 100);
     }
-  }, [open, currentAvatarUrl]);
+  }, [open, currentAvatarUrl, getInitialGeneratedSeed]);
 
   const handleRegenerateAvatar = () => {
     const newSeed = generateUUID();

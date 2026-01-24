@@ -27,19 +27,23 @@ import { getProfileById } from "@/features/profiles/queries/get-profile";
 export default async function UserProfile() {
   const supabase = await createClient();
 
-  // Check if user is authenticated
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+  const { data: claimsData, error } = await supabase.auth.getClaims();
 
-  const { data: profile } = await getProfileById(supabase, user?.id || "");
-
-  if (error || !user || !profile) {
+  if (error || !claimsData?.claims) {
     return notFound();
   }
 
-  const { data } = await getSaltongProfileStats(supabase, user.id);
+  const userId = claimsData.claims.sub;
+
+  // TODO: fetch both profile and stats in parallel
+
+  const { data: profile } = await getProfileById(supabase, userId);
+
+  const { data } = await getSaltongProfileStats(supabase, userId);
+
+  if (!profile) {
+    return notFound();
+  }
 
   const gameStatsList = Object.values(SALTONG_CONFIG.modes).map((config) => {
     const stat = data?.find((s) => s.mode === config.mode);
@@ -87,7 +91,7 @@ export default async function UserProfile() {
           <div className="flex flex-col items-center justify-center gap-4 md:flex-row">
             <ProfileAvatar
               path={profile.avatar_url ?? ""}
-              fallback={user.email ?? ""}
+              fallback={claimsData.claims?.email ?? ""}
               className="size-20"
             />
             <div className="align-center flex flex-col items-center gap-0 md:items-start">

@@ -71,7 +71,7 @@ export function ResultsButton({
           });
         }}
         size="icon"
-        className="gap-1.5 font-bold md:h-auto md:w-auto md:px-2"
+        className="gap-1.5 font-bold md:w-auto md:px-2"
         // disabled={!playerStats}
         title={!playerStats ? "Play a game to view stats" : undefined}
       >
@@ -82,7 +82,7 @@ export function ResultsButton({
       <Button
         variant="outline"
         size="icon"
-        className="gap-1.5 font-bold md:h-auto md:w-auto md:px-2"
+        className="gap-1.5 font-bold md:w-auto md:px-2"
         disabled={!playerStats}
         title="Play previous games"
         asChild

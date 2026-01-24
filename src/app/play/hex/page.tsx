@@ -16,6 +16,7 @@ import {
 import { getCachedHexRound } from "@/features/hex/queries/getHexRound";
 import { getCachedHexUserRound } from "@/features/hex/queries/getHexUserRound";
 import { getCharSet } from "@/features/hex/utils";
+import NavbarUser from "@/components/shared/navbar-user";
 
 export const metadata: Metadata = {
   title: "Saltong Hex",
@@ -29,11 +30,11 @@ export default async function SaltongHexPage({
   const gameSettings = HEX_CONFIG;
   const searchParams = await _searchParams;
   const supabase = await createClient();
-  const { data: userData } = await supabase.auth.getUser();
+  const { data: userData } = await supabase.auth.getClaims();
   const queryClient = new QueryClient();
 
   if (
-    !userData?.user &&
+    !userData?.claims &&
     searchParams?.d &&
     searchParams?.d !== getFormattedHexDateInPh()
   ) {
@@ -53,14 +54,17 @@ export default async function SaltongHexPage({
     return notFound();
   }
 
-  if (userData?.user?.id) {
+  if (userData?.claims.sub) {
     await queryClient.prefetchQuery({
       queryKey: [
         "hex-user-round",
-        { userId: userData.user.id, date: round.date },
+        { userId: userData.claims.sub, date: round.date },
       ],
       queryFn: async () => {
-        const data = await getCachedHexUserRound(round.date, userData.user.id);
+        const data = await getCachedHexUserRound(
+          round.date,
+          userData?.claims?.sub
+        );
 
         return data?.data;
       },
@@ -72,7 +76,7 @@ export default async function SaltongHexPage({
 
   return (
     <div className="grid min-h-screen w-full grid-rows-[auto_1fr]">
-      <Navbar colorScheme={gameSettings.colorScheme}>
+      <Navbar colorScheme={gameSettings.colorScheme} hideUserDropdown>
         <NavbarBrand
           colorScheme={gameSettings.colorScheme}
           title="Saltong"
@@ -87,8 +91,9 @@ export default async function SaltongHexPage({
             gameDate={round.date}
             isLive={isLive}
             round={round}
-            userId={userData?.user?.id}
+            userId={userData?.claims.sub}
           />
+          <NavbarUser />
         </div>
       </Navbar>
       <HexStoreProvider
@@ -100,7 +105,7 @@ export default async function SaltongHexPage({
           <GameWrapper
             roundData={round}
             isLive={isLive}
-            userId={userData?.user?.id}
+            userId={userData?.claims.sub}
           />
         </HydrationBoundary>
       </HexStoreProvider>

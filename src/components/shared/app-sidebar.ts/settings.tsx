@@ -7,32 +7,29 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Settings, BookOpen, Info, User, Shield } from "lucide-react";
 import NewFeatureBadge from "../new-feature-badge";
-import { getCachedProfileById } from "@/features/profiles/queries/get-profile";
-import { Profile } from "@/features/profiles/types";
 import CompleteProfileDialog from "@/features/profiles/components/complete-profile";
-import { getSuggestedProfileFromUser } from "@/utils/user";
+import { getProfileFormData } from "@/features/profiles/utils";
 
 export async function SettingsSidebarMenu() {
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-  let profile: Profile | null = null;
+  const { data } = await supabase.auth.getClaims();
 
-  if (data?.user) {
-    const profileResult = await getCachedProfileById(data.user.id);
-    profile = profileResult?.data;
-  }
+  const userId = data?.claims?.sub;
+
+  const { profile, isTemporaryProfile, avatarOptions } =
+    (await getProfileFormData(supabase, data?.claims)) ?? {};
 
   // Check if user is an admin
   const allowedAdmins =
     process.env.ADMIN_USER_IDS?.split(",").map((id) => id.trim()) || [];
-  const isAdmin = data?.user && allowedAdmins.includes(data.user.id);
+  const isAdmin = userId && allowedAdmins.includes(userId);
 
   return (
     <SidebarMenu>
-      {data?.user && (
+      {!!userId && (
         <SidebarMenuItem>
           <SidebarMenuButton className="h-auto py-1.5" asChild>
-            {profile ? (
+            {profile && !isTemporaryProfile ? (
               <Link
                 href={`/u/${profile.username}`}
                 className="flex w-full items-center gap-3"
@@ -45,9 +42,12 @@ export async function SettingsSidebarMenu() {
               </Link>
             ) : (
               <CompleteProfileDialog
-                userId={data.user.id}
+                userId={userId}
                 action="redirect"
-                {...getSuggestedProfileFromUser(data.user)}
+                username={profile?.username}
+                avatarUrl={profile?.avatar_url ?? ""}
+                displayName={profile?.display_name ?? ""}
+                avatarOptions={avatarOptions}
               >
                 <a className="flex w-full cursor-pointer items-center gap-3 px-2 py-1.5">
                   <User className="h-4 w-4" />

@@ -369,3 +369,12 @@
   --sidebar-border: hsl(240 3.7% 15.9%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
+
+@keyframes flip-y {
+  0% {
+    transform: rotateY(90deg);
+  }
+  100% {
+    transform: rotateY(270deg);
+  }
+}

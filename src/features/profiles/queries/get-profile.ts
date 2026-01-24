@@ -1,19 +1,12 @@
-import { Database } from "@/lib/supabase/types";
-import { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { cache } from "react";
+import { type DbClient } from "@/lib/supabase/client-type";
 
-export function getProfileById(
-  client: SupabaseClient<Database>,
-  userId: string
-) {
+export function getProfileById(client: DbClient, userId: string) {
   return client.from("profiles").select().eq("id", userId).maybeSingle();
 }
 
-export function getProfileByUsername(
-  client: SupabaseClient<Database>,
-  username: string
-) {
+export function getProfileByUsername(client: DbClient, username: string) {
   return client
     .from("profiles")
     .select()

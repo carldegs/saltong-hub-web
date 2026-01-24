@@ -37,6 +37,11 @@ export function EmailCard({ onNext, onForgotPassword }: EmailCardProps) {
         className="h-12 w-full"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && email && !loading) {
+            handleContinue();
+          }
+        }}
         disabled={loading}
         autoComplete="email"
       />

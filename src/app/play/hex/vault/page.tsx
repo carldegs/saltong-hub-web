@@ -7,6 +7,7 @@ import VaultCalendar from "@/features/hex/components/vault/vault-calendar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { HEX_CONFIG } from "@/features/hex/config";
+import NavbarUser from "@/components/shared/navbar-user";
 
 export const metadata: Metadata = {
   title: "Saltong Hex Vault",
@@ -16,11 +17,9 @@ export default async function SaltongHexVaultPage() {
   const { colorScheme, icon } = HEX_CONFIG;
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getClaims();
 
-  if (!user) {
+  if (!data?.claims) {
     return <UnauthorizedErrorPage {...HEX_CONFIG} />;
   }
 
@@ -30,6 +29,7 @@ export default async function SaltongHexVaultPage() {
         colorScheme={
           colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
         }
+        hideUserDropdown
       >
         <NavbarBrand
           colorScheme={
@@ -42,12 +42,15 @@ export default async function SaltongHexVaultPage() {
           prefetch={false}
         />
 
-        <Button variant="outline" asChild>
-          <Link href="/play/hex">Play Latest Game</Link>
-        </Button>
+        <div className="flex gap-1.5">
+          <Button variant="outline" asChild>
+            <Link href="/play/hex">Play Latest Game</Link>
+          </Button>
+          <NavbarUser />
+        </div>
       </Navbar>
       <div className="mx-auto w-full max-w-prose">
-        <VaultCalendar userId={user?.id} />
+        <VaultCalendar userId={data?.claims?.sub} />
       </div>
     </>
   );
