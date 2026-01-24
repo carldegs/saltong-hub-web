@@ -27,14 +27,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // Generate vault pages dynamically - Priority 0.8
-  const vaultPages = playVariants
-    .filter((variant) => variant !== "max" && variant !== "hex") // Only main and mini have vaults
-    .map((variant) => ({
-      url: `${baseUrl}/play${variant ? `/${variant}` : ""}/vault`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    }));
+  const vaultPages = playVariants.map((variant) => ({
+    url: `${baseUrl}/play${variant ? `/${variant}` : ""}/vault`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
 
   // Static routes sorted by priority
   const routes = [

@@ -63,6 +63,7 @@ export default function AvatarSelectionModal({
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setGeneratedAvatarSeed(initialSeed);
       setSelectedAvatar(currentAvatarUrl || getBoringAvatarUrl(initialSeed));
+
       // TODO: Improve.
       // Scroll to selected avatar after a short delay to ensure DOM is ready
       setTimeout(() => {

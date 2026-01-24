@@ -16,16 +16,6 @@ export default function CustomLoader() {
 
   return (
     <div className="flex items-center justify-center">
-      <style>{`
-        @keyframes flip-y {
-          0% {
-            transform: rotateY(90deg);
-          }
-          100% {
-            transform: rotateY(270deg);
-          }
-        }
-      `}</style>
       <div
         className="flex size-[72px] items-center justify-center rounded-lg text-6xl font-bold text-white"
         style={{

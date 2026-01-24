@@ -63,7 +63,7 @@ export default async function SaltongHexPage({
       queryFn: async () => {
         const data = await getCachedHexUserRound(
           round.date,
-          userData.claims.sub
+          userData?.claims?.sub
         );
 
         return data?.data;
