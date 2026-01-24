@@ -51,6 +51,7 @@ export function NavUserDropdown({
   isTemporaryProfile,
   avatarOptions,
   children,
+  side,
 }: {
   profile: Profile;
   children: React.ReactNode;
@@ -59,6 +60,7 @@ export function NavUserDropdown({
     label: string;
     value: string;
   }[];
+  side?: "top" | "right" | "bottom" | "left";
 }) {
   const supabase = useSupabaseClient();
   const router = useRouter();
@@ -70,7 +72,7 @@ export function NavUserDropdown({
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent
         className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-        side={isMobile ? "bottom" : "right"}
+        side={side ?? (isMobile ? "bottom" : "right")}
         align="end"
         sideOffset={4}
       >

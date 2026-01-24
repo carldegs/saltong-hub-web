@@ -16,6 +16,7 @@ import {
 import { getCachedHexRound } from "@/features/hex/queries/getHexRound";
 import { getCachedHexUserRound } from "@/features/hex/queries/getHexUserRound";
 import { getCharSet } from "@/features/hex/utils";
+import NavbarUser from "@/components/shared/navbar-user";
 
 export const metadata: Metadata = {
   title: "Saltong Hex",
@@ -75,7 +76,7 @@ export default async function SaltongHexPage({
 
   return (
     <div className="grid min-h-screen w-full grid-rows-[auto_1fr]">
-      <Navbar colorScheme={gameSettings.colorScheme}>
+      <Navbar colorScheme={gameSettings.colorScheme} hideUserDropdown>
         <NavbarBrand
           colorScheme={gameSettings.colorScheme}
           title="Saltong"
@@ -92,6 +93,7 @@ export default async function SaltongHexPage({
             round={round}
             userId={userData?.claims.sub}
           />
+          <NavbarUser />
         </div>
       </Navbar>
       <HexStoreProvider

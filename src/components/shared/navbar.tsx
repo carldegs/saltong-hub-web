@@ -6,6 +6,7 @@ import React from "react";
 import { Skeleton } from "../ui/skeleton";
 import { LinkProps } from "next/link";
 import HoverPrefetchLink from "./hover-prefetch-link";
+import NavbarUser from "./navbar-user";
 
 export const navbarBrandTitleVariants = cva("", {
   variants: {
@@ -54,15 +55,18 @@ const navbarBackgroundGradientVariants = cva("", {
   },
 });
 
+// TODO: Improve navbar setup (add sub-components for left/right sections)
 const Navbar = ({
   ref,
   className,
   children,
   colorScheme,
+  hideUserDropdown = false,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> &
   VariantProps<typeof navbarBackgroundGradientVariants> & {
     ref?: React.RefObject<HTMLDivElement>;
+    hideUserDropdown?: boolean;
   }) => {
   return (
     <nav
@@ -76,6 +80,7 @@ const Navbar = ({
     >
       <div className="container flex max-w-[1800px] items-center justify-between py-2 pr-3 pl-1 lg:pr-6 lg:pl-2">
         {children}
+        {!hideUserDropdown && <NavbarUser />}
       </div>
     </nav>
   );

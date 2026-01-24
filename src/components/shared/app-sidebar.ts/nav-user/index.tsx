@@ -15,7 +15,13 @@ export default async function NavUser() {
     await supabase.auth.getClaims();
 
   if (!claimsData?.claims || claimsError) {
-    return <LoginSidebarMenu />;
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <LoginSidebarMenu className="w-full" />
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
   }
 
   const profileFormData = await getProfileFormData(

@@ -19,6 +19,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
+import NavbarUser from "@/components/shared/navbar-user";
 
 async function SaltongGamePage({
   searchParams: _searchParams,
@@ -81,6 +82,7 @@ async function SaltongGamePage({
         colorScheme={
           colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
         }
+        hideUserDropdown
       >
         <NavbarBrand
           colorScheme={
@@ -99,6 +101,7 @@ async function SaltongGamePage({
             roundData={round}
             userId={claimsData?.claims.sub}
           />
+          <NavbarUser />
         </div>
       </Navbar>
       {/* Client-side: refresh when PH date != game date and no `d` override */}
