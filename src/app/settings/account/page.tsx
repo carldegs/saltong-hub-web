@@ -13,34 +13,35 @@ import ProviderCard from "./provider-card";
 import { notFound } from "next/navigation";
 import { getProfileById } from "@/features/profiles/queries/get-profile";
 import AccountSettingsProfileForm from "../components/account-settings-profile-form";
-import { getSuggestedProfileFromUser } from "@/utils/user";
 import CompleteProfileDialog from "@/features/profiles/components/complete-profile";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { getTemporaryProfileFromClaims } from "@/features/profiles/utils";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: claimsData, error: claimsError } =
+    await supabase.auth.getClaims();
+  const { data: identitiesData } = await supabase.auth.getUserIdentities();
 
-  if (!user) {
+  if (!claimsData?.claims || claimsError) {
     return notFound();
   }
 
-  const { data: profile } = await getProfileById(supabase, user?.id || "");
+  const { data: profile } = await getProfileById(
+    supabase,
+    claimsData.claims.sub
+  );
+
+  const temporaryProfile = getTemporaryProfileFromClaims(claimsData.claims);
 
   // Build avatar options from user identities
-  const avatarOptions = (user?.identities || [])
+  const avatarOptions = (identitiesData?.identities || [])
     .map((identity) => ({
       value: identity.identity_data?.avatar_url,
       label: identity.provider?.toUpperCase() ?? "",
     }))
     .filter(({ value }) => value);
-
-  if (!user) {
-    return notFound();
-  }
 
   return (
     <>
@@ -62,7 +63,7 @@ export default async function SettingsPage() {
                 Update your profile information, including your username and
                 avatar.
               </span>
-              {profile ? (
+              {!!profile ? (
                 <AccountSettingsProfileForm
                   profile={profile}
                   avatarOptions={avatarOptions}
@@ -74,9 +75,11 @@ export default async function SettingsPage() {
                     You haven&apos;t set up your profile yet. Please complete
                     your profile to access all social features.
                     <CompleteProfileDialog
-                      userId={user.id}
-                      {...getSuggestedProfileFromUser(user)}
+                      userId={claimsData.claims.sub}
                       avatarOptions={avatarOptions}
+                      username={temporaryProfile.username}
+                      avatarUrl={temporaryProfile.avatar_url ?? ""}
+                      displayName={temporaryProfile.display_name ?? ""}
                       action="close"
                     >
                       <Button className="mt-4">Complete Profile</Button>
@@ -92,13 +95,16 @@ export default async function SettingsPage() {
                 which accounts you have connected and manage them here.
               </span>
               <div className="flex flex-col gap-2">
-                {user?.identities?.map((identity) => (
+                {identitiesData?.identities?.map((identity) => (
                   <ProviderCard
                     key={identity.id}
                     identity={identity}
                     isMain={false}
                     enableUnlink={
-                      !!(user.identities && user.identities?.length > 1)
+                      !!(
+                        identitiesData?.identities &&
+                        identitiesData.identities?.length > 1
+                      )
                     }
                   />
                 ))}
