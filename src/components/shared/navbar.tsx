@@ -74,7 +74,7 @@ const Navbar = ({
       )}
       {...props}
     >
-      <div className="container flex max-w-[1800px] justify-between py-2 pr-3 pl-1 lg:pr-6 lg:pl-2">
+      <div className="container flex max-w-[1800px] items-center justify-between py-2 pr-3 pl-1 lg:pr-6 lg:pl-2">
         {children}
       </div>
     </nav>
@@ -94,6 +94,7 @@ export interface NavbarBrandProps
   hideMenu?: boolean;
   hideBrand?: boolean;
   isLoading?: boolean;
+  forceLarge?: boolean;
 }
 
 const NavbarBrand = ({
@@ -112,6 +113,7 @@ const NavbarBrand = ({
   name,
   href,
   prefetch,
+  forceLarge,
   ...props
 }: NavbarBrandProps &
   Partial<Pick<LinkProps, "href" | "prefetch">> & {
@@ -158,7 +160,64 @@ const NavbarBrand = ({
               className="block dark:hidden"
             />
           )}
-          <h3 className="tracking-tighter select-none">
+          <div
+            className={cn("tracking-tighter select-none", {
+              "flex md:hidden": !forceLarge,
+              hidden: forceLarge,
+            })}
+          >
+            <div className="flex flex-col gap-0">
+              {title && (
+                <span
+                  className={cn(
+                    navbarBrandTitleVariants({ colorScheme }),
+                    "text-xl font-[700]"
+                  )}
+                >
+                  {title}
+                  {!subtitle && " "}
+                </span>
+              )}
+              <div className="-mt-1 flex items-center gap-1.5">
+                {!!subtitle && (
+                  <span
+                    className={cn(
+                      navbarBrandTitleVariants({ colorScheme }),
+                      "text-lg font-[300]"
+                    )}
+                  >
+                    {subtitle}{" "}
+                  </span>
+                )}
+
+                {isLoading && (
+                  <Skeleton
+                    className={cn(
+                      navbarBrandBoxedVariants({ colorScheme }),
+                      "inline-block h-[20px] w-12 rounded-lg px-2 text-lg font-[300]"
+                    )}
+                  />
+                )}
+                {!!boxed && !isLoading && (
+                  <span
+                    className={cn(
+                      navbarBrandBoxedVariants({ colorScheme }),
+                      "rounded-lg px-2 text-sm font-[700]"
+                    )}
+                  >
+                    {boxed}
+                  </span>
+                )}
+              </div>
+            </div>
+            {children}
+          </div>
+          <h3
+            className={cn("tracking-tighter select-none", {
+              "hidden md:block": !forceLarge,
+              block: forceLarge,
+            })}
+          >
             {title && (
               <span
                 className={cn(
