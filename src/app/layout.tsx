@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/shared/app-sidebar.ts";
+import { AppSidebar } from "@/components/shared/app-sidebar";
 import { cookies } from "next/headers";
 const fontSans = FontSans({
   subsets: ["latin"],

@@ -109,7 +109,6 @@ export default function AuthForm({
               supabase.auth.getClaims();
               setStep("email");
             }}
-            returnTo={returnTo}
           />
         )}
         {step === "forgot-password" && (

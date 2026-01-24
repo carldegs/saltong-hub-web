@@ -13,7 +13,7 @@ interface SignupCardProps {
   returnTo?: string;
 }
 
-export function SignupCard({ onBack, returnTo = "/" }: SignupCardProps) {
+export function SignupCard({ onBack }: SignupCardProps) {
   const supabase = useSupabaseClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,11 +53,7 @@ export function SignupCard({ onBack, returnTo = "/" }: SignupCardProps) {
       email,
       password,
       options: {
-        emailRedirectTo: `${getRedirectURL()}auth/callback${
-          returnTo && returnTo !== "/"
-            ? `?returnTo=${encodeURIComponent(returnTo)}`
-            : ""
-        }`,
+        emailRedirectTo: getRedirectURL(),
       },
     });
     if (error) {
