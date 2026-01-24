@@ -35,6 +35,8 @@ export default async function UserProfile() {
 
   const userId = claimsData.claims.sub;
 
+  // TODO: fetch both profile and stats in parallel
+
   const { data: profile } = await getProfileById(supabase, userId);
 
   const { data } = await getSaltongProfileStats(supabase, userId);
