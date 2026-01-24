@@ -53,7 +53,9 @@ export function PasswordCard({
     if (error) {
       setError(error.message);
     } else {
+      // Navigate back then revalidate RSC so sidebar/user state updates immediately
       router.push(returnTo);
+      router.refresh();
     }
   }
 
