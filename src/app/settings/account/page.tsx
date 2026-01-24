@@ -11,12 +11,11 @@ import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "@/app/components/home-navbar-brand";
 import ProviderCard from "./provider-card";
 import { notFound } from "next/navigation";
-import { getProfileById } from "@/features/profiles/queries/get-profile";
 import AccountSettingsProfileForm from "../components/account-settings-profile-form";
 import CompleteProfileDialog from "@/features/profiles/components/complete-profile";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { getTemporaryProfileFromClaims } from "@/features/profiles/utils";
+import { getProfileFormData } from "@/features/profiles/utils";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -28,20 +27,8 @@ export default async function SettingsPage() {
     return notFound();
   }
 
-  const { data: profile } = await getProfileById(
-    supabase,
-    claimsData.claims.sub
-  );
-
-  const temporaryProfile = getTemporaryProfileFromClaims(claimsData.claims);
-
-  // Build avatar options from user identities
-  const avatarOptions = (identitiesData?.identities || [])
-    .map((identity) => ({
-      value: identity.identity_data?.avatar_url,
-      label: identity.provider?.toUpperCase() ?? "",
-    }))
-    .filter(({ value }) => value);
+  const { profile, isTemporaryProfile, avatarOptions } =
+    (await getProfileFormData(supabase, claimsData.claims)) ?? {};
 
   return (
     <>
@@ -63,10 +50,10 @@ export default async function SettingsPage() {
                 Update your profile information, including your username and
                 avatar.
               </span>
-              {!!profile ? (
+              {!!profile && !isTemporaryProfile ? (
                 <AccountSettingsProfileForm
                   profile={profile}
-                  avatarOptions={avatarOptions}
+                  avatarOptions={avatarOptions ?? []}
                 />
               ) : (
                 <Alert>
@@ -77,9 +64,9 @@ export default async function SettingsPage() {
                     <CompleteProfileDialog
                       userId={claimsData.claims.sub}
                       avatarOptions={avatarOptions}
-                      username={temporaryProfile.username}
-                      avatarUrl={temporaryProfile.avatar_url ?? ""}
-                      displayName={temporaryProfile.display_name ?? ""}
+                      username={profile?.username}
+                      avatarUrl={profile?.avatar_url ?? ""}
+                      displayName={profile?.display_name ?? ""}
                       action="close"
                     >
                       <Button className="mt-4">Complete Profile</Button>

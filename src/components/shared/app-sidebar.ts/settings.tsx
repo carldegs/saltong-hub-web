@@ -7,10 +7,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Settings, BookOpen, Info, User, Shield } from "lucide-react";
 import NewFeatureBadge from "../new-feature-badge";
-import { getCachedProfileById } from "@/features/profiles/queries/get-profile";
-import { Profile } from "@/features/profiles/types";
 import CompleteProfileDialog from "@/features/profiles/components/complete-profile";
-import { getSuggestedProfileFromClaims } from "@/utils/user";
+import { getProfileFormData } from "@/features/profiles/utils";
 
 export async function SettingsSidebarMenu() {
   const supabase = await createClient();
@@ -18,12 +16,8 @@ export async function SettingsSidebarMenu() {
 
   const userId = data?.claims?.sub;
 
-  let profile: Profile | null = null;
-
-  if (!!userId) {
-    const profileResult = await getCachedProfileById(userId);
-    profile = profileResult?.data;
-  }
+  const { profile, isTemporaryProfile, avatarOptions } =
+    (await getProfileFormData(supabase, data?.claims)) ?? {};
 
   // Check if user is an admin
   const allowedAdmins =
@@ -35,7 +29,7 @@ export async function SettingsSidebarMenu() {
       {!!userId && (
         <SidebarMenuItem>
           <SidebarMenuButton className="h-auto py-1.5" asChild>
-            {profile ? (
+            {profile && !isTemporaryProfile ? (
               <Link
                 href={`/u/${profile.username}`}
                 className="flex w-full items-center gap-3"
@@ -50,7 +44,10 @@ export async function SettingsSidebarMenu() {
               <CompleteProfileDialog
                 userId={userId}
                 action="redirect"
-                {...getSuggestedProfileFromClaims(data.claims)}
+                username={profile?.username}
+                avatarUrl={profile?.avatar_url ?? ""}
+                displayName={profile?.display_name ?? ""}
+                avatarOptions={avatarOptions}
               >
                 <a className="flex w-full cursor-pointer items-center gap-3 px-2 py-1.5">
                   <User className="h-4 w-4" />

@@ -1,7 +1,9 @@
-import { JwtPayload } from "@supabase/supabase-js";
+import { JwtPayload, UserIdentity } from "@supabase/supabase-js";
 import { Profile } from "./types";
 import { getBoringAvatarUrl } from "@/utils/user";
 import { profileValidationSchema } from "./schemas";
+import { DbClient } from "@/lib/supabase/client-type";
+import { getCachedProfileById } from "./queries/get-profile";
 
 export function getTemporaryProfileFromClaims(claims: JwtPayload): Profile {
   const {
@@ -40,5 +42,39 @@ export function getTemporaryProfileFromClaims(claims: JwtPayload): Profile {
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     username,
+  };
+}
+
+export function getAvatarOptionsFromIdentities(identities: UserIdentity[]) {
+  return identities
+    .map((identity) => ({
+      value: identity.identity_data?.avatar_url,
+      label: identity.provider?.toUpperCase() ?? "",
+    }))
+    .filter(({ value }) => value);
+}
+
+export async function getProfileFormData(
+  client: DbClient,
+  claims?: JwtPayload
+) {
+  if (!claims) {
+    return null;
+  }
+
+  const { data: profileData } = await getCachedProfileById(claims.sub);
+  const isTemporaryProfile = !profileData;
+  const profile = profileData ?? getTemporaryProfileFromClaims(claims);
+
+  const { data: identitiesData } = await client.auth.getUserIdentities();
+
+  const avatarOptions = getAvatarOptionsFromIdentities(
+    identitiesData?.identities || []
+  );
+
+  return {
+    profile,
+    isTemporaryProfile,
+    avatarOptions,
   };
 }
