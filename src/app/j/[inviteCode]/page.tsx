@@ -12,9 +12,12 @@ import { getGroupByInviteCode } from "@/features/groups/actions";
 import { UserIcon } from "lucide-react";
 import Link from "next/link";
 import JoinGroupProfileForm from "./join-group-profile-form";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "@/app/components/home-navbar-brand";
+import { getProfileFormData } from "@/features/profiles/utils";
+import { createClient } from "@/lib/supabase/server";
+import JoinGroupButton from "./join-group-button";
 
 interface JoinGroupPageProps {
   params: Promise<{
@@ -23,10 +26,17 @@ interface JoinGroupPageProps {
 }
 
 export default async function JoinGroupPage({ params }: JoinGroupPageProps) {
+  const supabase = await createClient();
   const { inviteCode } = await params;
 
-  const { group, claims, profile, isMember } =
-    await getGroupByInviteCode(inviteCode);
+  const { group, claims, isMember } = await getGroupByInviteCode(inviteCode);
+
+  if (!claims) {
+    return notFound();
+  }
+
+  const { profile, isTemporaryProfile, avatarOptions } =
+    (await getProfileFormData(supabase, claims)) ?? {};
 
   const userId = claims?.sub;
 
@@ -65,27 +75,32 @@ export default async function JoinGroupPage({ params }: JoinGroupPageProps) {
                 </span>
               </EmptyDescription>
             </EmptyHeader>
-            {!!userId && !!profile?.id && (
+            {!!userId && !isTemporaryProfile && (
               <EmptyContent>
-                {/* TODO: Handle joining the group */}
-                <Button size="lg">
-                  <ProfileAvatar
-                    path={profile?.avatar_url ?? ""}
-                    fallback={profile?.display_name ?? ""}
-                    className="size-6"
-                    fallbackClassName="size-6"
-                  />
-                  Join as
-                  <b className="-ml-1">{profile?.display_name ?? "User"}</b>
-                </Button>
+                <JoinGroupButton
+                  avatarUrl={profile?.avatar_url ?? ""}
+                  displayName={
+                    profile?.display_name ?? profile?.username ?? "User"
+                  }
+                  groupId={group.id}
+                  inviteCode={inviteCode}
+                />
               </EmptyContent>
             )}
-            {!!userId && !profile?.id && (
+            {!!userId && !!isTemporaryProfile && (
               <EmptyContent className="w-full">
                 <EmptyDescription className="mb-4 text-center">
                   Please complete your profile to join this group.
                 </EmptyDescription>
-                <JoinGroupProfileForm claims={claims} groupId={group.id} />
+                <JoinGroupProfileForm
+                  userId={profile?.id ?? ""}
+                  avatarOptions={avatarOptions}
+                  username={profile?.username}
+                  avatarUrl={profile?.avatar_url ?? ""}
+                  displayName={profile?.display_name ?? ""}
+                  groupId={group.id}
+                  inviteCode={inviteCode}
+                />
               </EmptyContent>
             )}
             {!userId && (

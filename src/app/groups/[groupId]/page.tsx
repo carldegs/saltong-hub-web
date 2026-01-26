@@ -7,6 +7,7 @@ import InviteMembers from "@/features/groups/components/invite-members";
 import { getGroupById } from "@/features/groups/queries/get-group";
 import { createClient } from "@/lib/supabase/server";
 import { UserPlusIcon } from "lucide-react";
+import { notFound } from "next/navigation";
 
 interface GroupPageProps {
   params: Promise<{
@@ -19,6 +20,12 @@ export default async function GroupPage({ params }: GroupPageProps) {
   const supabase = await createClient();
 
   const { data: group, error } = await getGroupById(supabase, groupId);
+  const { data: claimData, error: claimDataError } =
+    await supabase.auth.getClaims();
+
+  if (!claimData || claimDataError) {
+    return notFound();
+  }
 
   if (error || !group) {
     return (
@@ -29,7 +36,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
   }
 
   return (
-    <div className="grid min-h-screen w-full grid-rows-[auto_auto_1fr]">
+    <div className="grid h-dvh w-full grid-rows-[auto_auto_1fr]">
       <Navbar>
         <HomeNavbarBrand />
       </Navbar>
@@ -52,7 +59,10 @@ export default async function GroupPage({ params }: GroupPageProps) {
         </div>
       </div>
       {(group.memberCount ?? 0) > 1 ? (
-        <GroupLeaderboards />
+        <GroupLeaderboards
+          groupId={group.id}
+          currentUserId={claimData.claims.sub}
+        />
       ) : (
         <InviteMembers {...group} />
       )}

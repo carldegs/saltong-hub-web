@@ -376,6 +376,18 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      get_group_members_rounds: {
+        Args: { p_date: string; p_group: string; p_mode: string };
+        Returns: {
+          avatarUrl: string;
+          displayName: string;
+          endedAt: string;
+          solvedTurn: number;
+          startedAt: string;
+          userId: string;
+          username: string;
+        }[];
+      };
       is_group_admin: {
         Args: { p_group: string; p_user: string };
         Returns: boolean;

@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { generateInviteCode } from "./utils/code";
-import { getProfileById } from "../profiles/queries/get-profile";
+import { joinGroup } from "./queries/join-group";
 
 export async function createGroupAction(groupName: string) {
   const supabase = await createClient();
@@ -72,7 +72,6 @@ export async function getGroupByInviteCode(inviteCode: string) {
   }
 
   const userId = data.claims?.sub;
-  const { data: profile } = await getProfileById(supabase, userId);
 
   const { data: isMember, error: isMemberError } = await supabase.rpc(
     "is_group_member",
@@ -87,7 +86,6 @@ export async function getGroupByInviteCode(inviteCode: string) {
     return {
       group,
       claims: data.claims,
-      profile,
       isMember: false,
     };
   }
@@ -95,7 +93,33 @@ export async function getGroupByInviteCode(inviteCode: string) {
   return {
     group,
     claims: data.claims,
-    profile,
     isMember: !!isMember,
   };
+}
+
+export async function joinGroupAction(groupId: string, inviteCode: string) {
+  const supabase = await createClient({
+    global: {
+      headers: {
+        "x-supabase-request-invite-code": inviteCode,
+      },
+    },
+  });
+
+  const { data, error: userError } = await supabase.auth.getClaims();
+
+  if (!data?.claims || userError) {
+    if (userError) {
+      console.error("Failed to get user:", userError);
+    }
+
+    throw new Error("Unauthorized: User not found");
+  }
+
+  const response = await joinGroup(supabase, {
+    groupId,
+    userId: data.claims.sub,
+  });
+
+  return response;
 }
