@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import AuthForm from "./auth-form";
 import { createClient } from "@/lib/supabase/server";
 import { redirect, RedirectType } from "next/navigation";
+import { validateRedirect } from "@/lib/auth/validate-redirect";
 
 export const metadata: Metadata = {
   title: "Saltong Hub | Log in",
@@ -19,7 +20,11 @@ export default async function LoginPage({
     redirect("/", RedirectType.replace);
   }
 
-  const showSignup = (await searchParams)?.signup === "1";
+  const params = await searchParams;
+  const showSignup = params?.signup === "1";
+  const returnTo = validateRedirect(
+    typeof params?.returnTo === "string" ? params.returnTo : undefined
+  );
 
-  return <AuthForm showSignup={showSignup} />;
+  return <AuthForm showSignup={showSignup} returnTo={returnTo} />;
 }

@@ -1,4 +1,6 @@
 import { HEX_CONFIG } from "@/features/hex/config";
+import { SALTONG_CONFIG } from "@/features/saltong/config";
+import { SaltongMode } from "@/features/saltong/types";
 import {
   add,
   closestTo,
@@ -208,6 +210,23 @@ export const getHexDatesWithPagination = (year: number, month: number) => {
   });
 
   return hexDates;
+};
+
+export const getHexRoundIdFromDate = (date: string): number | null => {
+  return getNthTuesdayFriday(HEX_CONFIG.startDate, date);
+};
+
+export const getSaltongRoundIdFromDate = (
+  date: string,
+  mode: SaltongMode
+): number => {
+  const startDate = parse(
+    SALTONG_CONFIG.modes[mode].startDate,
+    "yyyy-MM-dd",
+    new Date()
+  );
+  const targetDate = parse(date, "yyyy-MM-dd", new Date());
+  return differenceInDays(targetDate, startDate) + 1; // Assuming roundId starts at 1
 };
 
 const zeroPad = (num: number) => String(num).padStart(2, "0");

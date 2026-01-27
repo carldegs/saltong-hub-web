@@ -15,6 +15,7 @@ import { ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
 import { NavbarBrand } from "../navbar";
 import NavUser from "./nav-user";
+import { GroupsSidebarMenu } from "./groups";
 
 export async function AppSidebar() {
   return (
@@ -33,7 +34,7 @@ export async function AppSidebar() {
           />
         </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="gap-0">
         <SidebarGroup>
           <SidebarGroupLabel>GAMES</SidebarGroupLabel>{" "}
           <SidebarGroupAction
@@ -51,6 +52,7 @@ export async function AppSidebar() {
           <SidebarGroupLabel>OTHER GAMES</SidebarGroupLabel>
           <OtherGamesSidebarMenu />
         </SidebarGroup> */}
+        <GroupsSidebarMenu />
         <SidebarGroup>
           <SidebarGroupLabel>MORE</SidebarGroupLabel>
           <SettingsSidebarMenu />

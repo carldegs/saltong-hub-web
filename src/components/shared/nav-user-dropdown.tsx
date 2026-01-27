@@ -123,6 +123,7 @@ export function NavUserDropdown({
           <DropdownMenuItem
             onClick={async () => {
               await supabase.auth.signOut();
+              router.push("/");
               router.refresh();
             }}
           >

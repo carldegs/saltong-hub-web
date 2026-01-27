@@ -1,15 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { validateRedirect } from "@/lib/auth/validate-redirect";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  // if "next" is in param, use it as the redirect URL
-  let next = searchParams.get("next") ?? "/";
-  if (!next.startsWith("/")) {
-    // if "next" is not a relative URL, use the default
-    next = "/";
-  }
+  // Get returnTo from query params (fallback to / if not provided)
+  const returnTo = validateRedirect(searchParams.get("returnTo") ?? "/");
 
   if (code) {
     const supabase = await createClient();
@@ -19,11 +16,11 @@ export async function GET(request: Request) {
       const isLocalEnv = process.env.NODE_ENV === "development";
       if (isLocalEnv) {
         // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
-        return NextResponse.redirect(`${origin}${next}`);
+        return NextResponse.redirect(`${origin}${returnTo}`);
       } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`);
+        return NextResponse.redirect(`https://${forwardedHost}${returnTo}`);
       } else {
-        return NextResponse.redirect(`${origin}${next}`);
+        return NextResponse.redirect(`${origin}${returnTo}`);
       }
     }
   }
