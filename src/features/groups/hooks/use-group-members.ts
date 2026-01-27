@@ -4,7 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useSupabaseClient } from "@/lib/supabase/client";
 import { getGroupMembers } from "../queries/get-group-members";
 
-export function useGroupMembers(groupId: string | null) {
+export function useGroupMembers(
+  groupId: string | null,
+  enabled: boolean = true
+) {
   const supabase = useSupabaseClient();
 
   return useQuery({
@@ -22,6 +25,6 @@ export function useGroupMembers(groupId: string | null) {
 
       return data;
     },
-    enabled: !!groupId,
+    enabled: !!groupId && enabled,
   });
 }

@@ -8,8 +8,8 @@ export function getGroupMembers(
 ) {
   return client
     .from("group_members")
-    .select("*, profiles(*)")
-    .eq("group_id", groupId);
+    .select("userId, role, profiles ( id, username, avatar_url, display_name )")
+    .eq("groupId", groupId);
 }
 
 export async function getCachedGroupMembers(groupId: string) {

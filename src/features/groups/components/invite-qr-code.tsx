@@ -9,7 +9,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { QRCodeSVG } from "qrcode.react";
+import { SaltongQrCodeSvg } from "@/components/shared/saltong-qr-code-svg";
 import { DownloadIcon, ShareIcon } from "lucide-react";
 import { downloadStyledQrPng, shareQrImage } from "../utils/qr";
 
@@ -21,36 +21,14 @@ export default function InviteQRCode({
   label?: string;
 }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const [logoDataUrl, setLogoDataUrl] = useState<string | null>(null);
   const [canShare, setCanShare] = useState(false);
 
   useEffect(() => {
-    let active = true;
-
-    const loadLogo = async () => {
-      try {
-        const res = await fetch("/hub.svg");
-        if (!res.ok) return;
-        const svgText = await res.text();
-        if (!active) return;
-        const dataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(svgText)}`;
-        setLogoDataUrl(dataUrl);
-      } catch (error) {
-        console.error("Failed to load hub logo for QR", error);
-      }
-    };
-
-    loadLogo();
-
     // Check if share is available on mount
     if (typeof navigator !== "undefined" && !!window?.navigator?.canShare) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setCanShare(true);
     }
-
-    return () => {
-      active = false;
-    };
   }, []);
 
   const handleClickDownload = () => {
@@ -81,7 +59,7 @@ export default function InviteQRCode({
         <CardTitle>Share the QR Code</CardTitle>
       </CardHeader>
       <CardContent className="mx-auto">
-        <QRCodeSVG
+        <SaltongQrCodeSvg
           ref={svgRef}
           value={value}
           marginSize={2}
@@ -89,12 +67,7 @@ export default function InviteQRCode({
           size={280}
           fgColor="#252827"
           bgColor="#ffffff"
-          imageSettings={{
-            src: logoDataUrl ?? "/hub.svg",
-            height: 80,
-            width: 80,
-            excavate: true,
-          }}
+          imageSize={80}
           className="rounded-lg"
         />
       </CardContent>

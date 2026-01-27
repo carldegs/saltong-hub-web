@@ -1,5 +1,3 @@
-import { cn } from "@/lib/utils";
-import ProfileAvatar from "@/app/components/profile-avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -11,41 +9,12 @@ import {
 import { ChevronDownIcon } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
+import { MemberRowSkeleton } from "@/components/shared/member-row";
 
-export function LeaderboardItemSkeleton({
-  avatarUrl,
-  displayName,
-  username,
-}: {
-  avatarUrl?: string;
-  displayName?: string;
-  username?: string;
-}) {
+export function LeaderboardItemSkeleton() {
   return (
     <>
-      <div className={cn("flex gap-2")}>
-        {avatarUrl ? (
-          <ProfileAvatar path={avatarUrl} fallback="" className="size-11" />
-        ) : (
-          <Skeleton className="size-11 rounded-full" />
-        )}
-        <div className="flex flex-col gap-0">
-          <div className="font-bold">
-            {displayName || <Skeleton className="h-4 w-30 rounded" />}
-          </div>
-          <div
-            className={cn("-mb-3 text-sm opacity-70", {
-              "mt-2 mb-0": !username,
-            })}
-          >
-            {username ? (
-              `@${username}`
-            ) : (
-              <Skeleton className="h-3 w-20 rounded" />
-            )}
-          </div>
-        </div>
-      </div>
+      <MemberRowSkeleton />
       <div className="flex items-center justify-end">
         <Skeleton className="aspect-square size-8 rounded-lg" />
       </div>
@@ -70,22 +39,21 @@ export function LeaderboardSkeleton({
     ));
   }
 
-  return list.map((data) => (
-    <LeaderboardItemSkeleton
-      key={data.username}
-      avatarUrl={data.avatarUrl}
-      displayName={data.displayName}
-      username={data.username}
-    />
-  ));
+  return list.map((data) => <LeaderboardItemSkeleton key={data.username} />);
 }
 
 export function DatePicker({
   date,
   setDate,
+  minDate,
+  maxDate,
+  isDateDisabled,
 }: {
   date: Date | undefined;
   setDate: (date: Date) => void;
+  minDate?: Date;
+  maxDate?: Date;
+  isDateDisabled?: (date: Date) => boolean;
 }) {
   const [open, setOpen] = useState(false);
   return (
@@ -94,7 +62,7 @@ export function DatePicker({
         <Button
           variant="outline"
           id="date"
-          className="h-auto w-full max-w-52 justify-between text-lg font-bold"
+          className="h-auto w-full max-w-52 justify-between text-base font-bold md:text-lg md:font-normal"
         >
           {date ? format(date, "MMM d, yyyy") : "Select Date"}
           <ChevronDownIcon />
@@ -107,6 +75,18 @@ export function DatePicker({
           onSelect={(date) => {
             setDate(date!);
             setOpen(false);
+          }}
+          hidden={[
+            ...(minDate ? [{ before: minDate }] : []),
+            ...(maxDate ? [{ after: maxDate }] : []),
+          ]}
+          disabled={isDateDisabled}
+          startMonth={minDate}
+          endMonth={maxDate}
+          classNames={{
+            nav: "absolute z-10 w-[calc(100%-24px)] flex items-center justify-between pt-2",
+            button_next: "px-3 cursor-pointer",
+            button_previous: "px-3 cursor-pointer",
           }}
         />
       </PopoverContent>

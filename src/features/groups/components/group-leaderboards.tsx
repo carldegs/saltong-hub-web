@@ -12,11 +12,35 @@ import {
 } from "@/components/ui/carousel";
 import { HEX_CONFIG } from "@/features/hex/config";
 import { SALTONG_CONFIG } from "@/features/saltong/config";
+import { SaltongMode } from "@/features/saltong/types";
 import { add, format } from "date-fns";
+import { getHexRoundIdFromDate, getSaltongRoundIdFromDate } from "@/utils/time";
+
+// Utility: Get previous hex game date (Tuesday/Friday)
+function getPrevHexGameDate(date: Date, minDate: Date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  do {
+    d.setDate(d.getDate() - 1);
+    if (d < minDate) return minDate;
+  } while (!(d.getDay() === 2 || d.getDay() === 5));
+  return d;
+}
+
+// Utility: Get next hex game date (Tuesday/Friday)
+function getNextHexGameDate(date: Date, maxDate: Date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  do {
+    d.setDate(d.getDate() + 1);
+    if (d > maxDate) return maxDate;
+  } while (!(d.getDay() === 2 || d.getDay() === 5));
+  return d;
+}
 import { ChevronLeft, ChevronRight, PlayIcon, XIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import ProfileAvatar from "@/app/components/profile-avatar";
+import { MemberRow } from "@/components/shared/member-row";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { useQueries } from "@tanstack/react-query";
@@ -25,6 +49,8 @@ import { getLeaderboards } from "../queries/get-leaderboards";
 
 import { LeaderboardSkeleton, DatePicker } from "./leaderboard-skeleton";
 import Link from "next/link";
+
+type SaltongModeKey = keyof typeof SALTONG_CONFIG.modes;
 
 const TABS = [
   SALTONG_CONFIG.modes.classic,
@@ -44,11 +70,9 @@ export default function GroupLeaderboards({
   currentUserId: string;
 }) {
   const [date, setDate] = useState(new Date());
-
-  const dateQueryKey = format(date, "yyyy-MM-dd");
-
-  const [api, setApi] = useState<CarouselApi>();
   const [selectedMode, setSelectedMode] = useState(TABS[0].mode);
+  const [api, setApi] = useState<CarouselApi>();
+  const dateQueryKey = format(date, "yyyy-MM-dd");
 
   const supabase = useSupabaseClient();
   const queries = useQueries({
@@ -95,9 +119,16 @@ export default function GroupLeaderboards({
           leaderboard,
           userLeaderboardData,
           hasUserCompleted,
+          roundId:
+            tab.mode === "hex"
+              ? getHexRoundIdFromDate(dateQueryKey)
+              : getSaltongRoundIdFromDate(
+                  dateQueryKey,
+                  tab.mode as SaltongMode
+                ),
         };
       }),
-    [currentUserId, queries]
+    [currentUserId, queries, dateQueryKey]
   );
 
   const temporaryList = useMemo(
@@ -114,7 +145,7 @@ export default function GroupLeaderboards({
       const currentTab = TABS[e.selectedSnap()];
       setSelectedMode(currentTab.mode);
     });
-  }, [api]);
+  }, [api, date]);
 
   return (
     <div className="@container relative grid h-full w-full grid-rows-[auto_1fr] gap-2">
@@ -125,18 +156,75 @@ export default function GroupLeaderboards({
           size="icon"
           className="size-10"
           onClick={() => {
-            setDate(add(date, { days: -1 }));
+            if (selectedMode === "hex") {
+              const minDate = new Date(HEX_CONFIG.startDate);
+              setDate(getPrevHexGameDate(date, minDate));
+            } else {
+              setDate(add(date, { days: -1 }));
+            }
           }}
         >
           <ChevronLeft size={16} />
         </Button>
-        <DatePicker date={date} setDate={setDate} />
+        <DatePicker
+          date={date}
+          setDate={setDate}
+          minDate={(() => {
+            if (selectedMode === "hex") {
+              return new Date(HEX_CONFIG.startDate);
+            }
+            const saltongModes = SALTONG_CONFIG.modes;
+            const validModes = Object.keys(saltongModes) as SaltongModeKey[];
+            if (validModes.includes(selectedMode as SaltongModeKey)) {
+              return new Date(
+                saltongModes[selectedMode as SaltongModeKey].startDate
+              );
+            }
+            return undefined;
+          })()}
+          maxDate={new Date()}
+          isDateDisabled={(d) => {
+            // Disable future dates
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            d = new Date(d);
+            d.setHours(0, 0, 0, 0);
+            if (d > today) return true;
+
+            if (selectedMode === "hex") {
+              // Only enable Tuesdays (2) and Fridays (5)
+              const day = d.getDay();
+              if (day !== 2 && day !== 5) return true;
+              // Before start date
+              if (d < new Date(HEX_CONFIG.startDate)) return true;
+            } else {
+              const saltongModes = SALTONG_CONFIG.modes;
+              const validModes = Object.keys(saltongModes) as SaltongModeKey[];
+              if (validModes.includes(selectedMode as SaltongModeKey)) {
+                if (
+                  d <
+                  new Date(
+                    saltongModes[selectedMode as SaltongModeKey].startDate
+                  )
+                )
+                  return true;
+              }
+            }
+            return false;
+          }}
+        />
         <Button
           variant="outline"
           size="icon"
           className="size-10"
           onClick={() => {
-            setDate(add(date, { days: 1 }));
+            if (selectedMode === "hex") {
+              const maxDate = new Date();
+              maxDate.setHours(0, 0, 0, 0);
+              setDate(getNextHexGameDate(date, maxDate));
+            } else {
+              setDate(add(date, { days: 1 }));
+            }
           }}
         >
           <ChevronRight size={16} />
@@ -170,6 +258,7 @@ export default function GroupLeaderboards({
                       icon={tab.icon}
                       hideMenu
                       forceLarge
+                      boxed={tab.roundId ? `#${tab.roundId}` : undefined}
                     />
                   </CardTitle>
                 </CardHeader>
@@ -178,21 +267,11 @@ export default function GroupLeaderboards({
                     !tab.hasUserCompleted &&
                     tab.userLeaderboardData && (
                       <React.Fragment>
-                        <div className="flex gap-2">
-                          <ProfileAvatar
-                            path={tab.userLeaderboardData.avatarUrl}
-                            fallback=""
-                            className="size-11"
-                          />
-                          <div className="flex flex-col gap-0">
-                            <div className="font-bold">
-                              {tab.userLeaderboardData.displayName}
-                            </div>
-                            <div className="-mb-3 text-sm opacity-40">
-                              @{tab.userLeaderboardData.username}
-                            </div>
-                          </div>
-                        </div>
+                        <MemberRow
+                          avatarUrl={tab.userLeaderboardData.avatarUrl}
+                          displayName={tab.userLeaderboardData.displayName}
+                          username={tab.userLeaderboardData.username}
+                        />
 
                         <div className="text-bold flex items-center justify-end">
                           <Button asChild>
@@ -209,24 +288,12 @@ export default function GroupLeaderboards({
                     )}
                   {tab.leaderboard?.map((data) => (
                     <React.Fragment key={data.userId}>
-                      <div
-                        className={cn("flex gap-2", {
-                          "opacity-50": !data.endedAt,
-                        })}
-                      >
-                        <ProfileAvatar
-                          path={data.avatarUrl}
-                          fallback=""
-                          className="size-11"
-                        />
-                        <div className="flex flex-col gap-0">
-                          <div className="font-bold">{data.displayName}</div>
-                          <div className="-mb-3 text-sm opacity-40">
-                            @{data.username}
-                          </div>
-                        </div>
-                      </div>
-
+                      <MemberRow
+                        avatarUrl={data.avatarUrl}
+                        displayName={data.displayName}
+                        username={data.username}
+                        faded={!data.endedAt}
+                      />
                       <div className="flex items-center justify-end">
                         <div
                           className={cn(
@@ -248,9 +315,7 @@ export default function GroupLeaderboards({
                       </div>
                     </React.Fragment>
                   )) || (
-                    <LeaderboardSkeleton
-                      numItems={temporaryList?.length ?? 3}
-                    />
+                    <LeaderboardSkeleton numItems={temporaryList?.length} />
                   )}
                 </CardContent>
               </Card>

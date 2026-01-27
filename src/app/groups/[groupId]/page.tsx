@@ -1,12 +1,11 @@
 import HomeNavbarBrand from "@/app/components/home-navbar-brand";
 import ProfileAvatar from "@/app/components/profile-avatar";
 import { Navbar } from "@/components/shared/navbar";
-import { Button } from "@/components/ui/button";
+import GroupMembersDialog from "../components/group-members-dialog";
 import GroupLeaderboards from "@/features/groups/components/group-leaderboards";
 import InviteMembers from "@/features/groups/components/invite-members";
 import { getGroupById } from "@/features/groups/queries/get-group";
 import { createClient } from "@/lib/supabase/server";
-import { UserPlusIcon } from "lucide-react";
 import { notFound } from "next/navigation";
 
 interface GroupPageProps {
@@ -52,11 +51,12 @@ export default async function GroupPage({ params }: GroupPageProps) {
             {group.name}
           </h4>
         </div>
-        <div>
-          <Button variant="secondary" size="icon">
-            <UserPlusIcon className="size-5" />
-          </Button>
-        </div>
+        <GroupMembersDialog
+          groupName={group.name}
+          groupId={groupId}
+          userId={claimData.claims.sub}
+          inviteCode={group.inviteCode}
+        />
       </div>
       {(group.memberCount ?? 0) > 1 ? (
         <GroupLeaderboards

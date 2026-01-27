@@ -41,6 +41,13 @@ export type Database = {
             referencedRelation: "groups";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "group_members_userid_fkey";
+            columns: ["userId"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
         ];
       };
       groups: {
@@ -382,6 +389,7 @@ export type Database = {
           avatarUrl: string;
           displayName: string;
           endedAt: string;
+          role: string;
           solvedTurn: number;
           startedAt: string;
           userId: string;
