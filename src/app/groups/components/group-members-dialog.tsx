@@ -40,12 +40,15 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useGroupMembers } from "@/features/groups/hooks/use-group-members";
+import { useToggleGroupAdmin } from "@/features/groups/hooks/use-toggle-admin";
+import { useRemoveGroupMember } from "@/features/groups/hooks/use-remove-member";
 import { Separator } from "@/components/ui/separator";
 import { MemberRowSkeleton, MemberRow } from "@/components/shared/member-row";
 import { SaltongQrCodeSvg } from "@/components/shared/saltong-qr-code-svg";
 import { downloadStyledQrPng } from "@/features/groups/utils/qr";
 import React, { useState, useRef, useMemo } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function GroupMembersDialog({
   inviteCode,
@@ -72,6 +75,10 @@ export default function GroupMembersDialog({
   };
   const [open, setOpen] = React.useState(false);
   const { data, isPending } = useGroupMembers(groupId, open);
+  const { mutate: toggleAdmin, isPending: isToggling } = useToggleGroupAdmin();
+  const { mutate: removeMember, isPending: isRemoving } =
+    useRemoveGroupMember();
+  const router = useRouter();
 
   const isUserAdmin = useMemo(() => {
     if (!data) return false;
@@ -155,7 +162,31 @@ export default function GroupMembersDialog({
                               <DropdownMenuItem
                                 disabled={isOnlyAdmin}
                                 onSelect={() => {
-                                  /* leave group logic */
+                                  const confirmed = window.confirm(
+                                    "Are you sure you want to leave this group?"
+                                  );
+                                  if (confirmed) {
+                                    removeMember(
+                                      {
+                                        groupId,
+                                        targetUserId: userId,
+                                      },
+                                      {
+                                        onSuccess: () => {
+                                          setOpen(false);
+                                          toast.success(
+                                            "You have left the group."
+                                          );
+                                          router.push("/groups");
+                                        },
+                                        onError: (error) => {
+                                          toast.error(
+                                            `Failed to leave group: ${error.message}`
+                                          );
+                                        },
+                                      }
+                                    );
+                                  }
                                 }}
                               >
                                 Leave group
@@ -172,8 +203,13 @@ export default function GroupMembersDialog({
                             <DropdownMenuContent align="end">
                               {member.role === "admin" ? (
                                 <DropdownMenuItem
+                                  disabled={isToggling}
                                   onSelect={() => {
-                                    /* demote logic */
+                                    toggleAdmin({
+                                      groupId,
+                                      targetUserId: member.userId,
+                                      role: "member",
+                                    });
                                   }}
                                 >
                                   <StarOffIcon />
@@ -181,8 +217,13 @@ export default function GroupMembersDialog({
                                 </DropdownMenuItem>
                               ) : (
                                 <DropdownMenuItem
+                                  disabled={isToggling}
                                   onSelect={() => {
-                                    /* promote logic */
+                                    toggleAdmin({
+                                      groupId,
+                                      targetUserId: member.userId,
+                                      role: "admin",
+                                    });
                                   }}
                                 >
                                   <UserStarIcon />
@@ -192,8 +233,26 @@ export default function GroupMembersDialog({
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
                                 className="text-destructive"
+                                disabled={isRemoving}
                                 onSelect={() => {
-                                  /* kick logic */
+                                  removeMember(
+                                    {
+                                      groupId,
+                                      targetUserId: member.userId,
+                                    },
+                                    {
+                                      onSuccess: () => {
+                                        toast.success(
+                                          "Member removed from group."
+                                        );
+                                      },
+                                      onError: (error) => {
+                                        toast.error(
+                                          `Failed to remove member: ${error.message}`
+                                        );
+                                      },
+                                    }
+                                  );
                                 }}
                               >
                                 <UserMinus2Icon />
@@ -227,6 +286,14 @@ export default function GroupMembersDialog({
                         url: inviteUrl,
                       });
                     } catch (e) {
+                      if (
+                        e instanceof Error &&
+                        (e.name === "AbortError" ||
+                          e.message === "Share canceled")
+                      ) {
+                        // User cancelled share, do nothing
+                        return;
+                      }
                       console.error("Share failed:", e);
                     }
                   } else {

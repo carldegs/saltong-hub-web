@@ -12,7 +12,7 @@ import { getGroupByInviteCode } from "@/features/groups/actions";
 import { UserIcon } from "lucide-react";
 import Link from "next/link";
 import JoinGroupProfileForm from "./join-group-profile-form";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "@/app/components/home-navbar-brand";
 import { getProfileFormData } from "@/features/profiles/utils";
@@ -31,12 +31,9 @@ export default async function JoinGroupPage({ params }: JoinGroupPageProps) {
 
   const { group, claims, isMember } = await getGroupByInviteCode(inviteCode);
 
-  if (!claims) {
-    return notFound();
-  }
-
-  const { profile, isTemporaryProfile, avatarOptions } =
-    (await getProfileFormData(supabase, claims)) ?? {};
+  const { profile, isTemporaryProfile, avatarOptions } = claims
+    ? ((await getProfileFormData(supabase, claims)) ?? {})
+    : {};
 
   const userId = claims?.sub;
 

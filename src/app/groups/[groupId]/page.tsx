@@ -2,9 +2,11 @@ import HomeNavbarBrand from "@/app/components/home-navbar-brand";
 import ProfileAvatar from "@/app/components/profile-avatar";
 import { Navbar } from "@/components/shared/navbar";
 import GroupMembersDialog from "../components/group-members-dialog";
+import GroupEditDialog from "../components/group-edit-dialog";
 import GroupLeaderboards from "@/features/groups/components/group-leaderboards";
 import InviteMembers from "@/features/groups/components/invite-members";
 import { getGroupById } from "@/features/groups/queries/get-group";
+import { getUserGroupRole } from "@/features/groups/queries/get-user-group-role";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 
@@ -34,6 +36,14 @@ export default async function GroupPage({ params }: GroupPageProps) {
     );
   }
 
+  const { data: memberData } = await getUserGroupRole(
+    supabase,
+    groupId,
+    claimData.claims.sub
+  );
+
+  const isAdmin = memberData?.role === "admin";
+
   return (
     <div className="grid h-dvh w-full grid-rows-[auto_auto_1fr]">
       <Navbar>
@@ -51,12 +61,20 @@ export default async function GroupPage({ params }: GroupPageProps) {
             {group.name}
           </h4>
         </div>
-        <GroupMembersDialog
-          groupName={group.name}
-          groupId={groupId}
-          userId={claimData.claims.sub}
-          inviteCode={group.inviteCode}
-        />
+        <div className="flex items-center gap-2">
+          <GroupEditDialog
+            groupId={groupId}
+            groupName={group.name}
+            groupAvatarUrl={group.avatarUrl}
+            isAdmin={isAdmin}
+          />
+          <GroupMembersDialog
+            groupName={group.name}
+            groupId={groupId}
+            userId={claimData.claims.sub}
+            inviteCode={group.inviteCode}
+          />
+        </div>
       </div>
       {(group.memberCount ?? 0) > 1 ? (
         <GroupLeaderboards
