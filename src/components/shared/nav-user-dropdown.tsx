@@ -14,7 +14,6 @@ import ProfileAvatar from "@/app/components/profile-avatar";
 import { LogOutIcon, SettingsIcon, UserCircle2Icon } from "lucide-react";
 import { useSidebar } from "../ui/sidebar";
 import Link from "next/link";
-import NewFeatureBadge from "./new-feature-badge";
 import { useSupabaseClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -90,7 +89,6 @@ export function NavUserDropdown({
               >
                 <UserCircle2Icon className="mr-4 inline size-5" />
                 View Profile
-                <NewFeatureBadge />
               </Link>
             </DropdownMenuItem>
           ) : (
@@ -108,7 +106,6 @@ export function NavUserDropdown({
               >
                 <UserCircle2Icon className="mr-2 inline size-5" />
                 View Profile
-                <NewFeatureBadge />
               </DropdownMenuItem>
             </CompleteProfileDialog>
           )}

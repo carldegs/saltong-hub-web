@@ -47,7 +47,7 @@ export default async function JoinGroupPage({ params }: JoinGroupPageProps) {
         <HomeNavbarBrand />
       </Navbar>
       <div className="relative h-full">
-        <div className="flex h-full items-center justify-center">
+        <div className="mx-4 flex h-full items-center justify-center">
           <Empty className="bg-card mx-auto max-w-xl px-4 md:border md:border-solid">
             <EmptyHeader className="gap-0">
               <EmptyMedia>

@@ -11,6 +11,7 @@ import { getRecentUserGroups } from "@/features/groups/queries/get-group";
 import { createClient } from "@/lib/supabase/server";
 import { ChevronRightIcon, PlusCircleIcon } from "lucide-react";
 import Link from "next/link";
+import NewFeatureBadge from "../new-feature-badge";
 
 export async function GroupsSidebarMenu() {
   const supabase = await createClient();
@@ -24,7 +25,9 @@ export async function GroupsSidebarMenu() {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>GROUPS</SidebarGroupLabel>
+      <SidebarGroupLabel>
+        GROUPS <NewFeatureBadge />
+      </SidebarGroupLabel>
       <SidebarGroupAction
         className="mr-4 text-sm whitespace-nowrap hover:underline"
         asChild

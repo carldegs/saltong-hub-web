@@ -257,6 +257,17 @@
       transform: translate(-50%, -50%) scale(0.9);
     }
   }
+
+  /* Floating animation for groups banner image */
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-16px);
+    }
+  }
   --animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
   @keyframes orbit {
     0% {

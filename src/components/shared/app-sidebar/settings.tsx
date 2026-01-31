@@ -6,7 +6,6 @@ import {
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Settings, BookOpen, Info, User, Shield } from "lucide-react";
-import NewFeatureBadge from "../new-feature-badge";
 import CompleteProfileDialog from "@/features/profiles/components/complete-profile";
 import { getProfileFormData } from "@/features/profiles/utils";
 
@@ -37,7 +36,6 @@ export async function SettingsSidebarMenu() {
                 <User className="h-4 w-4" />
                 <span className="flex items-center">
                   <span className="text-sm">Profile</span>
-                  <NewFeatureBadge />
                 </span>
               </Link>
             ) : (
@@ -53,7 +51,6 @@ export async function SettingsSidebarMenu() {
                   <User className="h-4 w-4" />
                   <span className="flex items-center">
                     <span className="text-sm">Profile</span>
-                    <NewFeatureBadge />
                   </span>{" "}
                 </a>
               </CompleteProfileDialog>

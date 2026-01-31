@@ -11,11 +11,11 @@ import { DownloadIcon } from "lucide-react";
 export default function ContributePage() {
   return (
     <>
-      <Navbar>
+      <Navbar hideUserDropdown>
         <HomeNavbarBrand />
       </Navbar>
       <main className="dark:from-background dark:via-muted/60 dark:to-muted/80 relative flex min-h-[100dvh] items-center justify-center bg-gradient-to-br from-[#f8fafc] via-[#e0e7ef] to-[#f1f5f9] py-0 sm:py-8">
-        <Card className="sm:bg-background w-full rounded-none bg-none pb-0 sm:mx-4 sm:max-w-xl sm:rounded-lg">
+        <Card className="sm:bg-background mx-4 w-full rounded-none bg-none pb-0 sm:mx-4 sm:max-w-xl sm:rounded-lg">
           <CardHeader className="items-center">
             <CardTitle className="text-center text-3xl font-bold tracking-tight">
               Contribute
