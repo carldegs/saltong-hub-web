@@ -21,6 +21,7 @@ type TableOfContentsProps = {
   headings: Heading[];
 };
 
+// TODO: Look into using https://www.abui.io/components/toc#variant-clerk instead
 export function TableOfContents({ headings }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>("");
 

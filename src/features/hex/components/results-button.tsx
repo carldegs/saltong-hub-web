@@ -61,7 +61,7 @@ export function ResultsButton({
           onOpenChange(true);
         }}
         size="icon"
-        className="gap-1.5 font-bold md:h-auto md:w-auto md:px-2"
+        className="gap-1.5 font-bold md:w-auto md:px-2"
       >
         <CrownIcon className="h-[1.2rem] w-[1.2rem]" />
         <span className="hidden md:inline-block">Stats</span>

@@ -46,6 +46,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { GroupsDialogBanner } from "@/components/dialog-banners/groups-dialog-banner";
 
 const OTHER_GAMES_LIST = [
   {
@@ -236,6 +237,8 @@ function ResultsDialogComponent({
               </div>
 
               <ShareButtons title="Saltong Hex" message={shareText} />
+
+              <GroupsDialogBanner />
 
               <span className="text-center text-sm font-bold tracking-wider">
                 PLAY OTHER GAMES

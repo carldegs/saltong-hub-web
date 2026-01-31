@@ -28,6 +28,13 @@ export const BORING_AVATAR_COLORS = [
   "#102943",
 ];
 
+export const BORING_AVATAR_GROUP_COLORS = [
+  "#38E18C",
+  "#8759F3",
+  "#E23B3B",
+  "#499AEE",
+];
+
 /**
  * @deprecated Get profile from profiles table instead
  */

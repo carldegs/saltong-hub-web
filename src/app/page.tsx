@@ -3,10 +3,10 @@ import DailyGamesCard from "./components/daily-games-card";
 import HexGamesCard from "./components/hex-games-card";
 import GameCard from "./components/game-card";
 import HomeNavbarBrand from "./components/home-navbar-brand";
-import VaultBanner from "@/components/banners/vault-banner";
 import { SALTONG_CONFIG } from "@/features/saltong/config";
 import { HEX_CONFIG } from "@/features/hex/config";
 import CreateAccountBanner from "@/components/banners/create-account-banner";
+import GroupsBanner from "@/components/banners/groups-banner";
 
 const GAME_LIST = [...Object.values(SALTONG_CONFIG.modes), HEX_CONFIG];
 
@@ -25,7 +25,8 @@ export default async function HomePage() {
         </div>
 
         <div className="mx-auto mt-6 max-w-6xl px-4">
-          <VaultBanner />
+          <GroupsBanner />
+          {/* <VaultBanner /> */}
         </div>
         <div className="@container/bot mx-auto w-full max-w-5xl space-y-8 px-4 py-8">
           <h3>All Games</h3>

@@ -123,6 +123,9 @@ export default function GameWrapper({
       liveScore: isLive
         ? (userRound?.liveScore ?? 0) + score
         : (userRound?.liveScore ?? null),
+      vaultScore: isLive
+        ? (userRound?.vaultScore ?? null)
+        : (userRound?.vaultScore ?? 0) + score,
       // Preserve startedAt if it already exists so we don't reset it unnecessarily
       startedAt: userRound?.startedAt ?? undefined,
     });

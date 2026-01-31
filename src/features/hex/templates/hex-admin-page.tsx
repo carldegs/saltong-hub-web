@@ -152,6 +152,7 @@ export default function HexAdminPage() {
         colorScheme={
           config.colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
         }
+        hideUserDropdown
       >
         <NavbarBrand
           colorScheme={

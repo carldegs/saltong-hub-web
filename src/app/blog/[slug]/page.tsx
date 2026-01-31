@@ -90,86 +90,66 @@ export default async function BlogPost({
       </Navbar>
       <main className="dark:from-background dark:via-muted/60 dark:to-muted/80 relative min-h-[100dvh] bg-gradient-to-br from-[#f8fafc] via-[#e0e7ef] to-[#f1f5f9]">
         {/* Hero Image with Title and Back Button */}
-        {post.metadata.heroImage ? (
-          <div className="relative h-[60vh] w-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-400 dark:to-gray-600">
-            <Image
-              src={post.metadata.heroImage}
-              alt={post.metadata.title}
-              fill
-              className="object-cover"
-              priority
-              unoptimized
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+        <div className="relative h-[60vh] w-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-400 dark:to-gray-600">
+          <Image
+            src={post.metadata.heroImage ?? "/blog/bg.jpg"}
+            alt={post.metadata.title}
+            fill
+            className="object-cover"
+            priority
+            unoptimized
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
 
-            {/* Back Button Overlay */}
-            <div className="absolute top-0 right-0 left-0 px-4 py-6 sm:px-6">
-              <Link href="/blog">
-                <Button variant="secondary" size="sm" className="group gap-2">
-                  <ArrowLeft
-                    size={16}
-                    className="transition-transform group-hover:-translate-x-1"
-                  />
-                  Back to Blog
-                </Button>
-              </Link>
-            </div>
+          {/* Back Button Overlay */}
+          <div className="absolute top-0 right-0 left-0 px-4 py-6 sm:px-6">
+            <Link href="/blog">
+              <Button variant="secondary" size="sm" className="group gap-2">
+                <ArrowLeft
+                  size={16}
+                  className="transition-transform group-hover:-translate-x-1"
+                />
+                Back to Blog
+              </Button>
+            </Link>
+          </div>
 
-            {/* Title Overlay */}
-            <div className="absolute right-0 bottom-0 left-0 px-4 py-8 sm:px-6 lg:px-8">
-              <div className="mx-auto max-w-7xl">
-                <div className="max-w-4xl">
-                  {/* Tags */}
-                  {post.metadata.tags && post.metadata.tags.length > 0 && (
-                    <div className="mb-4 flex flex-wrap gap-2">
-                      {post.metadata.tags.map((tag: string) => (
-                        <span
-                          key={tag}
-                          className="rounded-full border border-white/30 bg-white/20 px-3 py-1 text-xs font-semibold tracking-wide text-white uppercase shadow-lg backdrop-blur-sm transition-all hover:bg-white/30"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+          {/* Title Overlay */}
+          <div className="absolute right-0 bottom-0 left-0 px-4 py-8 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl">
+              <div className="max-w-4xl">
+                {/* Tags */}
+                {post.metadata.tags && post.metadata.tags.length > 0 && (
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    {post.metadata.tags.map((tag: string) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-white/30 bg-white/20 px-3 py-1 text-xs font-semibold tracking-wide text-white uppercase shadow-lg backdrop-blur-sm transition-all hover:bg-white/30"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <h1 className="mb-4 text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+                  {post.metadata.title}
+                </h1>
+
+                {/* Meta Info */}
+                <div className="flex flex-wrap items-center gap-4 text-sm text-white/90">
+                  {post.metadata.author && (
+                    <div className="flex items-center gap-2">
+                      <User size={16} />
+                      <span>{post.metadata.author}</span>
                     </div>
                   )}
-
-                  <h1 className="mb-4 text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-                    {post.metadata.title}
-                  </h1>
-
-                  {/* Meta Info */}
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-white/90">
-                    {post.metadata.author && (
-                      <div className="flex items-center gap-2">
-                        <User size={16} />
-                        <span>{post.metadata.author}</span>
-                      </div>
-                    )}
-                    <BlogDate date={post.metadata.publishedAt} iconSize={16} />
-                  </div>
+                  <BlogDate date={post.metadata.publishedAt} iconSize={16} />
                 </div>
               </div>
             </div>
           </div>
-        ) : (
-          // Fallback if no hero image
-          <div className="px-4 py-12">
-            <div className="mx-auto max-w-4xl">
-              <Link href="/blog">
-                <Button variant="ghost" size="sm" className="group mb-8 gap-2">
-                  <ArrowLeft
-                    size={16}
-                    className="transition-transform group-hover:-translate-x-1"
-                  />
-                  Back to Blog
-                </Button>
-              </Link>
-              <h1 className="mb-6 text-4xl leading-tight font-bold tracking-tight sm:text-5xl lg:text-6xl">
-                {post.metadata.title}
-              </h1>
-            </div>
-          </div>
-        )}
+        </div>
 
         {/* Main Content with Sidebar */}
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

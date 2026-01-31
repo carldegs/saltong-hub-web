@@ -69,7 +69,8 @@ export function RecentRoundsTable({
                     </TableCell>
                     <TableCell>
                       <span className="font-mono font-medium tracking-wide uppercase">
-                        {r.rootWord}
+                        {r.rootWord} (
+                        {Array.from(new Set(r.rootWord?.split(""))).length})
                       </span>
                     </TableCell>
                     <TableCell>

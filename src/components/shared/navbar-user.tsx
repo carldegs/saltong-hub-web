@@ -1,5 +1,5 @@
 import { getProfileFormData } from "@/features/profiles/utils";
-import LoginSidebarMenu from "./app-sidebar.ts/nav-user/login-sidebar-menu";
+import LoginSidebarMenu from "./app-sidebar/nav-user/login-sidebar-menu";
 import { createClient } from "@/lib/supabase/server";
 import { NavUserDropdown } from "./nav-user-dropdown";
 import ProfileAvatar from "@/app/components/profile-avatar";

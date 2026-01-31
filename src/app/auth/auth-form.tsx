@@ -17,8 +17,10 @@ import { getRedirectURL } from "@/lib/utils";
 
 export default function AuthForm({
   showSignup = false,
+  returnTo = "/",
 }: {
   showSignup?: boolean;
+  returnTo?: string;
 }) {
   const [step, setStep] = useState<
     "email" | "password" | "signup" | "forgot-password"
@@ -28,9 +30,16 @@ export default function AuthForm({
 
   // Handle OAuth
   function handleOAuth(provider: "google" | "discord" | "twitter") {
+    const redirectUrl =
+      returnTo && returnTo !== "/"
+        ? `${getRedirectURL()}auth/callback?returnTo=${encodeURIComponent(
+            returnTo
+          )}`
+        : `${getRedirectURL()}auth/callback`;
+
     supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${getRedirectURL()}auth/callback` },
+      options: { redirectTo: redirectUrl },
     });
   }
 
@@ -89,6 +98,7 @@ export default function AuthForm({
               email={email}
               onBack={() => setStep("email")}
               onForgotPassword={() => setStep("forgot-password")}
+              returnTo={returnTo}
             />
           </>
         )}

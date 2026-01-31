@@ -11,6 +11,7 @@ export default function TrackedLink({
   event?: string;
   eventParams?: Record<string, unknown>;
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
     <Link

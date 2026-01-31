@@ -41,6 +41,7 @@ import { useSaltongUserRound } from "../hooks/user-round";
 import { useSaltongUserStats } from "../hooks/user-stats";
 import { differenceInMilliseconds } from "date-fns";
 import { SaltongHowToPlayCard } from "./how-to-play-card";
+import { GroupsDialogBanner } from "@/components/dialog-banners/groups-dialog-banner";
 
 const STATUS_TEXT: Record<SaltongUserRoundStatus, string> = {
   correct: "SOLVED!",
@@ -337,6 +338,7 @@ function ResultsDialogComponent({
               {winTurns?.length ? (
                 <ResultsChart playerStats={winTurns} />
               ) : null}
+
               {status === "correct" || status === "incorrect" ? (
                 <ShareButtons {...shareDetails} />
               ) : (
@@ -344,6 +346,8 @@ function ResultsDialogComponent({
                   FINISH THE GAME TO SHARE RESULTS
                 </Button>
               )}
+
+              <GroupsDialogBanner />
 
               <span className="text-center text-sm font-bold tracking-wider">
                 PLAY OTHER GAMES

@@ -26,7 +26,7 @@ export default function LoginSidebarMenu({
       <Link
         href={{
           pathname: "/auth",
-          query: { next: currPathname },
+          query: { returnTo: currPathname },
         }}
         onClick={() => {
           sendEvent("button_click", {

@@ -82,6 +82,7 @@ export default function SaltongAdminPage({ mode }: Props) {
         colorScheme={
           config.colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
         }
+        hideUserDropdown
       >
         <NavbarBrand
           colorScheme={

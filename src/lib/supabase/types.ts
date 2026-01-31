@@ -14,6 +14,81 @@ export type Database = {
   };
   public: {
     Tables: {
+      group_members: {
+        Row: {
+          groupId: string;
+          joinedAt: string;
+          role: string;
+          userId: string;
+        };
+        Insert: {
+          groupId: string;
+          joinedAt?: string;
+          role?: string;
+          userId: string;
+        };
+        Update: {
+          groupId?: string;
+          joinedAt?: string;
+          role?: string;
+          userId?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "group_members_groupId_fkey";
+            columns: ["groupId"];
+            isOneToOne: false;
+            referencedRelation: "groups";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "group_members_userid_fkey";
+            columns: ["userId"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      groups: {
+        Row: {
+          avatarUrl: string | null;
+          createdAt: string;
+          createdBy: string | null;
+          id: string;
+          inviteCode: string;
+          invitesEnabled: boolean | null;
+          isPublic: boolean | null;
+          memberCount: number | null;
+          name: string;
+          updatedAt: string;
+        };
+        Insert: {
+          avatarUrl?: string | null;
+          createdAt?: string;
+          createdBy?: string | null;
+          id?: string;
+          inviteCode: string;
+          invitesEnabled?: boolean | null;
+          isPublic?: boolean | null;
+          memberCount?: number | null;
+          name: string;
+          updatedAt?: string;
+        };
+        Update: {
+          avatarUrl?: string | null;
+          createdAt?: string;
+          createdBy?: string | null;
+          id?: string;
+          inviteCode?: string;
+          invitesEnabled?: boolean | null;
+          isPublic?: boolean | null;
+          memberCount?: number | null;
+          name?: string;
+          updatedAt?: string;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           avatar_url: string | null;
@@ -91,6 +166,7 @@ export type Database = {
           startedAt: string | null;
           updatedAt: string | null;
           userId: string;
+          vaultScore: number | null;
         };
         Insert: {
           date: string;
@@ -102,6 +178,7 @@ export type Database = {
           startedAt?: string | null;
           updatedAt?: string | null;
           userId: string;
+          vaultScore?: number | null;
         };
         Update: {
           date?: string;
@@ -113,6 +190,7 @@ export type Database = {
           startedAt?: string | null;
           updatedAt?: string | null;
           userId?: string;
+          vaultScore?: number | null;
         };
         Relationships: [
           {
@@ -308,7 +386,41 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      get_group_members_hex_rounds: {
+        Args: { p_date: string; p_group: string };
+        Returns: {
+          avatarUrl: string;
+          displayName: string;
+          isTopRank: boolean;
+          liveScore: number;
+          role: string;
+          startedAt: string;
+          userId: string;
+          username: string;
+          vaultScore: number;
+        }[];
+      };
+      get_group_members_rounds: {
+        Args: { p_date: string; p_group: string; p_mode: string };
+        Returns: {
+          avatarUrl: string;
+          displayName: string;
+          endedAt: string;
+          role: string;
+          solvedTurn: number;
+          startedAt: string;
+          userId: string;
+          username: string;
+        }[];
+      };
+      is_group_admin: {
+        Args: { p_group: string; p_user: string };
+        Returns: boolean;
+      };
+      is_group_member: {
+        Args: { p_group: string; p_user: string };
+        Returns: boolean;
+      };
     };
     Enums: {
       [_ in never]: never;
