@@ -36,7 +36,7 @@ export default function CreateGroupForm() {
   });
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: (data: CreateGroupFormData) => {
       return createGroupAction(data.name);
     },
@@ -47,6 +47,7 @@ export default function CreateGroupForm() {
     },
     onSuccess: (data) => {
       router.push(`/groups/${data.group.id}`);
+      router.refresh();
     },
   });
 
@@ -84,10 +85,12 @@ export default function CreateGroupForm() {
             size="lg"
             className="mt-4 self-end"
             type="submit"
-            disabled={isPending}
+            disabled={isPending || isSuccess}
           >
-            {isPending && <Loader2Icon className="animate-spin" />}
-            {isPending ? "Creating..." : "Create Group"}
+            {(isPending || isSuccess) && (
+              <Loader2Icon className="animate-spin" />
+            )}
+            {isPending || isSuccess ? "Creating..." : "Create Group"}
           </Button>
         </form>
       </Form>

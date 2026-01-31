@@ -166,6 +166,7 @@ export type Database = {
           startedAt: string | null;
           updatedAt: string | null;
           userId: string;
+          vaultScore: number | null;
         };
         Insert: {
           date: string;
@@ -177,6 +178,7 @@ export type Database = {
           startedAt?: string | null;
           updatedAt?: string | null;
           userId: string;
+          vaultScore?: number | null;
         };
         Update: {
           date?: string;
@@ -188,6 +190,7 @@ export type Database = {
           startedAt?: string | null;
           updatedAt?: string | null;
           userId?: string;
+          vaultScore?: number | null;
         };
         Relationships: [
           {
@@ -383,6 +386,20 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      get_group_members_hex_rounds: {
+        Args: { p_date: string; p_group: string };
+        Returns: {
+          avatarUrl: string;
+          displayName: string;
+          isTopRank: boolean;
+          liveScore: number;
+          role: string;
+          startedAt: string;
+          userId: string;
+          username: string;
+          vaultScore: number;
+        }[];
+      };
       get_group_members_rounds: {
         Args: { p_date: string; p_group: string; p_mode: string };
         Returns: {

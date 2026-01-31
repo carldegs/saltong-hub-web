@@ -49,7 +49,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
       <Navbar>
         <HomeNavbarBrand />
       </Navbar>
-      <div className="flex max-w-full items-center justify-between gap-2 px-8 py-4">
+      <div className="mx-auto flex w-full max-w-[1800px] items-center justify-between gap-2 px-8 py-4">
         <div className="flex items-center gap-2">
           <ProfileAvatar
             path={group.avatarUrl ?? ""}

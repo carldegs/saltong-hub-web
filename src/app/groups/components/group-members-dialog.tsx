@@ -42,6 +42,7 @@ import {
 import { useGroupMembers } from "@/features/groups/hooks/use-group-members";
 import { useToggleGroupAdmin } from "@/features/groups/hooks/use-toggle-admin";
 import { useRemoveGroupMember } from "@/features/groups/hooks/use-remove-member";
+import { useDeleteGroup } from "@/features/groups/hooks/use-delete-group";
 import { Separator } from "@/components/ui/separator";
 import { MemberRowSkeleton, MemberRow } from "@/components/shared/member-row";
 import { SaltongQrCodeSvg } from "@/components/shared/saltong-qr-code-svg";
@@ -79,6 +80,7 @@ export default function GroupMembersDialog({
   const { mutate: removeMember, isPending: isRemoving } =
     useRemoveGroupMember();
   const router = useRouter();
+  const { mutate: deleteGroup, isPending: isDeleting } = useDeleteGroup();
 
   const isUserAdmin = useMemo(() => {
     if (!data) return false;
@@ -365,8 +367,31 @@ export default function GroupMembersDialog({
                     Once deleted, there is no going back.
                   </div>
                 </div>
-                <Button variant="destructive" size="sm">
-                  Delete Group
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  disabled={isDeleting}
+                  onClick={() => {
+                    const confirmed = window.confirm(
+                      "Are you sure you want to delete this group? This action cannot be undone."
+                    );
+                    if (!confirmed) return;
+                    deleteGroup(groupId, {
+                      onSuccess: () => {
+                        toast.success("Group deleted successfully.");
+                        setOpen(false);
+                        router.push("/groups");
+                        router.refresh();
+                      },
+                      onError: (error) => {
+                        toast.error(
+                          `Failed to delete group: ${error instanceof Error ? error.message : "Unknown error"}`
+                        );
+                      },
+                    });
+                  }}
+                >
+                  {isDeleting ? "Deleting..." : "Delete Group"}
                 </Button>
               </div>
             </div>

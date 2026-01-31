@@ -35,7 +35,36 @@ export async function getRecentUserGroups(
   `
     )
     .eq("userId", userId)
+    .order("joinedAt", { ascending: false })
     .limit(3);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return (data ?? []).map((item) => item.groups);
+}
+
+export async function getUserGroups(
+  client: SupabaseClient<Database>,
+  userId: string
+) {
+  if (!userId) {
+    throw new Error("Unauthorized: User not found");
+  }
+
+  const { data, error } = await client
+    .from("group_members")
+    .select(
+      `
+    groups (
+      *
+    )
+  `
+    )
+    .eq("userId", userId)
+    .order("joinedAt", { ascending: false })
+    .limit(50);
 
   if (error) {
     throw new Error(error.message);

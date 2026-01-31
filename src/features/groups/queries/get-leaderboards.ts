@@ -9,10 +9,26 @@ export interface GetLeaderboardsParams {
   date: string;
 }
 
+export type SaltongLeaderboardEntry =
+  Database["public"]["Functions"]["get_group_members_rounds"]["Returns"][number];
+export type HexLeaderboardEntry =
+  Database["public"]["Functions"]["get_group_members_hex_rounds"]["Returns"][number];
+
+export type LeaderboardEntry<TMode extends string> = TMode extends "hex"
+  ? HexLeaderboardEntry
+  : SaltongLeaderboardEntry;
+
 export function getLeaderboards(
   client: SupabaseClient<Database>,
   params: GetLeaderboardsParams
 ) {
+  if (params.mode === "hex") {
+    return client.rpc("get_group_members_hex_rounds", {
+      p_group: params.groupId,
+      p_date: params.date,
+    });
+  }
+
   return client.rpc("get_group_members_rounds", {
     p_group: params.groupId,
     p_mode: params.mode,

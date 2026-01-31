@@ -280,3 +280,42 @@ export async function updateGroupAction(
     group: groupData,
   };
 }
+
+export async function deleteGroupAction(groupId: string) {
+  const supabase = await createClient();
+  const supabaseAdmin = await createServiceRoleClient();
+
+  // Get the authenticated user
+  const { data: userData, error: userError } = await supabase.auth.getClaims();
+  if (userError || !userData?.claims) {
+    throw new Error("Unauthorized: User not found");
+  }
+  const userId = userData.claims.sub;
+
+  // Check if user is an admin of the group
+  const { data: memberData, error: memberError } = await supabase
+    .from("group_members")
+    .select("role")
+    .eq("groupId", groupId)
+    .eq("userId", userId)
+    .single();
+
+  if (memberError || !memberData) {
+    throw new Error("You are not a member of this group");
+  }
+  if (memberData.role !== "admin") {
+    throw new Error("Only admins can delete the group");
+  }
+
+  // Delete the group (cascades to group_members, etc. if FK is set)
+  const { error: deleteError } = await supabaseAdmin
+    .from("groups")
+    .delete()
+    .eq("id", groupId);
+
+  if (deleteError) {
+    throw new Error(`Failed to delete group: ${deleteError.message}`);
+  }
+
+  return { success: true };
+}

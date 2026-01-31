@@ -14,7 +14,11 @@ import { HEX_CONFIG } from "@/features/hex/config";
 import { SALTONG_CONFIG } from "@/features/saltong/config";
 import { SaltongMode } from "@/features/saltong/types";
 import { add, format } from "date-fns";
-import { getHexRoundIdFromDate, getSaltongRoundIdFromDate } from "@/utils/time";
+import {
+  getHexDateInPh,
+  getHexRoundIdFromDate,
+  getSaltongRoundIdFromDate,
+} from "@/utils/time";
 
 // Utility: Get previous hex game date (Tuesday/Friday)
 function getPrevHexGameDate(date: Date, minDate: Date) {
@@ -37,18 +41,24 @@ function getNextHexGameDate(date: Date, maxDate: Date) {
   } while (!(d.getDay() === 2 || d.getDay() === 5));
   return d;
 }
-import { ChevronLeft, ChevronRight, PlayIcon, XIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, PlayIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { MemberRow } from "@/components/shared/member-row";
 import React from "react";
-import { cn } from "@/lib/utils";
 import { useQueries } from "@tanstack/react-query";
 import { useSupabaseClient } from "@/lib/supabase/client";
-import { getLeaderboards } from "../queries/get-leaderboards";
+import {
+  getLeaderboards,
+  HexLeaderboardEntry,
+  SaltongLeaderboardEntry,
+} from "../queries/get-leaderboards";
 
 import { LeaderboardSkeleton, DatePicker } from "./leaderboard-skeleton";
 import Link from "next/link";
+import { GroupLeaderboardEntry } from "./group-leaderboard-entry";
+import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 type SaltongModeKey = keyof typeof SALTONG_CONFIG.modes;
 
@@ -73,18 +83,23 @@ export default function GroupLeaderboards({
   const [selectedMode, setSelectedMode] = useState(TABS[0].mode);
   const [api, setApi] = useState<CarouselApi>();
   const dateQueryKey = format(date, "yyyy-MM-dd");
+  const hexDateQueryKey = format(getHexDateInPh(date), "yyyy-MM-dd");
 
   const supabase = useSupabaseClient();
   const queries = useQueries({
     queries: TABS.map((tab) => ({
       queryKey: [
         "group-leaderboards",
-        { groupId, date: dateQueryKey, mode: tab.mode },
+        {
+          groupId,
+          date: tab.mode === "hex" ? hexDateQueryKey : dateQueryKey,
+          mode: tab.mode,
+        },
       ],
       queryFn: async () => {
         const { data, error } = await getLeaderboards(supabase, {
           groupId,
-          date: format(date, "yyyy-MM-dd"),
+          date: tab.mode === "hex" ? hexDateQueryKey : dateQueryKey,
           mode: tab.mode,
         });
 
@@ -95,7 +110,13 @@ export default function GroupLeaderboards({
         return data;
       },
       enabled:
-        !!groupId && !!dateQueryKey && !!tab.mode && selectedMode === tab.mode,
+        !!groupId &&
+        !!dateQueryKey &&
+        !!hexDateQueryKey &&
+        !!tab.mode &&
+        selectedMode === tab.mode,
+      staleTime: 1000 * 5, // 5 seconds
+      refetchOnMount: true,
     })),
   });
 
@@ -106,12 +127,22 @@ export default function GroupLeaderboards({
         const userLeaderboardData = leaderboard?.find(
           (row) => row.userId === currentUserId
         );
-        const hasUserCompleted = !!userLeaderboardData?.endedAt;
+
+        let hasUserCompleted = false;
+
+        if (tab.mode === "hex") {
+          hasUserCompleted =
+            !!(userLeaderboardData as HexLeaderboardEntry)?.liveScore ||
+            !!(userLeaderboardData as HexLeaderboardEntry)?.vaultScore;
+        } else {
+          hasUserCompleted = !!(userLeaderboardData as SaltongLeaderboardEntry)
+            ?.endedAt;
+        }
 
         if (!hasUserCompleted) {
           leaderboard = leaderboard?.filter(
             (row) => row.userId !== currentUserId
-          );
+          ) as typeof leaderboard;
         }
 
         return {
@@ -251,7 +282,12 @@ export default function GroupLeaderboards({
             >
               <Card className="mx-2 h-full w-[calc(100%-16px)]">
                 <CardHeader>
-                  <CardTitle>
+                  <CardTitle
+                    className={cn({
+                      "flex items-center justify-between gap-4":
+                        tab.mode === "hex" && tab.hasUserCompleted,
+                    })}
+                  >
                     <NavbarBrand
                       colorScheme={tab.colorScheme}
                       title={tab.displayName}
@@ -260,6 +296,19 @@ export default function GroupLeaderboards({
                       forceLarge
                       boxed={tab.roundId ? `#${tab.roundId}` : undefined}
                     />
+                    <div>
+                      {tab.mode === "hex" && tab.hasUserCompleted && (
+                        <Button asChild>
+                          <Link
+                            href={`/play/${tab.path}?d=${tab.mode === "hex" ? hexDateQueryKey : dateQueryKey}`}
+                            prefetch={false}
+                          >
+                            <PlayIcon />
+                            PLAY
+                          </Link>
+                        </Button>
+                      )}
+                    </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-[1fr_auto] gap-6">
@@ -276,7 +325,7 @@ export default function GroupLeaderboards({
                         <div className="text-bold flex items-center justify-end">
                           <Button asChild>
                             <Link
-                              href={`/play/${tab.path}?d=${dateQueryKey}`}
+                              href={`/play/${tab.path}?d=${tab.mode === "hex" ? hexDateQueryKey : dateQueryKey}`}
                               prefetch={false}
                             >
                               <PlayIcon />
@@ -286,36 +335,22 @@ export default function GroupLeaderboards({
                         </div>
                       </React.Fragment>
                     )}
+                  {!tab.hasUserCompleted && (
+                    <Separator className="col-span-2 my-0" />
+                  )}
                   {tab.leaderboard?.map((data) => (
-                    <React.Fragment key={data.userId}>
-                      <MemberRow
-                        avatarUrl={data.avatarUrl}
-                        displayName={data.displayName}
-                        username={data.username}
-                        faded={!data.endedAt}
-                      />
-                      <div className="flex items-center justify-end">
-                        <div
-                          className={cn(
-                            "bg-muted text-muted-foreground flex aspect-square size-8 items-center justify-center rounded-lg text-center text-lg leading-none font-bold",
-                            {
-                              "bg-saltong-green-100 text-green-800":
-                                data.solvedTurn,
-                              "bg-saltong-red-100 text-red-800":
-                                data.endedAt && !data.solvedTurn,
-                            }
-                          )}
-                        >
-                          {data.solvedTurn && data.solvedTurn}
-                          {!data.solvedTurn && data.endedAt && (
-                            <XIcon className="size-6" />
-                          )}
-                          {!data.endedAt && "–"}
-                        </div>
-                      </div>
-                    </React.Fragment>
+                    <GroupLeaderboardEntry
+                      key={data.userId}
+                      data={data}
+                      mode={tab.mode}
+                    />
                   )) || (
                     <LeaderboardSkeleton numItems={temporaryList?.length} />
+                  )}
+                  {tab.mode === "hex" && (
+                    <span className="text-sm font-bold opacity-50 hover:opacity-100">
+                      * Answered from the Vault
+                    </span>
                   )}
                 </CardContent>
               </Card>
