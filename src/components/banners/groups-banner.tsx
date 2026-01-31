@@ -6,7 +6,7 @@ import Image from "next/image";
 
 const TO_ADD = ["TROPA", "FAMBAM", "BEBE", "GENG GENG"];
 
-export default async function GroupsBanner() {
+export default function GroupsBanner() {
   return (
     <div className="@container w-full">
       <div className="relative flex w-full flex-col rounded-xl border border-pink-300 bg-linear-to-br from-pink-200 to-pink-100 py-6 @xl:mt-20 @xl:mb-8 dark:from-pink-600/20 dark:to-pink-500/50">
