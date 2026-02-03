@@ -7,7 +7,7 @@
     "dev:https": "next dev --experimental-https",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "prepare": "husky",
     "supabase:login": "supabase login",
     "supabase:typegen": "supabase gen types typescript --project-id ibsmehfecfosjhjtywmr > src/lib/supabase/types.ts"
@@ -18,8 +18,8 @@
     "@hookform/resolvers": "^5.2.2",
     "@mdx-js/loader": "^3.1.0",
     "@mdx-js/react": "^3.1.0",
-    "@next/mdx": "^15.3.4",
-    "@next/third-parties": "^15.5.9",
+    "@next/mdx": "16.1.6",
+    "@next/third-parties": "16.1.6",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-collapsible": "^1.1.12",
@@ -45,17 +45,17 @@
     "embla-carousel-react": "9.0.0-rc01",
     "lucide-react": "^0.562.0",
     "motion": "^12.19.1",
-    "next": "^15.5.9",
+    "next": "16.1.6",
     "next-mdx-remote": "^5.0.0",
     "next-themes": "^0.4.6",
     "openai": "^6.9.0",
     "pako": "^2.1.0",
     "qrcode.react": "^4.2.0",
     "radix-ui": "^1.4.2",
-    "react": "19.1.0",
+    "react": "19.2.4",
     "react-canvas-confetti": "^2.0.7",
     "react-day-picker": "9.7.0",
-    "react-dom": "19.1.0",
+    "react-dom": "19.2.4",
     "react-hook-form": "^7.71.0",
     "recharts": "^2.15.4",
     "remark-gfm": "^4.0.1",
@@ -71,19 +71,18 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^20.3.1",
-    "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.29.0",
-    "@next/eslint-plugin-next": "^15.5.9",
+    "@next/eslint-plugin-next": "16.1.6",
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4.1.10",
     "@tanstack/react-query-devtools": "^5.90.2",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/node": "^24.0.4",
     "@types/pako": "^2.0.3",
-    "@types/react": "19.1.8",
-    "@types/react-dom": "19.1.6",
+    "@types/react": "19.2.10",
+    "@types/react-dom": "19.2.3",
     "eslint": "^9.29.0",
-    "eslint-config-next": "15.3.4",
+    "eslint-config-next": "16.1.6",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.1",
     "eslint-plugin-react-hooks": "^7.0.1",
@@ -97,5 +96,11 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.35.0"
   },
-  "packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264"
+  "packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.2.10",
+      "@types/react-dom": "19.2.3"
+    }
+  }
 }

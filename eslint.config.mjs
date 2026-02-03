@@ -1,15 +1,16 @@
-import { FlatCompat } from "@eslint/eslintrc";
+import nextDefault from "eslint-config-next";
+import nextTypescript from "eslint-config-next/typescript";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import nextPlugin from "@next/eslint-plugin-next";
 
-const compat = new FlatCompat({
-  // import.meta.dirname is available after Node.js v20.11.0
-  baseDirectory: import.meta.dirname,
-});
+const nextCoreWebVitals = [
+  ...nextDefault,
+  nextPlugin.configs["core-web-vitals"],
+];
 
 const eslintConfig = [
-  ...compat.config({
-    extends: ["next/core-web-vitals", "next/typescript"],
-  }),
+  ...nextCoreWebVitals,
+  ...nextTypescript,
   eslintPluginPrettierRecommended,
   {
     ignores: [
