@@ -1,6 +1,6 @@
 {
   "name": "Saltong Hub",
-  "short_name": "Saltong Hub",
+  "short_name": "Saltong",
   "description": "The place for Filipino word games",
   "start_url": "/",
   "display": "standalone",
@@ -17,6 +17,44 @@
       "src": "/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot1.png",
+      "sizes": "1290x2796",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshots/screenshot2.png",
+      "sizes": "1290x2796",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshots/screenshot3.png",
+      "sizes": "1290x2796",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshots/screenshot1_wide.jpg",
+      "sizes": "1710x871",
+      "type": "image/jpeg",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshots/screenshot2_wide.jpg",
+      "sizes": "1710x871",
+      "type": "image/jpeg",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshots/screenshot3_wide.jpg",
+      "sizes": "1710x871",
+      "type": "image/jpeg",
+      "form_factor": "wide"
     }
   ]
 }
