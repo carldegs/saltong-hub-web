@@ -10,6 +10,7 @@ import { getRedirectURL } from "@/lib/utils";
 interface SignupCardProps {
   onBack: () => void;
   onSuccess: () => void;
+  returnTo?: string;
 }
 
 export function SignupCard({ onBack }: SignupCardProps) {

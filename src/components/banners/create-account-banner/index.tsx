@@ -51,11 +51,13 @@ export default async function CreateAccountBanner() {
       name: "Compete with Friends",
       description:
         "Create a leaderboard with your friends and see who tops the charts.",
-      href: data?.claims?.sub ? "#" : "/auth",
-      cta: data?.claims?.sub ? "Coming Soooon" : "Taralets!",
+      href: data?.claims?.sub ? "/groups" : "/auth?redirectTo=/groups",
+      cta: data?.claims?.sub ? "Fight!" : "Taralets!",
       className: "col-span-3 lg:col-span-1",
       background: <></>,
-      pill: "COMING SOON",
+      pill: "IT'S HERE!",
+      pillClassName:
+        "bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
     },
     {
       Icon: MedalIcon,

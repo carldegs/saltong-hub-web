@@ -1,7 +1,9 @@
 import { MetadataRoute } from "next";
-import { getBlogPosts } from "./blog/utils";
+import { getBlogPosts } from "./patch-notes/utils";
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://saltong.com";
+const baseUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://saltong.com"
+).replace(/\/$/, "");
 
 // Play game variants
 const playVariants = ["", "mini", "max", "hex"];
@@ -12,7 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Map blog posts to sitemap entries
   const blogs = blogPosts.map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
+    url: `${baseUrl}/patch-notes/${post.slug}`,
     lastModified: new Date(post.metadata.publishedAt),
     changeFrequency: "monthly" as const,
     priority: 0.7,
@@ -58,7 +60,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
     {
-      url: `${baseUrl}/blog`,
+      url: `${baseUrl}/patch-notes`,
       lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.3,

@@ -9,12 +9,14 @@ interface PasswordCardProps {
   email: string;
   onBack: () => void;
   onForgotPassword?: () => void;
+  returnTo?: string;
 }
 
 export function PasswordCard({
   email,
   onBack,
   onForgotPassword,
+  returnTo = "/",
 }: PasswordCardProps) {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -51,6 +53,8 @@ export function PasswordCard({
     if (error) {
       setError(error.message);
     } else {
+      // Navigate back then revalidate RSC so sidebar/user state updates immediately
+      router.push(returnTo);
       router.refresh();
     }
   }

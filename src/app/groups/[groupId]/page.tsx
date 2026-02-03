@@ -1,0 +1,115 @@
+import HomeNavbarBrand from "@/app/components/home-navbar-brand";
+import ProfileAvatar from "@/app/components/profile-avatar";
+import { Navbar } from "@/components/shared/navbar";
+import GroupMembersDialog from "../components/group-members-dialog";
+import GroupEditDialog from "../components/group-edit-dialog";
+import GroupLeaderboards from "@/features/groups/components/group-leaderboards";
+import InviteMembers from "@/features/groups/components/invite-members";
+import { getGroupById } from "@/features/groups/queries/get-group";
+import { getUserGroupRole } from "@/features/groups/queries/get-user-group-role";
+import { createClient } from "@/lib/supabase/server";
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
+
+interface GroupPageProps {
+  params: Promise<{
+    groupId: string;
+  }>;
+}
+
+export async function generateMetadata({
+  params,
+}: GroupPageProps): Promise<Metadata> {
+  const { groupId } = await params;
+  const supabase = await createClient();
+  const { data: group, error } = await getGroupById(supabase, groupId);
+
+  if (error || !group) {
+    return {
+      title: "Group - Saltong Hub",
+    };
+  }
+
+  return {
+    title: `${group.name} | Saltong Hub`,
+    description: `Join ${group.name} on Saltong Hub and compete with friends on group leaderboards.`,
+    openGraph: {
+      title: `${group.name} | Saltong Hub`,
+      description: `Join ${group.name} on Saltong Hub and compete with friends on group leaderboards.`,
+      type: "website",
+      url: `https://saltong.com/groups/${groupId}`,
+    },
+  };
+}
+
+export default async function GroupPage({ params }: GroupPageProps) {
+  const { groupId } = await params;
+  const supabase = await createClient();
+
+  const { data: group, error } = await getGroupById(supabase, groupId);
+  const { data: claimData, error: claimDataError } =
+    await supabase.auth.getClaims();
+
+  if (!claimData || claimDataError) {
+    return notFound();
+  }
+
+  if (error || !group) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        Group not found
+      </div>
+    );
+  }
+
+  const { data: memberData } = await getUserGroupRole(
+    supabase,
+    groupId,
+    claimData.claims.sub
+  );
+
+  const isAdmin = memberData?.role === "admin";
+
+  return (
+    <div className="grid h-dvh w-full grid-rows-[auto_auto_1fr]">
+      <Navbar>
+        <HomeNavbarBrand />
+      </Navbar>
+      <div className="mx-auto flex w-full max-w-[1800px] items-center justify-between gap-2 px-8 py-4">
+        <div className="flex items-center gap-2">
+          <ProfileAvatar
+            path={group.avatarUrl ?? ""}
+            fallback={group.name}
+            profileType="group"
+            className="size-8"
+          />
+          <h4 className="w-full max-w-60 overflow-hidden text-ellipsis">
+            {group.name}
+          </h4>
+        </div>
+        <div className="flex items-center gap-2">
+          <GroupEditDialog
+            groupId={groupId}
+            groupName={group.name}
+            groupAvatarUrl={group.avatarUrl}
+            isAdmin={isAdmin}
+          />
+          <GroupMembersDialog
+            groupName={group.name}
+            groupId={groupId}
+            userId={claimData.claims.sub}
+            inviteCode={group.inviteCode}
+          />
+        </div>
+      </div>
+      {(group.memberCount ?? 0) > 1 ? (
+        <GroupLeaderboards
+          groupId={group.id}
+          currentUserId={claimData.claims.sub}
+        />
+      ) : (
+        <InviteMembers {...group} />
+      )}
+    </div>
+  );
+}

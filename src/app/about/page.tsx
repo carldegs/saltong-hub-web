@@ -1,4 +1,5 @@
 import React from "react";
+import type { Metadata } from "next";
 import getConfig from "next/config";
 import {
   Card,
@@ -13,6 +14,19 @@ import CarldegsLogo from "@/components/shared/carldegs-logo";
 import ContributeDialog from "@/components/shared/contribute-dialog";
 import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "../components/home-navbar-brand";
+
+export const metadata: Metadata = {
+  title: "About Saltong Hub",
+  description:
+    "Learn about Saltong Hub, the platform for Filipino word games. Created with passion to celebrate the Filipino language through engaging daily puzzles and community gameplay.",
+  openGraph: {
+    title: "About Saltong Hub",
+    description:
+      "Learn about Saltong Hub, the platform for Filipino word games created to celebrate the Filipino language.",
+    type: "website",
+    url: "https://saltong.com/about",
+  },
+};
 
 export default function AboutPage() {
   const { publicRuntimeConfig } = getConfig();
@@ -32,10 +46,22 @@ export default function AboutPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="mb-8 flex flex-col items-center gap-4">
-            <div className="space-y-2 text-center">
+            {/* Mission */}
+            <div className="space-y-3 text-center">
+              <p className="text-sm leading-relaxed">
+                Saltong Hub is the home of Filipino word games. Come back every
+                day for a fresh puzzle you can play once a day—perfect for quick
+                brain workouts and friendly bragging rights.
+              </p>
+            </div>
+
+            <hr className="border-muted my-2 w-full" />
+
+            {/* Game Info */}
+            <div className="space-y-3 text-center text-sm">
               <p>
-                <b>Saltong</b>, <b>Saltong Mini</b>, and <b>Saltong Max</b> is
-                based on the word game{" "}
+                <b>Saltong</b>, <b>Saltong Mini</b>, and <b>Saltong Max</b> are
+                inspired by the word game{" "}
                 <a
                   href="https://www.nytimes.com/games/wordle/index.html"
                   target="_blank"
@@ -43,11 +69,11 @@ export default function AboutPage() {
                   className="text-primary underline"
                 >
                   Wordle
-                </a>{" "}
+                </a>
                 <sup>↗</sup>
               </p>
               <p>
-                <b>Saltong Hex</b> is based on the New York Times game{" "}
+                <b>Saltong Hex</b> is inspired by the New York Times game{" "}
                 <a
                   href="https://www.nytimes.com/puzzles/spelling-bee"
                   target="_blank"
@@ -55,11 +81,11 @@ export default function AboutPage() {
                   className="text-primary underline"
                 >
                   Spelling Bee
-                </a>{" "}
+                </a>
                 <sup>↗</sup>
               </p>
               <p>
-                Word list parsed from{" "}
+                Words curated from{" "}
                 <a
                   href="https://www.pinoydictionary.com"
                   target="_blank"
@@ -68,21 +94,30 @@ export default function AboutPage() {
                 >
                   pinoydictionary.com
                 </a>
+                <sup>↗</sup> and community contributions
               </p>
-              <p>Additional entries sourced from you!</p>
             </div>
+
             <hr className="border-muted my-2 w-full" />
+
+            {/* Community */}
             <div className="text-muted-foreground text-center text-sm">
-              Saltong Hub depends on your contributions to keep the site running
+              <p>
+                Saltong Hub is powered by your financial contributions and
+                support. If you&apos;d like to help keep the games running,
+                consider contributing!
+              </p>
             </div>
             <ContributeDialog>
               <Button className="w-full" variant="default">
                 Contribute
               </Button>
             </ContributeDialog>
+
             <hr className="border-muted my-2 w-full" />
+
             <div className="text-muted-foreground mb-2 text-center text-xs tracking-widest">
-              A PROJECT BY CARL DE GUIA
+              A CARL DE GUIA PROJECT
             </div>
             <div className="flex flex-col items-center gap-2">
               <CarldegsLogo className="mb-4 h-8" />

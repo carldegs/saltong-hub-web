@@ -1,4 +1,5 @@
 import React from "react";
+import type { Metadata } from "next";
 import {
   Card,
   CardHeader,
@@ -13,6 +14,18 @@ import {
   SettingsSectionList,
   SettingsSectionItemLink,
 } from "../settings/components/settings-section";
+
+export const metadata: Metadata = {
+  title: "Policies | Saltong Hub",
+  description:
+    "Review our privacy policy, cookie policy, and terms of service for Saltong Hub.",
+  openGraph: {
+    title: "Policies - Saltong Hub",
+    description: "Review our policies and terms for using Saltong Hub.",
+    type: "website",
+    url: "https://saltong.com/policies",
+  },
+};
 
 export default function PoliciesPage() {
   return (
