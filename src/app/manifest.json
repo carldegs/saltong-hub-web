@@ -1,0 +1,22 @@
+{
+  "name": "Saltong Hub",
+  "short_name": "Saltong Hub",
+  "description": "The place for Filipino word games",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#38E18C",
+  "theme_color": "#252827",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

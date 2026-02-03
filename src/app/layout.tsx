@@ -1,5 +1,5 @@
 import React from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans as FontSans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -18,14 +18,39 @@ import { ReactQueryClientProvider } from "@/components/providers/react-query-cli
 import GoogleAdSense from "@/components/ads/adsense";
 import { ConsentManager } from "./consent-manager";
 
+const APP_NAME = "Saltong Hub";
+const APP_TITLE_TEMPLATE = "%s | Saltong Hub";
+const APP_DESCRIPTION = "The place for Filipino word games";
+
 export const metadata: Metadata = {
-  title: "Saltong Hub",
-  description: "The place for Filipino word games",
-  openGraph: {
-    siteName: "Saltong Hub",
-    url: "https://saltong.com",
-    description: "The place for Filipino word games",
+  applicationName: APP_NAME,
+  title: {
+    default: APP_NAME,
+    template: APP_TITLE_TEMPLATE,
   },
+  description: APP_DESCRIPTION,
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_NAME,
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Saltong Hub",
+    title: {
+      default: APP_NAME,
+      template: APP_TITLE_TEMPLATE,
+    },
+    url: "https://saltong.com",
+    description: APP_DESCRIPTION,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#252827",
 };
 
 export default async function RootLayout({

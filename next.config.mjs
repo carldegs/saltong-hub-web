@@ -2,6 +2,8 @@ import createMDX from "@next/mdx";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // TOOD: look into enabling and utilizing this
+  // cacheComponents: true,
   turbopack: {
     rules: {
       "*.svg": {
@@ -62,6 +64,7 @@ const nextConfig = {
 };
 
 import { withVercelToolbar } from "@vercel/toolbar/plugins/next";
+
 const withMDX = createMDX({
   options: {
     remarkPlugins: ["remark-gfm"],
