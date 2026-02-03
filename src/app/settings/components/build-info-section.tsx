@@ -1,13 +1,11 @@
 import React from "react";
-import getConfig from "next/config";
 import {
   SettingsSectionHeader,
   SettingsSectionContent,
   SettingsSectionList,
   SettingsSectionItem,
 } from "./settings-section";
-
-const { publicRuntimeConfig } = getConfig();
+import { VERSION } from "@/version";
 
 export default function BuildInfoSection() {
   return (
@@ -17,9 +15,7 @@ export default function BuildInfoSection() {
         <SettingsSectionList>
           <SettingsSectionItem>
             <span>Version</span>
-            <span className="text-muted-foreground text-sm">
-              {publicRuntimeConfig?.version}
-            </span>
+            <span className="text-muted-foreground text-sm">v{VERSION}</span>
           </SettingsSectionItem>
         </SettingsSectionList>
       </SettingsSectionContent>

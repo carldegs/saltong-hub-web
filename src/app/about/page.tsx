@@ -1,6 +1,5 @@
 import React from "react";
 import type { Metadata } from "next";
-import getConfig from "next/config";
 import {
   Card,
   CardHeader,
@@ -14,6 +13,7 @@ import CarldegsLogo from "@/components/shared/carldegs-logo";
 import ContributeDialog from "@/components/shared/contribute-dialog";
 import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "../components/home-navbar-brand";
+import { VERSION } from "@/version";
 
 export const metadata: Metadata = {
   title: "About Saltong Hub",
@@ -29,7 +29,6 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  const { publicRuntimeConfig } = getConfig();
   return (
     <>
       <Navbar>
@@ -42,7 +41,7 @@ export default function AboutPage() {
               Saltong Hub
             </CardTitle>
             <CardDescription className="mt-1 text-center text-base">
-              v{publicRuntimeConfig?.version}
+              v{VERSION}
             </CardDescription>
           </CardHeader>
           <CardContent className="mb-8 flex flex-col items-center gap-4">
