@@ -75,12 +75,12 @@ export async function SettingsSidebarMenu() {
       <SidebarMenuItem>
         <SidebarMenuButton className="h-auto py-1.5" asChild>
           <Link
-            href="/blog"
+            href="/patch-notes"
             className="flex w-full items-center gap-3"
             prefetch={false}
           >
             <BookOpen className="h-4 w-4" />
-            <span className="text-sm">Blog</span>
+            <span className="text-sm">Patch Notes</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>

@@ -10,9 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
-  title: "Blog | Saltong Hub",
-  description:
-    "Read the latest updates, announcements, and stories from Saltong Hub",
+  title: "Patch Notes | Saltong Hub",
+  description: "Read the latest updates and announcements from Saltong Hub",
 };
 
 export default async function BlogPage() {
@@ -34,7 +33,7 @@ export default async function BlogPage() {
         <div className="border-muted bg-background/70 border-b backdrop-blur-sm">
           <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
             <h1 className="mb-3 text-4xl font-bold tracking-tight sm:text-5xl">
-              Blog
+              Patch Notes
             </h1>
             <p className="text-muted-foreground mt-0 text-lg">
               Updates, announcements, and stories from Saltong Hub
@@ -47,7 +46,7 @@ export default async function BlogPage() {
           {posts.length === 0 ? (
             <div className="py-20 text-center">
               <p className="text-muted-foreground text-lg">
-                No blog posts yet. Check back soon!
+                No posts yet. Check back soon!
               </p>
             </div>
           ) : (
@@ -55,7 +54,7 @@ export default async function BlogPage() {
               {posts.map((post, index) => (
                 <Link
                   key={post.slug}
-                  href={`/blog/${post.slug}`}
+                  href={`/patch-notes/${post.slug}`}
                   className="group decoration-none block"
                 >
                   <article className="bg-card border-muted hover:border-primary/50 flex flex-col gap-6 rounded-lg border p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg sm:flex-row sm:gap-8">

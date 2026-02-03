@@ -75,7 +75,7 @@ function getMDXData(dir: string): BlogPost[] {
 
 export function getBlogPosts(isAdmin: boolean = false): BlogPost[] {
   const allPosts = getMDXData(
-    path.join(process.cwd(), "src", "app", "blog", "posts")
+    path.join(process.cwd(), "src", "app", "patch-notes", "posts")
   );
   // Filter out draft posts unless user is admin
   if (isAdmin) {
@@ -89,7 +89,7 @@ export function getBlogPost(
   isAdmin: boolean = false
 ): BlogPost | undefined {
   const allPosts = getMDXData(
-    path.join(process.cwd(), "src", "app", "blog", "posts")
+    path.join(process.cwd(), "src", "app", "patch-notes", "posts")
   );
   const post = allPosts.find((post) => post.slug === slug);
 

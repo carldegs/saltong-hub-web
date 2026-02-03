@@ -85,7 +85,7 @@ export default function GroupsBanner() {
                 variant="outline"
               >
                 <TrackedLink
-                  href="/blog/leaderboards-valentines-update"
+                  href="/patch-notes/leaderboards-valentines-update"
                   prefetch={false}
                   event="button_click"
                   eventParams={{

@@ -92,7 +92,7 @@ export default async function BlogPost({
         {/* Hero Image with Title and Back Button */}
         <div className="relative h-[60vh] w-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-400 dark:to-gray-600">
           <Image
-            src={post.metadata.heroImage ?? "/blog/bg.jpg"}
+            src={post.metadata.heroImage ?? "/patch-notes/bg.jpg"}
             alt={post.metadata.title}
             fill
             className="object-cover"
@@ -103,13 +103,13 @@ export default async function BlogPost({
 
           {/* Back Button Overlay */}
           <div className="absolute top-0 right-0 left-0 px-4 py-6 sm:px-6">
-            <Link href="/blog">
+            <Link href="/patch-notes">
               <Button variant="secondary" size="sm" className="group gap-2">
                 <ArrowLeft
                   size={16}
                   className="transition-transform group-hover:-translate-x-1"
                 />
-                Back to Blog
+                Back to List
               </Button>
             </Link>
           </div>
@@ -195,7 +195,7 @@ export default async function BlogPost({
                       Contact Us
                     </Button>
                   </a>
-                  <Link href="/blog" className="mt-4">
+                  <Link href="/patch-notes" className="mt-4">
                     <Button variant="outline" className="gap-2">
                       <ArrowLeft size={16} />
                       Back to All Posts
