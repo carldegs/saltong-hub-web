@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
@@ -5,6 +6,19 @@ import { getUserGroups } from "@/features/groups/queries/get-group";
 import GroupListScreen from "@/features/groups/components/group-list-screen";
 import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "../components/home-navbar-brand";
+
+export const metadata: Metadata = {
+  title: "Saltong Hub | Groups",
+  description:
+    "Create and join groups. Play Saltong with friends, track group leaderboards, and compete together.",
+  openGraph: {
+    title: "Groups - Saltong Hub",
+    description:
+      "Create and join groups. Play Saltong with friends and compete on group leaderboards.",
+    type: "website",
+    url: "https://saltong.com/groups",
+  },
+};
 
 /* TODO: Implement proper pagination. For now we'll fetch up to 50 groups then search is done client-side. */
 export default async function GroupsPage() {

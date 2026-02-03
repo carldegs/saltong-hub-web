@@ -1,4 +1,5 @@
 import React from "react";
+import type { Metadata } from "next";
 import getConfig from "next/config";
 import {
   Card,
@@ -13,6 +14,19 @@ import CarldegsLogo from "@/components/shared/carldegs-logo";
 import ContributeDialog from "@/components/shared/contribute-dialog";
 import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "../components/home-navbar-brand";
+
+export const metadata: Metadata = {
+  title: "About Saltong Hub",
+  description:
+    "Learn about Saltong Hub, the platform for Filipino word games. Created with passion to celebrate the Filipino language through engaging daily puzzles and community gameplay.",
+  openGraph: {
+    title: "About Saltong Hub",
+    description:
+      "Learn about Saltong Hub, the platform for Filipino word games created to celebrate the Filipino language.",
+    type: "website",
+    url: "https://saltong.com/about",
+  },
+};
 
 export default function AboutPage() {
   const { publicRuntimeConfig } = getConfig();

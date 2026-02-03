@@ -1,11 +1,11 @@
-import { Metadata } from "next";
+import { generateSaltongVaultMetadata } from "@/features/saltong/utils/generateSaltongVaultMetadata";
 import SaltongVaultPage from "@/features/saltong/components/vault/vault-page";
 
-export const metadata: Metadata = {
-  title: "Saltong Vault",
-};
-
 const MODE = "classic";
+
+export async function generateMetadata() {
+  return generateSaltongVaultMetadata({ mode: MODE });
+}
 
 export default async function SaltongMainVaultPage(props: {
   searchParams: Promise<{ d?: string }>;

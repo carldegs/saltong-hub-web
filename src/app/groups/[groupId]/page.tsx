@@ -9,11 +9,37 @@ import { getGroupById } from "@/features/groups/queries/get-group";
 import { getUserGroupRole } from "@/features/groups/queries/get-user-group-role";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 
 interface GroupPageProps {
   params: Promise<{
     groupId: string;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: GroupPageProps): Promise<Metadata> {
+  const { groupId } = await params;
+  const supabase = await createClient();
+  const { data: group, error } = await getGroupById(supabase, groupId);
+
+  if (error || !group) {
+    return {
+      title: "Group - Saltong Hub",
+    };
+  }
+
+  return {
+    title: `${group.name} | Saltong Hub`,
+    description: `Join ${group.name} on Saltong Hub and compete with friends on group leaderboards.`,
+    openGraph: {
+      title: `${group.name} | Saltong Hub`,
+      description: `Join ${group.name} on Saltong Hub and compete with friends on group leaderboards.`,
+      type: "website",
+      url: `https://saltong.com/groups/${groupId}`,
+    },
+  };
 }
 
 export default async function GroupPage({ params }: GroupPageProps) {

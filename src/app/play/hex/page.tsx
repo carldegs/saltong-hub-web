@@ -18,9 +18,38 @@ import { getCachedHexUserRound } from "@/features/hex/queries/getHexUserRound";
 import { getCharSet } from "@/features/hex/utils";
 import NavbarUser from "@/components/shared/navbar-user";
 
-export const metadata: Metadata = {
-  title: "Saltong Hex",
-};
+export async function generateMetadata({
+  searchParams: _searchParams,
+}: {
+  searchParams: Promise<{ d?: string }>;
+}): Promise<Metadata> {
+  const searchParams = await _searchParams;
+  const round = await getCachedHexRound(searchParams?.d);
+
+  if (!round) {
+    return {
+      title: "Saltong Hex",
+      description: "Play Saltong Hex.",
+      openGraph: {
+        title: "Saltong Hex",
+        description: "Play Saltong Hex.",
+        type: "website",
+        url: "https://saltong.com/play/hex",
+      },
+    };
+  }
+
+  return {
+    title: `Saltong Hex #${round.roundId}`,
+    description: `Play Saltong Hex #${round.roundId}. Find all possible words in the hexagonal grid and compete against players worldwide.`,
+    openGraph: {
+      title: `Saltong Hex #${round.roundId}`,
+      description: `Play today's Saltong Hex puzzle #${round.roundId}. Find words in the hex grid.`,
+      type: "website",
+      url: "https://saltong.com/play/hex",
+    },
+  };
+}
 
 export default async function SaltongHexPage({
   searchParams: _searchParams,

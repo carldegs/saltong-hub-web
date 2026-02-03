@@ -1,7 +1,9 @@
 import { MetadataRoute } from "next";
 import { getBlogPosts } from "./blog/utils";
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://saltong.com";
+const baseUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://saltong.com"
+).replace(/\/$/, "");
 
 // Play game variants
 const playVariants = ["", "mini", "max", "hex"];

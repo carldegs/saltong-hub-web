@@ -18,11 +18,36 @@ import HomeNavbarBrand from "@/app/components/home-navbar-brand";
 import { getProfileFormData } from "@/features/profiles/utils";
 import { createClient } from "@/lib/supabase/server";
 import JoinGroupButton from "./join-group-button";
+import { Metadata } from "next";
 
 interface JoinGroupPageProps {
   params: Promise<{
     inviteCode: string;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: JoinGroupPageProps): Promise<Metadata> {
+  const { inviteCode } = await params;
+  const { group } = await getGroupByInviteCode(inviteCode);
+
+  if (!group) {
+    return {
+      title: "Join Group - Saltong Hub",
+    };
+  }
+
+  return {
+    title: `Join ${group.name} | Saltong Hub`,
+    description: `Join ${group.name} and compete with other players on Saltong Hub's group leaderboards.`,
+    openGraph: {
+      title: `Join ${group.name} | Saltong Hub`,
+      description: `Join ${group.name} on Saltong Hub.`,
+      type: "website",
+      url: `https://saltong.com/j/${inviteCode}`,
+    },
+  };
 }
 
 export default async function JoinGroupPage({ params }: JoinGroupPageProps) {

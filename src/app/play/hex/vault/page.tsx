@@ -11,6 +11,13 @@ import NavbarUser from "@/components/shared/navbar-user";
 
 export const metadata: Metadata = {
   title: "Saltong Hex Vault",
+  description: "Play with previous Saltong Hex rounds at the Saltong Vault.",
+  openGraph: {
+    title: "Saltong Hex Vault",
+    description: "Play with previous Saltong Hex rounds at the Saltong Vault.",
+    type: "website",
+    url: "https://saltong.com/play/hex/vault",
+  },
 };
 
 export default async function SaltongHexVaultPage() {

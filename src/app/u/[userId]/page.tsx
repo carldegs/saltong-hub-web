@@ -21,8 +21,40 @@ import { WinRateChart } from "./components/win-rate-chart";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import Link from "next/link";
 import { getProfileById } from "@/features/profiles/queries/get-profile";
+import { Metadata } from "next";
 
 // For now, only the user can view their own profile. Need to setup a public table for profiles later.
+
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const { data: claimsData, error } = await supabase.auth.getClaims();
+
+  if (error || !claimsData?.claims) {
+    return {
+      title: "Profile - Saltong Hub",
+    };
+  }
+
+  const userId = claimsData.claims.sub;
+  const { data: profile } = await getProfileById(supabase, userId);
+
+  if (!profile) {
+    return {
+      title: "Profile | Saltong Hub",
+    };
+  }
+
+  return {
+    title: `${profile.display_name} (@${profile.username}) | Saltong Hub`,
+    description: `View ${profile.display_name}'s Saltong Hub profile and game statistics. See their wins, streaks, and performance across all game modes.`,
+    openGraph: {
+      title: `${profile.display_name} - Saltong Hub Profile`,
+      description: `Check out ${profile.display_name}'s Saltong Hub profile and stats.`,
+      type: "profile",
+      url: `https://saltong.com/u/${userId}`,
+    },
+  };
+}
 
 export default async function UserProfile() {
   const supabase = await createClient();
