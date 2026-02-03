@@ -7,6 +7,60 @@
   "orientation": "portrait",
   "background_color": "#38E18C",
   "theme_color": "#252827",
+  "shortcuts": [
+    {
+      "name": "Saltong Classic",
+      "short_name": "Classic",
+      "description": "Open Saltong Classic",
+      "url": "/play",
+      "icons": [
+        {
+          "src": "/screenshots/classic-icon.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Saltong Mini",
+      "short_name": "Mini",
+      "description": "Open Saltong Mini",
+      "url": "/play/mini",
+      "icons": [
+        {
+          "src": "/screenshots/mini-icon.png",
+          "sizes": "96x80",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Saltong Max",
+      "short_name": "Max",
+      "description": "Open Saltong Max",
+      "url": "/play/max",
+      "icons": [
+        {
+          "src": "/screenshots/max-icon.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Saltong Hex",
+      "short_name": "Hex",
+      "description": "Open Saltong Hex",
+      "url": "/play/hex",
+      "icons": [
+        {
+          "src": "/screenshots/hex-icon.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
   "icons": [
     {
       "src": "/icon-192x192.png",
