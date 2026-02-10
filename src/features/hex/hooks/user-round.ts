@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocalStorage } from "usehooks-ts";
+import { useLocalStorage, useReadLocalStorage } from "usehooks-ts";
 import {
   HexUserRound,
   HexUserRoundPrimaryKeys,
@@ -16,13 +16,8 @@ export function useHexUserRound(params: HexUserRoundPrimaryKeys) {
   // This would unify unauthenticated + authenticated flows and eliminate the
   // hydration effect + manual cache sync logic.
 
-  const [localPlayerRound] = useLocalStorage<HexUserRound[]>(
-    "hex-user-rounds",
-    [],
-    {
-      initializeWithValue: false,
-    }
-  );
+  const localPlayerRound =
+    useReadLocalStorage<HexUserRound[]>("hex-user-rounds");
 
   const supabase = useSupabaseClient();
   const queryClient = useQueryClient();
@@ -31,7 +26,7 @@ export function useHexUserRound(params: HexUserRoundPrimaryKeys) {
   useEffect(() => {
     if (params.userId === "unauthenticated") {
       const data =
-        localPlayerRound.find(
+        localPlayerRound?.find(
           (round) =>
             round.userId === params.userId && round.date === params.date
         ) ?? null;
@@ -45,7 +40,7 @@ export function useHexUserRound(params: HexUserRoundPrimaryKeys) {
     queryFn: async () => {
       if (params.userId === "unauthenticated") {
         const data =
-          localPlayerRound.find(
+          localPlayerRound?.find(
             (round) =>
               round.userId === params.userId && round.date === params.date
           ) ?? null;

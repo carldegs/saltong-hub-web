@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocalStorage } from "usehooks-ts";
+import { useLocalStorage, useReadLocalStorage } from "usehooks-ts";
 import { SaltongUserRound, SaltongUserRoundPrimaryKeys } from "../types";
 import { useSupabaseClient } from "@/lib/supabase/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -12,12 +12,8 @@ export function useSaltongUserRound(params: SaltongUserRoundPrimaryKeys) {
   // This would unify unauthenticated + authenticated flows and eliminate the
   // hydration effect + manual cache sync logic.
 
-  const [localPlayerRound] = useLocalStorage<SaltongUserRound[]>(
-    "saltong-user-rounds",
-    [],
-    {
-      initializeWithValue: false,
-    }
+  const localPlayerRound = useReadLocalStorage<SaltongUserRound[]>(
+    "saltong-user-rounds"
   );
 
   const supabase = useSupabaseClient();
@@ -27,7 +23,7 @@ export function useSaltongUserRound(params: SaltongUserRoundPrimaryKeys) {
   useEffect(() => {
     if (params.userId === "unauthenticated") {
       const data =
-        localPlayerRound.find(
+        localPlayerRound?.find(
           (round) =>
             round.mode === params.mode &&
             round.userId === params.userId &&
@@ -43,7 +39,7 @@ export function useSaltongUserRound(params: SaltongUserRoundPrimaryKeys) {
     queryFn: async () => {
       if (params.userId === "unauthenticated") {
         const data =
-          localPlayerRound.find(
+          localPlayerRound?.find(
             (round) =>
               round.mode === params.mode && round.userId === params.userId
           ) ?? null;
