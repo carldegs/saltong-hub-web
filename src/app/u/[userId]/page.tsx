@@ -27,6 +27,7 @@ import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
   const supabase = await createClient();
+  // TODO: Use route params to view other users' profiles once public profiles are setup.
   const { data: claimsData, error } = await supabase.auth.getClaims();
 
   if (error || !claimsData?.claims) {
@@ -65,6 +66,7 @@ export default async function UserProfile() {
     return notFound();
   }
 
+  // TODO: Use route params to view other users' profiles once public profiles are setup. For now, only allow viewing own profile.
   const userId = claimsData.claims.sub;
 
   // TODO: fetch both profile and stats in parallel

@@ -16,6 +16,7 @@ import {
   useSaltongUserRoundMutation,
 } from "../hooks/user-round";
 import { useSaltongUserStatsMutation } from "../hooks/user-stats";
+import ResultsDialog, { RESULTS_MODAL_ID } from "./results";
 
 export default function GameWrapper({
   maxTries,
@@ -40,12 +41,12 @@ export default function GameWrapper({
   const { mutate: setAnswer } = useSaltongUserRoundMutation();
   const { mutate: setStats } = useSaltongUserStatsMutation();
 
+  const setOpenModal = useModalStore((state) => state.setOpenModal);
+
   const userRoundGrid = useMemo(() => userRound?.grid ?? "", [userRound?.grid]);
 
   const [inputData, setInputData] = useState<string>("");
   const isMounted = useIsMounted();
-
-  const { onOpenChange } = useModalStore((state) => state);
 
   const status = useMemo(
     () =>
@@ -122,7 +123,7 @@ export default function GameWrapper({
 
       if (isCurrAnswerCorrect || isTriesExceeded) {
         setTimeout(() => {
-          onOpenChange(true);
+          setOpenModal(RESULTS_MODAL_ID);
         }, 500);
       }
 
@@ -227,11 +228,16 @@ export default function GameWrapper({
           isLoading={!isMounted()}
         />
       </main>
-      <Keyboard
-        status={keyboardStatus}
-        onKeyClick={onKeyDown}
-        disabled={!!userRound?.endedAt || !isMounted()}
-      />
+      {!userRound?.endedAt && (
+        <Keyboard
+          status={keyboardStatus}
+          onKeyClick={onKeyDown}
+          disabled={!isMounted()}
+        />
+      )}
+      {userRound?.endedAt && (
+        <ResultsDialog roundData={roundData} userId={userId} />
+      )}
     </>
   );
 }

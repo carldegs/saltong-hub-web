@@ -1,17 +1,25 @@
 import { ComponentProps } from "react";
 import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 export default function ShareButton({
   onClick,
   icon,
   label,
+  className,
 }: {
   onClick: ComponentProps<typeof Button>["onClick"];
   icon: React.ReactNode;
   label: string;
+  className?: string;
 }) {
   return (
-    <div className="flex w-full flex-col items-center justify-center">
+    <div
+      className={cn(
+        "flex w-full flex-col items-center justify-center",
+        className
+      )}
+    >
       <Button
         variant="default"
         className="size-12 rounded-full p-1"

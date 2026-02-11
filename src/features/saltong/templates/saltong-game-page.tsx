@@ -3,7 +3,6 @@
 import { getFormattedDateInPh, isFormattedDateInFuture } from "@/utils/time";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import GameWrapper from "../components/game-wrapper";
-import { ResultsButton } from "../components/results-button";
 import { notFound } from "next/navigation";
 import { ComponentProps, Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
@@ -20,6 +19,8 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import NavbarUser from "@/components/shared/navbar-user";
+import VaultButton from "../components/vault/vault-button";
+import HowToPlayDialog from "../components/how-to-play";
 
 async function SaltongGamePage({
   searchParams: _searchParams,
@@ -94,13 +95,9 @@ async function SaltongGamePage({
           href="/"
         />
         <div className="flex gap-1.5">
-          <ResultsButton
-            path={path}
-            mode={mode}
-            gameDate={round.date}
-            roundData={round}
-            userId={claimsData?.claims.sub}
-          />
+          <HowToPlayDialog mode={mode} />
+          <VaultButton mode={mode} />
+
           <NavbarUser />
         </div>
       </Navbar>
