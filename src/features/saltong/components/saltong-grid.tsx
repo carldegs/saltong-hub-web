@@ -18,6 +18,7 @@ export default function SaltongGrid({
   status = "",
   disabled,
   isLoading,
+  loaderType = "default",
 }: {
   maxTries: number;
   wordLen: number;
@@ -26,12 +27,15 @@ export default function SaltongGrid({
   inputData?: string;
   disabled?: boolean;
   isLoading?: boolean;
+  loaderType?: "none" | "skeleton" | "default";
 }) {
   const currTurn = useMemo(() => grid.length / wordLen, [grid, wordLen]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [cellSize, setCellSize] = useState<number>(MIN_CELL_SIZE);
   const [fontSize, setFontSize] = useState<string>("2xl");
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
+
+  const cellSizeWithOffset = cellSize + 8;
 
   const onResize = useDebounceCallback(
     (size: { width: number; height: number }) => {
@@ -59,9 +63,8 @@ export default function SaltongGrid({
       const sizeFromHeight = availableHeight / maxTries;
       const candidate = Math.min(sizeFromWidth, sizeFromHeight);
 
-      const computed = Math.max(
-        MIN_CELL_SIZE,
-        Math.min(MAX_CELL_SIZE, candidate)
+      const computed = Math.floor(
+        Math.max(MIN_CELL_SIZE, Math.min(MAX_CELL_SIZE, candidate))
       );
 
       setCellSize(computed);
@@ -129,7 +132,7 @@ export default function SaltongGrid({
                       height: cellSize,
                       transform: !!status?.[i * wordLen + j]
                         ? "translateY(0)"
-                        : `translateY(-${cellSize}px)`,
+                        : `translateY(-${cellSizeWithOffset}px)`,
                     }}
                   />
 
@@ -148,8 +151,8 @@ export default function SaltongGrid({
                           currTurn === i
                             ? "translateY(0)"
                             : i < currTurn
-                              ? `translateY(${cellSize}px)`
-                              : `translateY(-${cellSize}px)`,
+                              ? `translateY(${cellSizeWithOffset}px)`
+                              : `translateY(-${cellSizeWithOffset}px)`,
                       }}
                     />
                   )}
@@ -178,9 +181,15 @@ export default function SaltongGrid({
             )}
           </div>
         ))
-      ) : (
+      ) : loaderType === "default" ? (
         <CustomLoader />
-      )}
+      ) : loaderType === "skeleton" ? (
+        <div className="flex items-center justify-center gap-4">
+          {Array.from({ length: wordLen }).map((_, j) => (
+            <Skeleton key={j} className="size-9" />
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

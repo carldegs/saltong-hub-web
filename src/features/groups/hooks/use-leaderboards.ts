@@ -7,12 +7,15 @@ import {
 } from "../queries/get-leaderboards";
 import { useSupabaseClient } from "@/lib/supabase/client";
 
-export function useLeaderboards(params: GetLeaderboardsParams) {
+export function useLeaderboards(params: Partial<GetLeaderboardsParams>) {
   const client = useSupabaseClient();
   return useQuery({
     queryKey: ["leaderboards", params],
     queryFn: async () => {
-      const { data, error } = await getLeaderboards(client, params);
+      const { data, error } = await getLeaderboards(
+        client,
+        params as GetLeaderboardsParams
+      );
 
       if (error) {
         throw new Error(error.message);

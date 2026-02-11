@@ -1,8 +1,8 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
-import type { SaltongHowToPlayExample } from "../types";
-import SaltongGrid from "./saltong-grid";
+import type { SaltongHowToPlayExample } from "../../types";
+import SaltongGrid from "../saltong-grid";
 
 type ExampleDefinition = SaltongHowToPlayExample;
 
@@ -62,6 +62,7 @@ function ExampleRow({ word, statuses, description }: ExampleDefinition) {
         grid={normalizedWord}
         status={statusString}
         disabled
+        loaderType="skeleton"
       />
       <p className="text-muted-foreground m-0 text-sm">{description}</p>
     </div>

@@ -1,6 +1,23 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+
+@utility text-stroke-* {
+  -webkit-text-stroke-width: calc(--value(integer) * 1px);
+  -webkit-text-stroke-color: --value(--color-*);
+  -webkit-text-stroke-color: --value([*]);
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
 
 :root {
   --background: hsl(0 0% 100%);

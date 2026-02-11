@@ -40,7 +40,7 @@ import { getResultDialogFeaturedGameList } from "@/features/game-registry/utils/
 import { useSaltongUserRound } from "../hooks/user-round";
 import { useSaltongUserStats } from "../hooks/user-stats";
 import { differenceInMilliseconds } from "date-fns";
-import { SaltongHowToPlayCard } from "./how-to-play-card";
+import { SaltongHowToPlayCard } from "./how-to-play/card";
 import { GroupsDialogBanner } from "@/components/dialog-banners/groups-dialog-banner";
 
 const STATUS_TEXT: Record<SaltongUserRoundStatus, string> = {
