@@ -13,6 +13,7 @@ import { getDurationString } from "@/utils/time";
 import { toast } from "sonner";
 import { SALTONG_CONFIG } from "../../config";
 import { getLetterStatusGrid } from "../../utils/getLetterStatusGrid";
+import { sendEvent } from "@/lib/analytics";
 
 const getShareDetails = ({
   userRound,
@@ -87,6 +88,13 @@ export default function ShareButtons({
   );
 
   const handleShare = async () => {
+    sendEvent("saltong_share_results", {
+      action: "share",
+      mode: roundData.mode,
+      date: roundData.date,
+      roundId: roundData.roundId,
+      isCorrect: userRoundData?.isCorrect,
+    });
     try {
       if (navigator.share) {
         await navigator.share({
@@ -105,6 +113,13 @@ export default function ShareButtons({
   };
 
   const handleCopy = async () => {
+    sendEvent("saltong_share_results", {
+      action: "copy",
+      mode: roundData.mode,
+      date: roundData.date,
+      roundId: roundData.roundId,
+      isCorrect: userRoundData?.isCorrect,
+    });
     try {
       await navigator.clipboard.writeText(shareDetails.message);
       toast.success("Copied to clipboard");

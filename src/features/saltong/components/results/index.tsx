@@ -32,6 +32,7 @@ import { getProfileById } from "@/features/profiles/queries/get-profile";
 import { createClient } from "@/lib/supabase/client";
 import PlayMoreCard from "./play-more-card";
 import ContributeItem from "./contribute-item";
+import { sendEvent } from "@/lib/analytics";
 
 export const RESULTS_MODAL_ID = "results";
 
@@ -69,9 +70,6 @@ export default function ResultsDialog({
   const modeConfig = SALTONG_CONFIG.modes[mode as SaltongMode];
 
   const handleOpenChange = (open: boolean) => {
-    // if (open) {
-    //   setScreen("summary");
-    // }
     setOpenModal(open ? RESULTS_MODAL_ID : null);
   };
 
@@ -91,6 +89,15 @@ export default function ResultsDialog({
         <Button
           size="lg"
           className="mx-auto my-34 mb-6 w-full max-w-sm lg:mt-22 lg:mb-18 lg:max-w-lg"
+          onClick={() => {
+            sendEvent("button_click", {
+              location: "game_screen",
+              action: "view_results",
+              mode,
+              date,
+              roundId: roundData.roundId,
+            });
+          }}
         >
           <b>View Results</b>
         </Button>

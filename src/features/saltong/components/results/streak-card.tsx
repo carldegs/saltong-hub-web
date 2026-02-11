@@ -10,6 +10,7 @@ import { SaltongUserStats } from "../../types";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { sendEvent } from "@/lib/analytics";
 
 export default function StreakCard({
   username,
@@ -30,7 +31,16 @@ export default function StreakCard({
         <CardTitle className="text-lg">Your Win Streak</CardTitle>
         <CardAction>
           <Button size="sm" asChild variant="outline">
-            <Link href={`/u/${username}`}>
+            <Link
+              href={`/u/${username}`}
+              onClick={() => {
+                sendEvent("button_click", {
+                  location: "results_dialog",
+                  action: "view_profile",
+                  username,
+                });
+              }}
+            >
               More <ArrowRightIcon />
             </Link>
           </Button>

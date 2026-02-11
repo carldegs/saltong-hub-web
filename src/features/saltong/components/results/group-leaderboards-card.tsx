@@ -35,6 +35,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { SaltongLeaderboardEntry } from "@/features/groups/queries/get-leaderboards";
 import Link from "next/link";
 import { ArrowRightIcon } from "lucide-react";
+import { sendEvent } from "@/lib/analytics";
 
 const MOCK_LEADERBOARDS: {
   leaderboards: Partial<SaltongLeaderboardEntry>[];
@@ -295,13 +296,35 @@ export default function GroupLeaderboardsCard({
                     asChild
                     className="flex-1 bg-pink-500 text-white hover:bg-pink-600"
                   >
-                    <Link href="/auth?signup=1" prefetch={false}>
+                    <Link
+                      href="/auth?signup=1"
+                      prefetch={false}
+                      onClick={() => {
+                        sendEvent("button_click", {
+                          location: "results_dialog_group_banner",
+                          action: "create_account",
+                          mode,
+                          date,
+                        });
+                      }}
+                    >
                       Create Account
                     </Link>
                   </Button>
 
                   <Button asChild variant="outline" className="flex-1">
-                    <Link href="/auth" prefetch={false}>
+                    <Link
+                      href="/auth"
+                      prefetch={false}
+                      onClick={() => {
+                        sendEvent("button_click", {
+                          location: "results_dialog_group_banner",
+                          action: "login",
+                          mode,
+                          date,
+                        });
+                      }}
+                    >
                       Login
                     </Link>
                   </Button>
@@ -311,7 +334,18 @@ export default function GroupLeaderboardsCard({
                   asChild
                   className="flex-1 bg-pink-500 text-white hover:bg-pink-600"
                 >
-                  <Link href="/groups/create" prefetch={false}>
+                  <Link
+                    href="/groups/create"
+                    prefetch={false}
+                    onClick={() => {
+                      sendEvent("button_click", {
+                        location: "results_dialog_group_banner",
+                        action: "create_group",
+                        mode,
+                        date,
+                      });
+                    }}
+                  >
                     Create Group
                   </Link>
                 </Button>
@@ -358,7 +392,14 @@ export default function GroupLeaderboardsCard({
             (groupList ?? []).length > 1 && (
               <Select
                 value={selectedGroupId ?? undefined}
-                onValueChange={setselectedGroupId}
+                onValueChange={(value) => {
+                  sendEvent("saltong_results_group_change", {
+                    mode,
+                    date,
+                    groupId: value,
+                  });
+                  setselectedGroupId(value);
+                }}
               >
                 <SelectTrigger className="h-auto rounded-none border-0 border-b-1 p-0 text-lg font-semibold shadow-none">
                   <SelectValue placeholder="Select group" />
@@ -389,7 +430,19 @@ export default function GroupLeaderboardsCard({
         {!!selectedGroup?.id && (
           <CardAction>
             <Button size="sm" variant="outline" asChild>
-              <Link href={`/groups/${selectedGroup.id}`} prefetch={false}>
+              <Link
+                href={`/groups/${selectedGroup.id}`}
+                prefetch={false}
+                onClick={() => {
+                  sendEvent("button_click", {
+                    location: "results_dialog",
+                    action: "view_group",
+                    groupId: selectedGroup.id,
+                    mode,
+                    date,
+                  });
+                }}
+              >
                 View <ArrowRightIcon />
               </Link>
             </Button>
@@ -425,7 +478,19 @@ export default function GroupLeaderboardsCard({
               </EmptyHeader>
               <EmptyContent>
                 {/* TODO: Redirect to /groups/<groupId> */}
-                <Button>Invite Members</Button>
+                <Button
+                  onClick={() => {
+                    sendEvent("button_click", {
+                      location: "results_dialog_group_leaderboard",
+                      action: "invite_members",
+                      groupId: selectedGroupId,
+                      mode,
+                      date,
+                    });
+                  }}
+                >
+                  Invite Members
+                </Button>
               </EmptyContent>
             </Empty>
           </div>

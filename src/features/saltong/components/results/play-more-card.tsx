@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { PlayIcon, VaultIcon } from "lucide-react";
 import Link from "next/link";
 import { HEX_CONFIG } from "@/features/hex/config";
+import { sendEvent } from "@/lib/analytics";
 
 const GAMES = [
   ...Object.values(SALTONG_CONFIG.modes),
@@ -62,6 +63,13 @@ export default function PlayMoreCard({ mode }: { mode: SaltongMode }) {
                 <Link
                   href={`/play${mode === "classic" ? "" : `/${mode}`}/vault`}
                   prefetch={false}
+                  onClick={() => {
+                    sendEvent("button_click", {
+                      location: "results_dialog",
+                      action: "play_vault",
+                      mode,
+                    });
+                  }}
                 >
                   <PlayIcon />
                   PLAY
@@ -87,7 +95,18 @@ export default function PlayMoreCard({ mode }: { mode: SaltongMode }) {
               </ItemContent>
               <ItemActions>
                 <Button size="sm" asChild className="font-bold">
-                  <Link href={`/play/${game.mode}`} prefetch={false}>
+                  <Link
+                    href={`/play/${game.mode}`}
+                    prefetch={false}
+                    onClick={() => {
+                      sendEvent("button_click", {
+                        location: "results_dialog",
+                        action: "play_game",
+                        targetMode: game.mode,
+                        currentMode: mode,
+                      });
+                    }}
+                  >
                     <PlayIcon />
                     PLAY
                   </Link>

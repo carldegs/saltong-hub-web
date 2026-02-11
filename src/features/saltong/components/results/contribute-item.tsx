@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/item";
 import { ArrowRightIcon, HandCoinsIcon } from "lucide-react";
 import { useState } from "react";
+import { sendEvent } from "@/lib/analytics";
 
 export default function ContributeItem() {
   const [showContribution, setShowContribution] = useState(false);
@@ -20,7 +21,13 @@ export default function ContributeItem() {
       {showContribution && (
         <ContributeDialog
           open={showContribution}
-          onOpenChange={setShowContribution}
+          onOpenChange={(open) => {
+            sendEvent("contribute_dialog", {
+              open,
+              location: "results_dialog",
+            });
+            setShowContribution(open);
+          }}
         />
       )}
 
@@ -28,6 +35,10 @@ export default function ContributeItem() {
         variant="outline"
         className="cursor-pointer rounded-lg border-cyan-500 bg-linear-to-br from-cyan-200/20 to-cyan-500/40 text-cyan-900 transition-colors hover:from-cyan-400/40 hover:to-cyan-500/40 dark:text-cyan-100"
         onClick={() => {
+          sendEvent("button_click", {
+            location: "results_dialog",
+            action: "open_contribute",
+          });
           setShowContribution(true);
         }}
       >
