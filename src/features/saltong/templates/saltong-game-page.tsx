@@ -42,7 +42,9 @@ async function SaltongGamePage({
     searchParams?.d &&
     searchParams?.d !== getFormattedDateInPh()
   ) {
-    return <UnauthorizedErrorPage {...gameSettings} />;
+    // Construct the full pathname with query string
+    const pathname = `/play${path}?d=${searchParams.d}`;
+    return <UnauthorizedErrorPage {...gameSettings} pathname={pathname} />;
   }
 
   // TODO: Test if it works on different timezones
