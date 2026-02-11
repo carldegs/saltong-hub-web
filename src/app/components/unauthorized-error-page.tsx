@@ -1,22 +1,20 @@
-"use client";
-
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { Button } from "@/components/ui/button";
 import { ComponentProps } from "react";
-import { usePathname } from "next/navigation";
 import { Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import HoverPrefetchLink from "@/components/shared/hover-prefetch-link";
+import Link from "next/link";
 import { BaseConfig } from "@/features/game-registry/types";
 
 export default function UnauthorizedErrorPage(
   gameSettings: Pick<BaseConfig, "colorScheme" | "icon"> & {
     displayName?: string;
     description?: string;
+    pathname?: string;
   }
 ) {
-  const { colorScheme, displayName, icon, description } = gameSettings;
-  const currPathname = usePathname();
+  const { colorScheme, displayName, icon, description, pathname } =
+    gameSettings;
 
   return (
     <>
@@ -136,14 +134,15 @@ export default function UnauthorizedErrorPage(
           </div>
           <div className="flex w-full flex-col items-center justify-center gap-4 sm:flex-row">
             <Button size="lg" asChild className="w-full sm:w-auto">
-              <HoverPrefetchLink
+              <Link
                 href={{
                   pathname: "/auth",
-                  query: { returnTo: currPathname },
+                  query: { returnTo: pathname },
                 }}
+                prefetch={false}
               >
                 Log in
-              </HoverPrefetchLink>
+              </Link>
             </Button>
             <Button
               size="lg"
@@ -151,14 +150,15 @@ export default function UnauthorizedErrorPage(
               asChild
               className="w-full sm:w-auto"
             >
-              <HoverPrefetchLink
+              <Link
                 href={{
                   pathname: "/auth",
-                  query: { signup: "1", returnTo: currPathname },
+                  query: { signup: "1", returnTo: pathname },
                 }}
+                prefetch={false}
               >
                 Sign up
-              </HoverPrefetchLink>
+              </Link>
             </Button>
           </div>
         </div>
