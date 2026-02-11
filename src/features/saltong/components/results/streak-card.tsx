@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FlameIcon } from "lucide-react";
+import { ArrowRightIcon, FlameIcon } from "lucide-react";
 import { SaltongUserStats } from "../../types";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -29,8 +29,10 @@ export default function StreakCard({
       <CardHeader>
         <CardTitle className="text-lg">Your Win Streak</CardTitle>
         <CardAction>
-          <Button size="sm" asChild>
-            <Link href={`/u/${username}`}>More Stats</Link>
+          <Button size="sm" asChild variant="outline">
+            <Link href={`/u/${username}`}>
+              More <ArrowRightIcon />
+            </Link>
           </Button>
         </CardAction>
       </CardHeader>

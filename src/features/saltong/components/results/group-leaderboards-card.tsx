@@ -1,7 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+} from "@/components/ui/card";
 import {
   Empty,
   EmptyContent,
@@ -29,6 +34,7 @@ import ProfileAvatar from "@/app/components/profile-avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SaltongLeaderboardEntry } from "@/features/groups/queries/get-leaderboards";
 import Link from "next/link";
+import { ArrowRightIcon } from "lucide-react";
 
 const MOCK_LEADERBOARDS: {
   leaderboards: Partial<SaltongLeaderboardEntry>[];
@@ -344,7 +350,7 @@ export default function GroupLeaderboardsCard({
 
   return (
     <Card className="gap-4">
-      <CardContent className="space-y-3">
+      <CardHeader>
         <div className="flex w-full items-center justify-start gap-2">
           {isLoadingGroupList ? (
             <Skeleton className="h-4 w-2/5" />
@@ -380,6 +386,17 @@ export default function GroupLeaderboardsCard({
             Leaderboards
           </span>
         </div>
+        {!!selectedGroup?.id && (
+          <CardAction>
+            <Button size="sm" variant="outline" asChild>
+              <Link href={`/groups/${selectedGroup.id}`} prefetch={false}>
+                View <ArrowRightIcon />
+              </Link>
+            </Button>
+          </CardAction>
+        )}
+      </CardHeader>
+      <CardContent className="space-y-3">
         {isLoading ? (
           <div className="bg-muted/50 grid grid-cols-2 gap-3 rounded-md p-4">
             <LeaderboardSkeleton numItems={3} />
