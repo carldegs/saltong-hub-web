@@ -96,7 +96,7 @@ export default function PlayMoreCard({ mode }: { mode: SaltongMode }) {
               <ItemActions>
                 <Button size="sm" asChild className="font-bold">
                   <Link
-                    href={`/play/${game.mode}`}
+                    href={`/play${game.mode === "classic" ? "" : `/${game.mode}`}`}
                     prefetch={false}
                     onClick={() => {
                       sendEvent("button_click", {
