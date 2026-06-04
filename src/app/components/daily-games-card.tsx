@@ -22,6 +22,12 @@ const DAILY_GAMES = [
     name: "Mini",
     className: "hover:bg-saltong-blue-200 dark:hover:bg-saltong-blue-500",
   },
+  {
+    href: "/play/sudoku",
+    icon: "/sudoku.svg",
+    name: "Sudoku",
+    className: "hover:bg-saltong-orange-200 dark:hover:bg-saltong-orange-500",
+  },
 ];
 
 export default function DailyGamesCard({ className }: { className?: string }) {

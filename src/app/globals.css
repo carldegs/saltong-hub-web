@@ -156,6 +156,19 @@
   --color-saltong-purple-950: hsl(250 53% 23%);
   --color-saltong-purple: hsl(250 51% 52%);
 
+  --color-saltong-orange-50: #fff8eb;
+  --color-saltong-orange-100: #feebc8;
+  --color-saltong-orange-200: #fcd48d;
+  --color-saltong-orange-300: #f9bc4d;
+  --color-saltong-orange-400: #f7aa22;
+  --color-saltong-orange-500: #f59e0b;
+  --color-saltong-orange-600: #d97706;
+  --color-saltong-orange-700: #b45309;
+  --color-saltong-orange-800: #92400e;
+  --color-saltong-orange-900: #752c05;
+  --color-saltong-orange-950: #451403;
+  --color-saltong-orange: #b45309;
+
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);

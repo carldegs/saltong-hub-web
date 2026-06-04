@@ -27,6 +27,8 @@ export default async function GameCard({
             colorScheme === "blue",
           "from-purple-300 to-purple-50 dark:from-purple-400/70 dark:to-purple-700/70":
             colorScheme === "purple",
+          "from-saltong-orange-300 to-saltong-orange-50 dark:from-saltong-orange-500/70 dark:to-saltong-orange-900/70":
+            colorScheme === "orange",
         },
         className
       )}
@@ -46,6 +48,8 @@ export default async function GameCard({
             "bg-red-500 dark:bg-red-200": colorScheme === "red",
             "bg-blue-500 dark:bg-blue-200": colorScheme === "blue",
             "bg-purple-500 dark:bg-purple-200": colorScheme === "purple",
+            "bg-saltong-orange-500 dark:bg-saltong-orange-200":
+              colorScheme === "orange",
           })}
         >
           <HoverPrefetchLink href={`/play${path}`}>Play Game</HoverPrefetchLink>

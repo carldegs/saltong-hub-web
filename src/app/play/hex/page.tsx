@@ -18,6 +18,7 @@ import { getCachedHexUserRound } from "@/features/hex/queries/getHexUserRound";
 import { getCharSet } from "@/features/hex/utils";
 import NavbarUser from "@/components/shared/navbar-user";
 import { canonicalUrl, pageIndexingMetadata } from "@/lib/seo";
+import { playPageBackgroundVariants } from "@/components/shared/play-page-background";
 
 export async function generateMetadata({
   searchParams: _searchParams,
@@ -135,13 +136,19 @@ export default async function SaltongHexPage({
           letters,
         }}
       >
-        <HydrationBoundary state={dehydrate(queryClient)}>
-          <GameWrapper
-            roundData={round}
-            isLive={isLive}
-            userId={userData?.claims.sub}
-          />
-        </HydrationBoundary>
+        <main
+          className={playPageBackgroundVariants({
+            colorScheme: gameSettings.colorScheme,
+          })}
+        >
+          <HydrationBoundary state={dehydrate(queryClient)}>
+            <GameWrapper
+              roundData={round}
+              isLive={isLive}
+              userId={userData?.claims.sub}
+            />
+          </HydrationBoundary>
+        </main>
       </HexStoreProvider>
     </div>
   );

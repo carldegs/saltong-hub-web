@@ -2,6 +2,7 @@
 
 import { getFormattedDateInPh, isFormattedDateInFuture } from "@/utils/time";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
+import { playPageBackgroundVariants } from "@/components/shared/play-page-background";
 import GameWrapper from "../components/game-wrapper";
 import { notFound } from "next/navigation";
 import { ComponentProps, Suspense } from "react";
@@ -21,6 +22,7 @@ import {
 import NavbarUser from "@/components/shared/navbar-user";
 import VaultButton from "../components/vault/vault-button";
 import HowToPlayDialog from "../components/how-to-play";
+import { cn } from "@/lib/utils";
 
 async function SaltongGamePage({
   searchParams: _searchParams,
@@ -80,7 +82,7 @@ async function SaltongGamePage({
   }
 
   return (
-    <>
+    <div className="grid min-h-screen w-full grid-rows-[auto_1fr]">
       <Navbar
         colorScheme={
           colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
@@ -103,18 +105,25 @@ async function SaltongGamePage({
           <NavbarUser />
         </div>
       </Navbar>
-      {/* Client-side: refresh when PH date != game date and no `d` override */}
-      <AutoRefreshOnNewDay gameDate={round.date} />
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <GameWrapper
-          maxTries={maxTries}
-          wordLen={wordLen}
-          roundData={round}
-          isLive={isLive}
-          userId={claimsData?.claims?.sub}
-        />
-      </HydrationBoundary>
-    </>
+      <div
+        className={cn(
+          playPageBackgroundVariants({ colorScheme }),
+          "flex flex-col"
+        )}
+      >
+        {/* Client-side: refresh when PH date != game date and no `d` override */}
+        <AutoRefreshOnNewDay gameDate={round.date} />
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <GameWrapper
+            maxTries={maxTries}
+            wordLen={wordLen}
+            roundData={round}
+            isLive={isLive}
+            userId={claimsData?.claims?.sub}
+          />
+        </HydrationBoundary>
+      </div>
+    </div>
   );
 }
 
@@ -123,7 +132,7 @@ function SaltongGamePageLoading({ mode }: { mode: SaltongMode }) {
     SALTONG_CONFIG.modes[mode];
 
   return (
-    <>
+    <div className="grid min-h-screen w-full grid-rows-[auto_1fr]">
       <Navbar
         colorScheme={
           colorScheme as ComponentProps<typeof Navbar>["colorScheme"]
@@ -142,8 +151,15 @@ function SaltongGamePageLoading({ mode }: { mode: SaltongMode }) {
           />
         </div>
       </Navbar>
-      <GameWrapperLoading maxTries={maxTries} wordLen={wordLen} />
-    </>
+      <div
+        className={cn(
+          playPageBackgroundVariants({ colorScheme }),
+          "flex flex-col"
+        )}
+      >
+        <GameWrapperLoading maxTries={maxTries} wordLen={wordLen} />
+      </div>
+    </div>
   );
 }
 

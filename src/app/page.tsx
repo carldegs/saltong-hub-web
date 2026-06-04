@@ -6,11 +6,22 @@ import GameCard from "./components/game-card";
 import HomeNavbarBrand from "./components/home-navbar-brand";
 import { SALTONG_CONFIG } from "@/features/saltong/config";
 import { HEX_CONFIG } from "@/features/hex/config";
+import { SUDOKU_CONFIG } from "@/features/sudoku/config";
 import CreateAccountBanner from "@/components/banners/create-account-banner";
 import GlobalLeaderboardsBanner from "@/components/banners/global-leaderboards-banner";
 import { pageIndexingMetadata } from "@/lib/seo";
 
-const GAME_LIST = [...Object.values(SALTONG_CONFIG.modes), HEX_CONFIG];
+const GAME_LIST = [
+  ...Object.values(SALTONG_CONFIG.modes),
+  {
+    ...HEX_CONFIG,
+    displayName: "Hex",
+  },
+  {
+    ...SUDOKU_CONFIG,
+    displayName: "Sudoku",
+  },
+];
 
 export const metadata: Metadata = {
   title: "Saltong Hub",

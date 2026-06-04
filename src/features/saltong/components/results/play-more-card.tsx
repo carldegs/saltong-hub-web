@@ -20,12 +20,17 @@ import { PlayIcon, VaultIcon } from "lucide-react";
 import Link from "next/link";
 import { HEX_CONFIG } from "@/features/hex/config";
 import { sendEvent } from "@/lib/analytics";
+import { SUDOKU_CONFIG } from "@/features/sudoku/config";
 
 const GAMES = [
   ...Object.values(SALTONG_CONFIG.modes),
   {
     ...HEX_CONFIG,
     mode: "hex",
+  },
+  {
+    ...SUDOKU_CONFIG,
+    mode: "sudoku",
   },
 ];
 

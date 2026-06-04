@@ -12,13 +12,14 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import {
-  VaultIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  // CrownIcon,
-} from "lucide-react";
+import { VaultIcon, ChevronDownIcon, ChevronRightIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SUDOKU_MODES } from "@/features/sudoku/config";
+import {
+  getSudokuDifficultySelectorPath,
+  getSudokuGamePath,
+  getSudokuVaultPath,
+} from "@/features/sudoku/paths";
 
 const getDefaultSubItems = (path: string) => {
   return [
@@ -34,6 +35,20 @@ const getDefaultSubItems = (path: string) => {
     // },
   ];
 };
+
+const SUDOKU_SUB_ITEMS = [
+  ...Object.values(SUDOKU_MODES).map(({ mode, displayName, icon: Icon }) => ({
+    href: `/play${getSudokuGamePath(mode)}`,
+    name: displayName,
+    icon: <Icon />,
+  })),
+  {
+    href: `/play${getSudokuVaultPath()}`,
+    name: "Vault",
+    icon: <VaultIcon />,
+  },
+];
+
 export const GAMES = [
   {
     href: "/play",
@@ -58,6 +73,12 @@ export const GAMES = [
     icon: "/hex.svg",
     name: "Hex",
     sub: getDefaultSubItems("/play/hex"),
+  },
+  {
+    href: `/play${getSudokuDifficultySelectorPath()}`,
+    icon: "/sudoku.svg",
+    name: "Sudoku",
+    sub: SUDOKU_SUB_ITEMS,
   },
 ];
 

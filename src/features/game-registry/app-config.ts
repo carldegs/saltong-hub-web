@@ -1,6 +1,7 @@
 import { BaseConfig } from "./types";
 import { SALTONG_CONFIG } from "../saltong/config";
 import { HEX_CONFIG } from "../hex/config";
+import { SUDOKU_CONFIG } from "../sudoku/config";
 
 export type FeaturedGame = Pick<
   BaseConfig,
@@ -23,7 +24,14 @@ export const RESULTS_DIALOG_FEATURED_GAME_LIST = [
     displayName: HEX_CONFIG.displayName,
     icon: HEX_CONFIG.icon,
     colorScheme: HEX_CONFIG.colorScheme,
-    path: HEX_CONFIG.path,
+    path: `/play${HEX_CONFIG.path}`,
     id: "hex",
+  },
+  {
+    displayName: SUDOKU_CONFIG.displayName,
+    icon: SUDOKU_CONFIG.icon,
+    colorScheme: SUDOKU_CONFIG.colorScheme,
+    path: `/play${SUDOKU_CONFIG.path}`,
+    id: "sudoku",
   },
 ] satisfies FeaturedGame[];
