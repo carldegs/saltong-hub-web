@@ -1,10 +1,9 @@
-"use client";
-
-import { useState } from "react";
 import Image from "next/image";
 import { DM_Serif_Display } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import TrackedLink from "../shared/tracked-link";
+
+const GLOBAL_LEADERBOARDS_INVITE_URL = "/j/UM4HRTQ4";
 
 const displayFont = DM_Serif_Display({
   subsets: ["latin"],
@@ -19,8 +18,6 @@ const displayFontItalic = DM_Serif_Display({
 });
 
 export default function GlobalLeaderboardsBanner() {
-  const [showOriginalHeadline] = useState(() => new Date().getSeconds() < 48);
-
   return (
     <div className="@container w-full pt-8 @xl:pt-10">
       <div className="border-saltong-purple-400/70 from-saltong-purple-950 via-saltong-purple-800 to-saltong-purple-600 relative isolate rounded-[22px] border bg-linear-to-br shadow-[0_16px_50px_rgba(77,39,160,0.22)]">
@@ -48,19 +45,9 @@ export default function GlobalLeaderboardsBanner() {
             <p
               className={`${displayFont.className} max-w-[12.5ch] text-[3rem] leading-[0.9] font-normal tracking-[-0.05em] text-[#f2e8ff] @md:max-w-[13.5ch] @md:text-[3.45rem] @xl:max-w-[2xl] @xl:text-[4.25rem] @2xl:text-[4.75rem] @4xl:max-w-none`}
             >
-              {showOriginalHeadline ? (
-                <>
-                  it&apos;s{" "}
-                  <span className={displayFontItalic.className}>you</span>{" "}
-                  against the{" "}
-                  <span className={displayFontItalic.className}>world.</span>
-                </>
-              ) : (
-                <>
-                  Hawak mo ang...{" "}
-                  <span className={displayFontItalic.className}>crown?</span>
-                </>
-              )}
+              it&apos;s <span className={displayFontItalic.className}>you</span>{" "}
+              against the{" "}
+              <span className={displayFontItalic.className}>world.</span>
             </p>
 
             <p className="mt-4 max-w-[26ch] text-base leading-[1.2] font-medium tracking-[-0.03em] text-[#f3ecff] @md:max-w-[22ch] @md:text-lg @xl:max-w-3xl @xl:text-[1.35rem] @xl:leading-tight">
@@ -74,7 +61,7 @@ export default function GlobalLeaderboardsBanner() {
               className="text-saltong-purple-300 mt-8 h-11 min-w-[190px] rounded-lg bg-[#3f236e] px-8 text-lg font-bold tracking-[-0.02em] shadow-none hover:bg-[#4b2a84] hover:text-[#dbc9ff] @xl:mt-9"
             >
               <TrackedLink
-                href="/groups/b44c6cef-2d06-4922-84cb-5d0816af3794"
+                href={GLOBAL_LEADERBOARDS_INVITE_URL}
                 prefetch={false}
                 event="button_click"
                 eventParams={{
