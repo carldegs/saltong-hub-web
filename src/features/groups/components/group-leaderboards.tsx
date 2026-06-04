@@ -41,6 +41,25 @@ function getNextHexGameDate(date: Date, maxDate: Date) {
   } while (!(d.getDay() === 2 || d.getDay() === 5));
   return d;
 }
+
+function getLatestHexGameDate(date: Date, minDate: Date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+
+  if (d < minDate) {
+    return minDate;
+  }
+
+  while (!(d.getDay() === 2 || d.getDay() === 5)) {
+    d.setDate(d.getDate() - 1);
+
+    if (d < minDate) {
+      return minDate;
+    }
+  }
+
+  return d;
+}
 import { ChevronLeft, ChevronRight, PlayIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
@@ -84,6 +103,24 @@ export default function GroupLeaderboards({
   const [api, setApi] = useState<CarouselApi>();
   const dateQueryKey = format(date, "yyyy-MM-dd");
   const hexDateQueryKey = format(getHexDateInPh(date), "yyyy-MM-dd");
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const hexMinDate = new Date(HEX_CONFIG.startDate);
+  const saltongModes = SALTONG_CONFIG.modes;
+  const validModes = Object.keys(saltongModes) as SaltongModeKey[];
+  const minSelectableDate =
+    selectedMode === "hex"
+      ? hexMinDate
+      : validModes.includes(selectedMode as SaltongModeKey)
+        ? new Date(saltongModes[selectedMode as SaltongModeKey].startDate)
+        : undefined;
+  const maxSelectableDate =
+    selectedMode === "hex" ? getLatestHexGameDate(today, hexMinDate) : today;
+  const selectedDate = new Date(date);
+  selectedDate.setHours(0, 0, 0, 0);
+  const isPrevDateDisabled =
+    !!minSelectableDate && selectedDate <= minSelectableDate;
+  const isNextDateDisabled = selectedDate >= maxSelectableDate;
 
   const supabase = useSupabaseClient();
   const queries = useQueries({
@@ -186,12 +223,25 @@ export default function GroupLeaderboards({
           variant="outline"
           size="icon"
           className="size-10"
+          disabled={isPrevDateDisabled}
           onClick={() => {
+            if (isPrevDateDisabled) {
+              return;
+            }
+
             if (selectedMode === "hex") {
-              const minDate = new Date(HEX_CONFIG.startDate);
-              setDate(getPrevHexGameDate(date, minDate));
+              setDate(getPrevHexGameDate(date, hexMinDate));
             } else {
-              setDate(add(date, { days: -1 }));
+              setDate(
+                !!minSelectableDate
+                  ? new Date(
+                      Math.max(
+                        add(date, { days: -1 }).getTime(),
+                        minSelectableDate.getTime()
+                      )
+                    )
+                  : add(date, { days: -1 })
+              );
             }
           }}
         >
@@ -200,20 +250,8 @@ export default function GroupLeaderboards({
         <DatePicker
           date={date}
           setDate={setDate}
-          minDate={(() => {
-            if (selectedMode === "hex") {
-              return new Date(HEX_CONFIG.startDate);
-            }
-            const saltongModes = SALTONG_CONFIG.modes;
-            const validModes = Object.keys(saltongModes) as SaltongModeKey[];
-            if (validModes.includes(selectedMode as SaltongModeKey)) {
-              return new Date(
-                saltongModes[selectedMode as SaltongModeKey].startDate
-              );
-            }
-            return undefined;
-          })()}
-          maxDate={new Date()}
+          minDate={minSelectableDate}
+          maxDate={maxSelectableDate}
           isDateDisabled={(d) => {
             // Disable future dates
             const today = new Date();
@@ -227,10 +265,8 @@ export default function GroupLeaderboards({
               const day = d.getDay();
               if (day !== 2 && day !== 5) return true;
               // Before start date
-              if (d < new Date(HEX_CONFIG.startDate)) return true;
+              if (d < hexMinDate) return true;
             } else {
-              const saltongModes = SALTONG_CONFIG.modes;
-              const validModes = Object.keys(saltongModes) as SaltongModeKey[];
               if (validModes.includes(selectedMode as SaltongModeKey)) {
                 if (
                   d <
@@ -248,13 +284,23 @@ export default function GroupLeaderboards({
           variant="outline"
           size="icon"
           className="size-10"
+          disabled={isNextDateDisabled}
           onClick={() => {
+            if (isNextDateDisabled) {
+              return;
+            }
+
             if (selectedMode === "hex") {
-              const maxDate = new Date();
-              maxDate.setHours(0, 0, 0, 0);
-              setDate(getNextHexGameDate(date, maxDate));
+              setDate(getNextHexGameDate(date, maxSelectableDate));
             } else {
-              setDate(add(date, { days: 1 }));
+              setDate(
+                new Date(
+                  Math.min(
+                    add(date, { days: 1 }).getTime(),
+                    maxSelectableDate.getTime()
+                  )
+                )
+              );
             }
           }}
         >
@@ -278,7 +324,7 @@ export default function GroupLeaderboards({
           {data.map((tab, index) => (
             <CarouselItem
               key={index}
-              className={"mb-24 h-full w-full max-w-xl lg:basis-1/2"}
+              className="mt-1 mb-24 h-full w-full max-w-xl lg:basis-1/2"
             >
               <Card className="mx-2 h-full w-[calc(100%-16px)]">
                 <CardHeader>
@@ -359,7 +405,7 @@ export default function GroupLeaderboards({
         </CarouselContent>
       </Carousel>
       {/* TODO: Convert to component and use on navbar */}
-      <div className="fixed bottom-2 flex w-full items-center justify-center">
+      <div className="fixed bottom-2 left-[50vw] z-10 -translate-x-1/2">
         <div className="glass-card rounded-2xl px-6 py-3 transition-[padding] hover:px-8 hover:py-4">
           <div className="glass-card-effect rounded-2xl"></div>
           <div className="glass-card-tint rounded-2xl"></div>
@@ -373,9 +419,15 @@ export default function GroupLeaderboards({
                   onClick={() => {
                     api?.goTo(index);
                   }}
-                  className="size-[45px] bg-transparent p-0 transition-transform hover:scale-110 hover:bg-transparent"
+                  className="flex size-[45px] items-center justify-center bg-transparent p-0 transition-transform hover:scale-110 hover:bg-transparent"
                 >
-                  <Image height={45} width={45} src={tab.icon} alt={tab.path} />
+                  <Image
+                    height={45}
+                    width={45}
+                    src={tab.icon}
+                    alt={tab.path}
+                    className="block size-10 object-contain"
+                  />
                 </Button>
               ))}
             </div>

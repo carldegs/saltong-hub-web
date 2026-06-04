@@ -37,6 +37,7 @@ import Link from "next/link";
 import { ArrowRightIcon } from "lucide-react";
 import { sendEvent } from "@/lib/analytics";
 import { GlobalLeaderboardsDialogBanner } from "@/components/dialog-banners/global-leaderboards-dialog-banner";
+import { cn } from "@/lib/utils";
 
 const MOCK_LEADERBOARDS: {
   leaderboards: Partial<SaltongLeaderboardEntry>[];
@@ -292,7 +293,7 @@ export default function GroupLeaderboardsCard({
         <Card className="gap-4">
           <CardContent className="space-y-3 blur-[2px]">
             <div className="text-lg font-semibold tracking-tight">
-              {mockData.groupName} Leaderboards
+              {mockData.groupName}
             </div>
 
             <ScrollArea className="h-full max-h-[209px] overflow-auto rounded-md">
@@ -321,7 +322,14 @@ export default function GroupLeaderboardsCard({
   return (
     <Card className="gap-4">
       <CardHeader>
-        <div className="flex w-full items-center justify-start gap-2">
+        {selectedGroup?.name !== "Global Leaderboards" && (
+          <span className="opacity-50">Leaderboards</span>
+        )}
+        <div
+          className={cn("flex w-full items-center justify-start gap-2", {
+            "-mt-1.5": selectedGroup?.name !== "Global Leaderboards",
+          })}
+        >
           {isLoadingGroupList ? (
             <Skeleton className="h-4 w-2/5" />
           ) : (
@@ -360,7 +368,6 @@ export default function GroupLeaderboardsCard({
             {groupList?.length === 1 && selectedGroup
               ? `${selectedGroup.name} `
               : ""}
-            Leaderboards
           </span>
         </div>
         {!!selectedGroup?.id && (
