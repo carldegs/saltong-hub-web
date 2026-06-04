@@ -36,6 +36,7 @@ import { SaltongLeaderboardEntry } from "@/features/groups/queries/get-leaderboa
 import Link from "next/link";
 import { ArrowRightIcon } from "lucide-react";
 import { sendEvent } from "@/lib/analytics";
+import { GlobalLeaderboardsDialogBanner } from "@/components/dialog-banners/global-leaderboards-dialog-banner";
 
 const MOCK_LEADERBOARDS: {
   leaderboards: Partial<SaltongLeaderboardEntry>[];
@@ -281,77 +282,12 @@ export default function GroupLeaderboardsCard({
   ) {
     return (
       <div className="relative">
-        <div className="absolute z-2 flex h-full w-full items-center justify-center overflow-hidden rounded-lg bg-linear-to-br from-pink-500/70 to-pink-600/60 dark:from-pink-400/30 dark:to-pink-500/20">
-          <Empty>
-            <EmptyHeader>
-              <EmptyTitle className="text-white">{mockData.title}</EmptyTitle>
-              <EmptyDescription className="font-semibold text-white">
-                {mockData.description}
-              </EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
-              {userId === "unauthenticated" ? (
-                <div className="flex w-full gap-2">
-                  <Button
-                    asChild
-                    className="flex-1 bg-pink-500 text-white hover:bg-pink-600"
-                  >
-                    <Link
-                      href="/auth?signup=1"
-                      prefetch={false}
-                      onClick={() => {
-                        sendEvent("button_click", {
-                          location: "results_dialog_group_banner",
-                          action: "create_account",
-                          mode,
-                          date,
-                        });
-                      }}
-                    >
-                      Create Account
-                    </Link>
-                  </Button>
-
-                  <Button asChild variant="outline" className="flex-1">
-                    <Link
-                      href="/auth"
-                      prefetch={false}
-                      onClick={() => {
-                        sendEvent("button_click", {
-                          location: "results_dialog_group_banner",
-                          action: "login",
-                          mode,
-                          date,
-                        });
-                      }}
-                    >
-                      Login
-                    </Link>
-                  </Button>
-                </div>
-              ) : (
-                <Button
-                  asChild
-                  className="flex-1 bg-pink-500 text-white hover:bg-pink-600"
-                >
-                  <Link
-                    href="/groups/create"
-                    prefetch={false}
-                    onClick={() => {
-                      sendEvent("button_click", {
-                        location: "results_dialog_group_banner",
-                        action: "create_group",
-                        mode,
-                        date,
-                      });
-                    }}
-                  >
-                    Create Group
-                  </Link>
-                </Button>
-              )}
-            </EmptyContent>
-          </Empty>
+        <div className="absolute z-2 flex h-full w-full items-center justify-center rounded-lg bg-linear-to-br from-pink-500/70 to-pink-600/60 dark:from-pink-400/30 dark:to-pink-500/20">
+          <GlobalLeaderboardsDialogBanner
+            isAuthenticated={userId !== "unauthenticated"}
+            mode={mode}
+            date={date}
+          />
         </div>
         <Card className="gap-4">
           <CardContent className="space-y-3 blur-[2px]">
