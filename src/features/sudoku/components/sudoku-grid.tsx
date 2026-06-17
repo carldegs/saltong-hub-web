@@ -1,89 +1,57 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { CSSProperties, KeyboardEvent, useEffect, useRef } from "react";
-import { Pos } from "../types";
+import { KeyboardEvent, useEffect, useRef } from "react";
+import { Pos, SudokuCellVisualState } from "../types";
 
+import {
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+} from "@/components/ui/popover";
 import useSudokuGrid from "../hooks/use-sudoku-grid";
 import { getIdxFromPos } from "../utils";
+import SudokuController from "./sudoku-controller";
+
+const SUDOKU_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 function SudokuCell({
   value,
+  candidates,
   pos,
-  selected,
-  highlighted,
-  highlightedValue,
+  visualState,
   given,
-  invalidUserEntry,
-  invalidGiven,
   onClick,
   onFocus,
   onKeyDown,
   tabIndex,
-  style,
   cellRef,
 }: {
   value: number;
+  candidates: number[];
   pos: Pos;
-  selected?: boolean;
-  highlighted?: boolean;
-  highlightedValue?: boolean;
+  visualState: SudokuCellVisualState;
   given?: boolean;
-  invalidUserEntry?: boolean;
-  invalidGiven?: boolean;
   onClick: (pos: Pos) => void;
   onFocus: (pos: Pos) => void;
   onKeyDown: (event: KeyboardEvent<HTMLDivElement>, pos: Pos) => void;
   tabIndex: number;
-  style?: CSSProperties;
   cellRef?: (node: HTMLDivElement | null) => void;
 }) {
-  const backgroundClass = cn({
-    "bg-red-100 dark:bg-red-600/25": !!invalidGiven,
-    "bg-saltong-orange-200 dark:bg-saltong-orange-500/25":
-      !invalidGiven && !!selected,
-    "bg-saltong-orange-200/90 dark:bg-saltong-orange-400/22":
-      !invalidGiven && !selected && !!highlightedValue,
-    "bg-saltong-orange-50 dark:bg-saltong-orange-900/15":
-      !invalidGiven && !selected && !highlightedValue && !!highlighted,
-    "bg-background dark:bg-zinc-950":
-      !invalidGiven && !selected && !highlightedValue && !highlighted,
-  });
+  const hasError =
+    visualState.answer === "user-error" || visualState.answer === "given-error";
 
-  const textClass = cn({
-    "text-red-600 dark:text-red-400": !!invalidUserEntry,
-    "text-foreground dark:text-zinc-50": !invalidUserEntry && !!given,
-    "text-saltong-orange-700 dark:text-saltong-orange-300":
-      !invalidUserEntry && !given,
-  });
+  const ariaLabel = `Row ${pos.row + 1}, column ${pos.col + 1}${given ? ", given" : ""}${hasError ? ", invalid entry" : ""}`;
 
   return (
     <div
       ref={cellRef}
       role="button"
       tabIndex={tabIndex}
-      aria-label={`Row ${pos.row + 1}, column ${pos.col + 1}${given ? ", given" : ""}${invalidUserEntry ? ", invalid entry" : ""}${invalidGiven ? ", conflicting given" : ""}`}
+      aria-label={ariaLabel}
       className={cn(
-        "flex aspect-square cursor-pointer items-center justify-center border text-xl font-semibold transition-colors sm:text-2xl lg:text-3xl",
-        "border-saltong-orange-700/70 dark:border-saltong-orange-700/35",
-        backgroundClass,
-        textClass,
-        {
-          "rounded-tl-2xl": pos.row === 0 && pos.col === 0,
-          "rounded-tr-2xl": pos.row === 0 && pos.col === 8,
-          "rounded-bl-2xl": pos.row === 8 && pos.col === 0,
-          "rounded-br-2xl": pos.row === 8 && pos.col === 8,
-          "border-red-400 dark:border-red-800":
-            invalidUserEntry || invalidGiven,
-          "border-saltong-orange-400/90 dark:border-saltong-orange-400/55 shadow-[inset_0_0_0_1px_rgba(251,146,60,0.35)] dark:shadow-[inset_0_0_0_1px_rgba(251,191,36,0.18)]":
-            highlightedValue && !selected && !invalidUserEntry && !invalidGiven,
-          "border-saltong-orange-500 border-3 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.25)] dark:shadow-[inset_0_0_0_1px_rgba(251,191,36,0.24)]":
-            selected && !invalidUserEntry && !invalidGiven,
-          "border-3 border-red-500 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.16)] dark:border-red-500 dark:shadow-[inset_0_0_0_1px_rgba(248,113,113,0.18)]":
-            selected && (invalidUserEntry || invalidGiven),
-        }
+        "border-primary [container-type:size] relative flex aspect-square cursor-pointer items-center justify-center overflow-hidden border-[0.5px] font-semibold transition-colors"
       )}
-      style={style}
       onClick={(event) => {
         event.currentTarget.focus();
         onClick(pos);
@@ -91,22 +59,94 @@ function SudokuCell({
       onFocus={() => onFocus(pos)}
       onKeyDown={(event) => onKeyDown(event, pos)}
     >
-      {value === 0 ? "" : value}
+      {visualState.answer === "user-error" && (
+        <div className="bg-saltong-red-600 absolute z-1 h-[145%] w-[2px] rotate-45" />
+      )}
+      {value === 0 ? (
+        candidates.length > 0 ? (
+          <div className="text-primary/50 absolute z-1 grid size-full grid-cols-3 grid-rows-3 place-items-center font-[family-name:var(--font-handwriting)] text-[clamp(0.5rem,30cqw,0.9rem)] leading-none">
+            {SUDOKU_VALUES.map((candidate) => (
+              <span
+                key={candidate}
+                className={cn(
+                  "text-current",
+                  !candidates.includes(candidate) && "invisible"
+                )}
+              >
+                {candidate}
+              </span>
+            ))}
+          </div>
+        ) : null
+      ) : (
+        <span
+          className={cn(
+            "absolute z-1 text-[clamp(1.25rem,60cqw,2.25rem)] leading-none",
+            {
+              "text-saltong-red-600":
+                visualState.answer === "user-error" ||
+                visualState.answer === "given-error",
+              "text-cyan-600": visualState.answer === "correct",
+            }
+          )}
+        >
+          {value}
+        </span>
+      )}
+
+      <div
+        className={cn("absolute z-0 size-full", {
+          "bg-saltong-orange-400/80": visualState.highlight === "selected",
+          "bg-saltong-orange-200/30": visualState.highlight === "related",
+          "bg-saltong-orange-400/50": visualState.highlight === "same-value",
+        })}
+      />
+      {given && <div className="absolute z-0 size-full bg-black/8" />}
     </div>
   );
 }
 
-export default function SudokuGrid({ puzzle }: { puzzle: number[] }) {
-  const { grid, selectCell, setCellValue } = useSudokuGrid(puzzle);
+function SudokuBlock({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="outline-primary relative grid h-full w-full grid-cols-3 grid-rows-3 outline-2">
+      {children}
+    </div>
+  );
+}
+
+export default function SudokuGrid({
+  puzzle,
+  solution,
+}: {
+  puzzle: number[];
+  solution: number[];
+}) {
+  const {
+    grid,
+    inputMode,
+    autoCandidates,
+    autoCheck,
+    isComplete,
+    selectedCell,
+    selectCell,
+    setInputMode,
+    setAutoCandidates,
+    setAutoCheck,
+    enterValue,
+    clearCell,
+    undo,
+    fillAllCandidates,
+    fillCellCandidates,
+    checkCell,
+    checkGrid,
+    deleteCandidates,
+    clearGrid,
+  } = useSudokuGrid({ puzzle, solution });
   const gridSize = Math.sqrt(grid.length);
-  const blockSize = Math.sqrt(gridSize);
   const cellRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const selectedCell = grid.find((cell) => cell.isSelected);
-  const gridTrackTemplate = Array.from({ length: gridSize }, (_, index) =>
-    index < gridSize - 1 && (index + 1) % blockSize === 0
-      ? "minmax(0, 1fr) 0.35rem"
-      : "minmax(0, 1fr)"
-  ).join(" ");
+  const selectedIndex = selectedCell
+    ? getIdxFromPos(selectedCell.pos, gridSize)
+    : undefined;
 
   useEffect(() => {
     if (!selectedCell) {
@@ -146,14 +186,8 @@ export default function SudokuGrid({ puzzle }: { puzzle: number[] }) {
 
       const value = Number(key);
 
-      if (value === 0) {
-        setCellValue(0, pos);
-        selectCell(pos);
-        return;
-      }
-
-      if (value <= gridSize) {
-        setCellValue(value, pos);
+      if (value <= gridSize || value === 0) {
+        enterValue(value, pos);
         selectCell(pos);
       }
 
@@ -162,59 +196,96 @@ export default function SudokuGrid({ puzzle }: { puzzle: number[] }) {
 
     if (key === "Backspace" || key === "Delete") {
       event.preventDefault();
-      setCellValue(0, pos);
+      clearCell(pos);
       selectCell(pos);
     }
   };
 
   return (
-    <div
-      className="bg-background mx-auto grid aspect-square w-full max-w-[34rem] overflow-hidden rounded-2xl shadow-[0_18px_40px_-28px_rgba(146,64,14,0.45)] dark:bg-zinc-950"
-      style={{
-        gridTemplateColumns: gridTrackTemplate,
-        gridTemplateRows: gridTrackTemplate,
-      }}
-    >
-      {grid.map(
-        (
-          {
-            value,
-            pos,
-            isGiven,
-            isSelected,
-            isHighlighted,
-            isHighlightedValue,
-            isInvalidUserEntry,
-            isInvalidGiven,
-          },
-          index
-        ) => (
-          <SudokuCell
-            key={`cell-[${pos.col}, ${pos.row}]`}
-            value={value}
-            pos={pos}
-            onClick={(pos) => selectCell(pos)}
-            onFocus={(pos) => selectCell(pos)}
-            onKeyDown={handleKeyDown}
-            selected={isSelected}
-            given={isGiven}
-            highlighted={isHighlighted}
-            highlightedValue={isHighlightedValue}
-            invalidUserEntry={isInvalidUserEntry}
-            invalidGiven={isInvalidGiven}
-            style={{
-              gridColumnStart: pos.col + Math.floor(pos.col / blockSize) + 1,
-              gridRowStart: pos.row + Math.floor(pos.row / blockSize) + 1,
-            }}
-            tabIndex={
-              !selectedCell ? (index === 0 ? 0 : -1) : isSelected ? 0 : -1
-            }
-            cellRef={(node) => {
-              cellRefs.current[index] = node;
-            }}
-          />
-        )
-      )}
+    <div className="mx-auto flex h-full min-h-0 w-full max-w-[58rem] flex-col items-center justify-center gap-2 [--sudoku-board-size:min(calc(100vw-1rem),52svh,42rem)] sm:gap-4 sm:[--sudoku-board-size:min(calc(100vw-2rem),54svh,44rem)] lg:flex-row lg:items-start lg:gap-7 lg:[--sudoku-board-size:min(34rem,calc(100vw-24rem))]">
+      <Popover open={isComplete}>
+        <PopoverAnchor asChild>
+          <div className="outline-primary relative grid aspect-square w-[var(--sudoku-board-size)] grid-cols-3 overflow-hidden outline-4">
+            {Array.from({ length: gridSize }, (_, blockIndex) => {
+              const blockRow = Math.floor(blockIndex / 3);
+              const blockCol = blockIndex % 3;
+
+              const cells = [];
+
+              for (let cellRow = 0; cellRow < 3; cellRow += 1) {
+                for (let cellCol = 0; cellCol < 3; cellCol += 1) {
+                  const row = blockRow * 3 + cellRow;
+                  const col = blockCol * 3 + cellCol;
+                  const index = getIdxFromPos({ row, col }, gridSize);
+                  const cell = grid[index];
+
+                  if (!cell) {
+                    continue;
+                  }
+
+                  cells.push(
+                    <SudokuCell
+                      key={`cell-[${cell.pos.col}, ${cell.pos.row}]`}
+                      value={cell.value}
+                      candidates={cell.candidates}
+                      pos={cell.pos}
+                      onClick={(pos) => selectCell(pos)}
+                      onFocus={(pos) => selectCell(pos)}
+                      onKeyDown={handleKeyDown}
+                      given={cell.isGiven}
+                      visualState={cell.visualState}
+                      tabIndex={
+                        selectedIndex === undefined
+                          ? index === 0
+                            ? 0
+                            : -1
+                          : index === selectedIndex
+                            ? 0
+                            : -1
+                      }
+                      cellRef={(node) => {
+                        cellRefs.current[index] = node;
+                      }}
+                    />
+                  );
+                }
+              }
+
+              return (
+                <SudokuBlock key={`block-${blockRow}-${blockCol}`}>
+                  {cells}
+                </SudokuBlock>
+              );
+            })}
+          </div>
+        </PopoverAnchor>
+        <PopoverContent
+          side="top"
+          align="center"
+          className="border-saltong-green-500/25 w-auto px-4 py-3 text-base font-bold"
+        >
+          Success!
+        </PopoverContent>
+      </Popover>
+
+      <SudokuController
+        inputMode={inputMode}
+        onInputModeChange={setInputMode}
+        onNumberClick={(value) => enterValue(value)}
+        onClear={() => clearCell()}
+        onUndo={undo}
+        autoCandidates={autoCandidates}
+        onAutoCandidatesChange={setAutoCandidates}
+        autoCheck={autoCheck}
+        onAutoCheckChange={setAutoCheck}
+        onFillCellCandidates={() => fillCellCandidates()}
+        onFillAllCandidates={fillAllCandidates}
+        onCheckCell={() => checkCell()}
+        onCheckGrid={checkGrid}
+        onDeleteCandidates={deleteCandidates}
+        onClearGrid={clearGrid}
+        className="w-[var(--sudoku-board-size)] lg:w-[17rem] xl:w-[18.5rem]"
+      />
     </div>
   );
 }

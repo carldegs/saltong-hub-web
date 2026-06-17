@@ -4,19 +4,11 @@ import UnauthorizedErrorPage from "@/app/components/unauthorized-error-page";
 import NavbarUser from "@/components/shared/navbar-user";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { playPageBackgroundVariants } from "@/components/shared/play-page-background";
 import { ComponentProps } from "react";
 import { notFound } from "next/navigation";
-import { CalendarDaysIcon, Grid2X2Icon, VaultIcon } from "lucide-react";
+import { Grid2X2Icon, VaultIcon } from "lucide-react";
 import Link from "next/link";
 import { SUDOKU_CONFIG } from "../config";
 import { Grid } from "../generator";
@@ -27,7 +19,6 @@ import {
 } from "../paths";
 import { getSudokuSeed } from "../seeds";
 import { SudokuMode } from "../types";
-import SudokuPreviewGrid from "../components/sudoku-preview-grid";
 import {
   getSudokuGameDate,
   getSudokuModeConfig,
@@ -78,10 +69,9 @@ export default async function SudokuGamePage({
     seed: targetSeed,
     removalRange: modeConfig.removalRange,
   });
-  const isArchive = date !== getFormattedDateInPh();
 
   return (
-    <div className="grid min-h-screen w-full grid-rows-[auto_1fr]">
+    <div className="grid min-h-svh w-full grid-rows-[auto_1fr]">
       <Navbar colorScheme={navbarColorScheme} hideUserDropdown>
         <NavbarBrand
           colorScheme={navbarColorScheme}
@@ -111,11 +101,15 @@ export default async function SudokuGamePage({
         </div>
       </Navbar>
 
-      <main className={playPageBackgroundVariants({ colorScheme: "orange" })}>
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8">
-          <div className="grid gap-6">
-            <SudokuGrid puzzle={generated.puzzle} />
-            {/* <SudokuPreviewGrid puzzle={generated.puzzle} /> */}
+      <main
+        className={`${playPageBackgroundVariants({ colorScheme: "orange" })} min-h-0 overflow-hidden`}
+      >
+        <div className="mx-auto flex h-full min-h-0 w-full max-w-6xl flex-col px-2 py-2 sm:px-4 sm:py-4 lg:py-8">
+          <div className="grid h-full min-h-0">
+            <SudokuGrid
+              puzzle={generated.puzzle}
+              solution={generated.solution}
+            />
           </div>
         </div>
       </main>
