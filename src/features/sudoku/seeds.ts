@@ -10,10 +10,3 @@ export const SUDOKU_SEED_DIFFICULTY_BY_MODE = {
 export function getSudokuSeed(date: string, mode: SudokuMode) {
   return `${date}:${SUDOKU_SEED_DIFFICULTY_BY_MODE[mode]}`;
 }
-
-export function getSudokuSeedForDifficulty(
-  date: string,
-  difficulty: SudokuSeedDifficulty
-) {
-  return `${date}:${difficulty}`;
-}

@@ -1,7 +1,6 @@
-import * as crypto from "node:crypto";
-import seedrandom from "seedrandom";
 import { Pos } from "./types";
 import { getBlockFromPos, getIdxFromPos } from "./utils";
+import { Generator } from "@/utils/generator";
 
 type SearchState = {
   nodesVisited: number;
@@ -12,7 +11,7 @@ type GenerateOptions =
   | { seed: string; removals: number }
   | { seed: string; removalRange: RemovalRange };
 
-export class Grid {
+export class Grid extends Generator {
   private static readonly MAX_SOLVER_NODES = 50_000;
   private grid: number[];
   private gridSize: number;
@@ -25,6 +24,8 @@ export class Grid {
     gridSize?: number;
     initGrid?: number[];
   } = {}) {
+    super();
+
     const blockSize = Math.sqrt(gridSize);
 
     if (!Number.isInteger(blockSize)) {
@@ -43,19 +44,6 @@ export class Grid {
     } else {
       this.grid = new Array(gridSize * gridSize).fill(0);
     }
-  }
-
-  private range(start: number, end: number): number[] {
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-  }
-
-  private createPrng(seed: string) {
-    const hash = crypto.createHash("sha256").update(seed).digest("hex");
-    return seedrandom(hash);
-  }
-
-  private createScopedPrng(seed: string, scope: string) {
-    return this.createPrng(`${seed}:${scope}`);
   }
 
   public getIdx(pos: Pos) {
