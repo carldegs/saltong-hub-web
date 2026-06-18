@@ -1,7 +1,11 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import SudokuGamePage from "@/features/sudoku/templates/sudoku-game-page";
-import { getSudokuGameDate, isSudokuMode } from "@/features/sudoku/utils";
+import {
+  getSudokuGameDate,
+  getSudokuModeConfig,
+  isSudokuMode,
+} from "@/features/sudoku/utils";
 import { isFormattedDateInFuture } from "@/utils/time";
 import { isSudokuDateBeforeStart } from "@/features/sudoku/utils";
 
@@ -22,12 +26,13 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   const date = getSudokuGameDate((await props.searchParams)?.d);
   const difficulty = params.difficulty;
+  const title = `Sudoku ${getSudokuModeConfig(difficulty).displayName}`;
 
   return {
-    title: `${difficulty[0].toUpperCase()}${difficulty.slice(1)} Sudoku`,
+    title,
     description: `Play the ${difficulty} Sudoku grid for ${date}.`,
     openGraph: {
-      title: `${difficulty[0].toUpperCase()}${difficulty.slice(1)} Sudoku`,
+      title,
       description: `Play the ${difficulty} Sudoku grid for ${date}.`,
       type: "website",
       url: `https://saltong.com/play/sudoku/${difficulty}`,

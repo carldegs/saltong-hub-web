@@ -1,17 +1,25 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { SettingsIcon, Undo2Icon, XIcon } from "lucide-react";
-import { MouseEvent } from "react";
+import {
+  CheckIcon,
+  LightbulbIcon,
+  NotebookPenIcon,
+  SettingsIcon,
+  Undo2Icon,
+  XIcon,
+} from "lucide-react";
+import { ComponentType, MouseEvent, ReactNode } from "react";
 import { SudokuInputMode } from "../types";
 
 const NUMBER_BUTTONS = [
@@ -51,32 +59,73 @@ function ModeButton({
   active,
   children,
   onClick,
+  icon: Icon,
+  badge,
+  disabled,
+  "aria-label": ariaLabel,
 }: {
   active: boolean;
-  children: string;
+  children: ReactNode;
+  icon: ComponentType<{ className?: string }>;
   onClick: () => void;
+  badge?: number;
+  disabled?: boolean;
+  "aria-label"?: string;
 }) {
   return (
     <button
       type="button"
-      role="tab"
-      aria-selected={active}
+      aria-pressed={active}
+      aria-label={ariaLabel}
       className={cn(
-        "focus-visible:ring-saltong-orange-500/45 flex h-9 items-center justify-center rounded-md border px-2 text-sm font-bold transition-colors focus-visible:ring-3 focus-visible:outline-none sm:text-base lg:h-10",
+        "focus-visible:ring-saltong-orange-500/45 relative flex h-9 items-center justify-center gap-1.5 rounded-md border px-2 text-sm font-bold transition-colors focus-visible:ring-3 focus-visible:outline-none sm:text-base lg:h-10",
         active
           ? "border-saltong-orange-600 bg-saltong-orange-600 dark:border-saltong-orange-500 dark:bg-saltong-orange-500 dark:text-saltong-orange-950 text-white shadow-xs"
-          : "border-saltong-orange-700/25 bg-background/70 text-saltong-orange-700 hover:bg-saltong-orange-50 dark:border-saltong-orange-400/25 dark:text-saltong-orange-200 dark:hover:bg-saltong-orange-950/35 dark:bg-zinc-950/45"
+          : "border-saltong-orange-700/25 bg-background/70 text-saltong-orange-700 hover:bg-saltong-orange-50 dark:border-saltong-orange-400/25 dark:text-saltong-orange-200 dark:hover:bg-saltong-orange-950/35 dark:bg-zinc-950/45",
+        disabled && "hover:bg-background/70 cursor-not-allowed opacity-55"
       )}
       onMouseDown={preventGridBlur}
       onClick={onClick}
+      disabled={disabled}
     >
+      <Icon className="size-4 stroke-[2.5]" />
       {children}
+      {badge !== undefined && badge > 0 && (
+        <span className="bg-primary text-primary-foreground absolute -top-1 -right-1 flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-[0.625rem] leading-none font-black">
+          {badge}
+        </span>
+      )}
     </button>
   );
 }
 
 function preventGridBlur(event: MouseEvent<HTMLButtonElement>) {
   event.preventDefault();
+}
+
+function DropdownCheckItem({
+  checked,
+  children,
+  onCheckedChange,
+}: {
+  checked: boolean;
+  children: string;
+  onCheckedChange: (checked: boolean) => void;
+}) {
+  return (
+    <DropdownMenuItem
+      className="justify-between gap-6"
+      onSelect={(event) => {
+        event.preventDefault();
+        onCheckedChange(!checked);
+      }}
+    >
+      <span>{children}</span>
+      <CheckIcon
+        className={cn("size-4", checked ? "opacity-100" : "opacity-0")}
+      />
+    </DropdownMenuItem>
+  );
 }
 
 export default function SudokuController({
@@ -95,6 +144,10 @@ export default function SudokuController({
   onCheckGrid,
   onDeleteCandidates,
   onClearGrid,
+  onHint,
+  hintCount,
+  mistakeCount,
+  readOnly,
   className,
 }: {
   inputMode: SudokuInputMode;
@@ -112,6 +165,10 @@ export default function SudokuController({
   onCheckGrid: () => void;
   onDeleteCandidates: () => void;
   onClearGrid: () => void;
+  onHint: () => void;
+  hintCount: number;
+  mistakeCount: number;
+  readOnly?: boolean;
   className?: string;
 }) {
   const isCandidateMode = inputMode === "candidates";
@@ -125,19 +182,28 @@ export default function SudokuController({
       )}
     >
       <div
-        role="tablist"
-        aria-label="Input mode"
+        aria-label="Sudoku entry controls"
         className="mx-auto grid w-[12.125rem] grid-cols-2 gap-1.5 sm:w-[13.5rem] sm:gap-2 lg:w-full lg:gap-3"
       >
         <ModeButton
-          active={inputMode === "solution"}
-          onClick={() => onInputModeChange("solution")}
+          active={false}
+          icon={LightbulbIcon}
+          badge={hintCount}
+          aria-label={
+            hintCount > 0 ? `Hint, ${hintCount} used` : "Hint, none used"
+          }
+          onClick={onHint}
+          disabled={readOnly}
         >
-          Solution
+          Hint
         </ModeButton>
         <ModeButton
           active={isCandidateMode}
-          onClick={() => onInputModeChange("candidates")}
+          icon={NotebookPenIcon}
+          onClick={() =>
+            onInputModeChange(isCandidateMode ? "solution" : "candidates")
+          }
+          disabled={readOnly}
         >
           Notes
         </ModeButton>
@@ -156,6 +222,7 @@ export default function SudokuController({
             )}
             onMouseDown={preventGridBlur}
             onClick={() => onNumberClick(value)}
+            disabled={readOnly}
           >
             {
               <span
@@ -182,6 +249,7 @@ export default function SudokuController({
                       className
                     )}
                     onMouseDown={preventGridBlur}
+                    disabled={readOnly}
                   >
                     <Icon className="size-5 stroke-[2.5] sm:size-6 lg:size-7 xl:size-8" />
                   </Button>
@@ -191,42 +259,60 @@ export default function SudokuController({
                   side="top"
                   className="min-w-52"
                 >
-                  <DropdownMenuItem onClick={onFillCellCandidates}>
+                  <DropdownMenuItem
+                    disabled={readOnly}
+                    onClick={onFillCellCandidates}
+                  >
                     Fill Cell Candidate
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={onFillAllCandidates}>
+                  <DropdownMenuItem
+                    disabled={readOnly}
+                    onClick={onFillAllCandidates}
+                  >
                     Fill Grid Candidates
                   </DropdownMenuItem>
-                  <DropdownMenuCheckboxItem
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+                    Assists
+                  </DropdownMenuLabel>
+                  <DropdownCheckItem
                     checked={autoCandidates}
-                    onCheckedChange={(checked) =>
-                      onAutoCandidatesChange(checked === true)
-                    }
+                    onCheckedChange={(checked) => {
+                      if (!readOnly) {
+                        onAutoCandidatesChange(checked);
+                      }
+                    }}
                   >
                     Auto-Candidates
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
+                  </DropdownCheckItem>
+                  <DropdownCheckItem
                     checked={autoCheck}
-                    onCheckedChange={(checked) =>
-                      onAutoCheckChange(checked === true)
-                    }
+                    onCheckedChange={(checked) => {
+                      if (!readOnly) {
+                        onAutoCheckChange(checked);
+                      }
+                    }}
                   >
                     Auto-Check
-                  </DropdownMenuCheckboxItem>
+                  </DropdownCheckItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={onCheckCell}>
+                  <DropdownMenuItem disabled={readOnly} onClick={onCheckCell}>
                     Check Cell
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={onCheckGrid}>
+                  <DropdownMenuItem disabled={readOnly} onClick={onCheckGrid}>
                     Check Grid
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={onDeleteCandidates}>
+                  <DropdownMenuItem
+                    disabled={readOnly}
+                    onClick={onDeleteCandidates}
+                  >
                     Delete Candidates
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="text-destructive focus:bg-destructive/10 focus:text-destructive dark:focus:bg-destructive/20 dark:focus:text-red-300"
+                    disabled={readOnly}
                     onClick={onClearGrid}
                   >
                     Clear Grid
@@ -250,11 +336,21 @@ export default function SudokuController({
               )}
               onMouseDown={preventGridBlur}
               onClick={() => handleClick?.()}
+              disabled={readOnly}
             >
               <Icon className="size-5 stroke-[2.5] sm:size-6 lg:size-7 xl:size-8" />
             </Button>
           );
         })}
+      </div>
+
+      <div className="mt-2 flex justify-center sm:mt-3">
+        <Badge
+          variant="outline"
+          className="border-saltong-red-500/30 bg-saltong-red-50 text-saltong-red-800 dark:border-saltong-red-400/30 dark:bg-saltong-red-950/35 dark:text-saltong-red-100 rounded-md px-3 py-1 text-sm font-bold"
+        >
+          {mistakeCount} {mistakeCount === 1 ? "mistake" : "mistakes"}
+        </Badge>
       </div>
     </section>
   );

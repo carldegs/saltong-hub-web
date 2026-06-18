@@ -8,15 +8,11 @@ import { createClient } from "@/lib/supabase/server";
 import { playPageBackgroundVariants } from "@/components/shared/play-page-background";
 import { ComponentProps } from "react";
 import { notFound } from "next/navigation";
-import { Grid2X2Icon, VaultIcon } from "lucide-react";
+import { VaultIcon } from "lucide-react";
 import Link from "next/link";
 import { SUDOKU_CONFIG } from "../config";
 import { Grid } from "../generator";
-import {
-  getSudokuDifficultySelectorPath,
-  getSudokuGamePath,
-  getSudokuVaultPath,
-} from "../paths";
+import { getSudokuGamePath, getSudokuVaultPath } from "../paths";
 import { getSudokuSeed } from "../seeds";
 import { SudokuMode } from "../types";
 import {
@@ -27,6 +23,8 @@ import {
 } from "../utils";
 import { getFormattedDateInPh, isFormattedDateInFuture } from "@/utils/time";
 import SudokuGrid from "../components/sudoku-grid";
+import SudokuHowToPlay from "../components/sudoku-how-to-play";
+import SudokuTodayDropdown from "../components/sudoku-today-dropdown";
 
 const navbarColorScheme = SUDOKU_CONFIG.colorScheme as ComponentProps<
   typeof Navbar
@@ -76,21 +74,15 @@ export default async function SudokuGamePage({
         <NavbarBrand
           colorScheme={navbarColorScheme}
           title="Sudoku"
+          subtitle={modeConfig.displayName}
           boxed={`#${roundId}`}
           icon={SUDOKU_CONFIG.icon}
           href="/"
           prefetch={false}
         />
         <div className="flex gap-1.5">
-          <Button variant="outline" asChild>
-            <Link
-              href={`/play${getSudokuDifficultySelectorPath()}`}
-              prefetch={false}
-            >
-              <Grid2X2Icon />
-              <span className="hidden md:block">Today&apos;s Puzzles</span>
-            </Link>
-          </Button>
+          <SudokuTodayDropdown />
+          <SudokuHowToPlay />
           <Button variant="outline" asChild>
             <Link href={`/play${getSudokuVaultPath()}`} prefetch={false}>
               <VaultIcon />
@@ -109,6 +101,9 @@ export default async function SudokuGamePage({
             <SudokuGrid
               puzzle={generated.puzzle}
               solution={generated.solution}
+              mode={mode}
+              date={date}
+              roundId={roundId}
             />
           </div>
         </div>

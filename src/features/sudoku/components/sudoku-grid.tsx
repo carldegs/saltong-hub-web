@@ -1,19 +1,23 @@
 "use client";
 
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { KeyboardEvent, useEffect, useRef } from "react";
-import { Pos, SudokuCellVisualState } from "../types";
-
-import {
-  Popover,
-  PopoverAnchor,
-  PopoverContent,
-} from "@/components/ui/popover";
+import { useModalStore } from "@/providers/modal/modal-provider";
+import { LightbulbIcon, XIcon } from "lucide-react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { getSudokuHint, type SudokuHint } from "../hints";
 import useSudokuGrid from "../hooks/use-sudoku-grid";
+import { Pos, SudokuCellVisualState, SudokuMode } from "../types";
 import { getIdxFromPos } from "../utils";
 import SudokuController from "./sudoku-controller";
+import SudokuResultsDialog, {
+  SUDOKU_RESULTS_MODAL_ID,
+} from "./sudoku-results-dialog";
 
 const SUDOKU_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+const isSamePos = (a: Pos, b: Pos) => a.col === b.col && a.row === b.row;
 
 function SudokuCell({
   value,
@@ -117,15 +121,26 @@ function SudokuBlock({ children }: { children: React.ReactNode }) {
 export default function SudokuGrid({
   puzzle,
   solution,
+  mode,
+  date,
+  roundId,
 }: {
   puzzle: number[];
   solution: number[];
+  mode: SudokuMode;
+  date: string;
+  roundId: number;
 }) {
   const {
     grid,
     inputMode,
     autoCandidates,
     autoCheck,
+    hintCount,
+    mistakeCount,
+    moveCount,
+    startedAt,
+    completedAt,
     isComplete,
     selectedCell,
     selectCell,
@@ -141,9 +156,12 @@ export default function SudokuGrid({
     checkGrid,
     deleteCandidates,
     clearGrid,
+    incrementHintCount,
   } = useSudokuGrid({ puzzle, solution });
+  const setOpenModal = useModalStore((state) => state.setOpenModal);
   const gridSize = Math.sqrt(grid.length);
   const cellRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const [hint, setHint] = useState<SudokuHint | null>(null);
   const selectedIndex = selectedCell
     ? getIdxFromPos(selectedCell.pos, gridSize)
     : undefined;
@@ -155,6 +173,20 @@ export default function SudokuGrid({
 
     cellRefs.current[getIdxFromPos(selectedCell.pos, gridSize)]?.focus();
   }, [gridSize, selectedCell]);
+
+  useEffect(() => {
+    if (isComplete) {
+      setOpenModal(SUDOKU_RESULTS_MODAL_ID);
+    }
+  }, [isComplete, setOpenModal]);
+
+  const selectCellFromUser = (pos: Pos) => {
+    if (hint && (!hint.pos || !isSamePos(hint.pos, pos))) {
+      setHint(null);
+    }
+
+    selectCell(pos);
+  };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>, pos: Pos) => {
     const { key } = event;
@@ -177,18 +209,22 @@ export default function SudokuGrid({
               : pos.col,
       };
 
-      selectCell(nextPos);
+      selectCellFromUser(nextPos);
       return;
     }
 
     if (/^\d$/.test(key)) {
       event.preventDefault();
 
+      if (isComplete) {
+        return;
+      }
+
       const value = Number(key);
 
       if (value <= gridSize || value === 0) {
         enterValue(value, pos);
-        selectCell(pos);
+        selectCellFromUser(pos);
       }
 
       return;
@@ -196,95 +232,149 @@ export default function SudokuGrid({
 
     if (key === "Backspace" || key === "Delete") {
       event.preventDefault();
+      if (isComplete) {
+        return;
+      }
       clearCell(pos);
-      selectCell(pos);
+      selectCellFromUser(pos);
+    }
+  };
+
+  const showHint = () => {
+    const nextHint = getSudokuHint(grid, solution);
+
+    setHint(nextHint);
+    incrementHintCount();
+
+    if (nextHint.pos) {
+      selectCell(nextHint.pos);
     }
   };
 
   return (
-    <div className="mx-auto flex h-full min-h-0 w-full max-w-[58rem] flex-col items-center justify-center gap-2 [--sudoku-board-size:min(calc(100vw-1rem),52svh,42rem)] sm:gap-4 sm:[--sudoku-board-size:min(calc(100vw-2rem),54svh,44rem)] lg:flex-row lg:items-start lg:gap-7 lg:[--sudoku-board-size:min(34rem,calc(100vw-24rem))]">
-      <Popover open={isComplete}>
-        <PopoverAnchor asChild>
-          <div className="outline-primary relative grid aspect-square w-[var(--sudoku-board-size)] grid-cols-3 overflow-hidden outline-4">
-            {Array.from({ length: gridSize }, (_, blockIndex) => {
-              const blockRow = Math.floor(blockIndex / 3);
-              const blockCol = blockIndex % 3;
+    <div className="mx-auto flex h-full min-h-0 w-full max-w-[58rem] flex-col items-center justify-center gap-2 [--sudoku-board-size:min(calc(100vw-1rem),calc(48svh-4.75rem),42rem)] sm:gap-4 sm:[--sudoku-board-size:min(calc(100vw-2rem),calc(50svh-4.75rem),44rem)] lg:flex-row lg:items-start lg:gap-7 lg:[--sudoku-board-size:min(34rem,calc(100vw-24rem),calc(100svh-12rem))]">
+      <div className="flex w-[var(--sudoku-board-size)] flex-col gap-3">
+        <div className="outline-primary relative grid aspect-square w-full grid-cols-3 overflow-hidden outline-4">
+          {Array.from({ length: gridSize }, (_, blockIndex) => {
+            const blockRow = Math.floor(blockIndex / 3);
+            const blockCol = blockIndex % 3;
 
-              const cells = [];
+            const cells = [];
 
-              for (let cellRow = 0; cellRow < 3; cellRow += 1) {
-                for (let cellCol = 0; cellCol < 3; cellCol += 1) {
-                  const row = blockRow * 3 + cellRow;
-                  const col = blockCol * 3 + cellCol;
-                  const index = getIdxFromPos({ row, col }, gridSize);
-                  const cell = grid[index];
+            for (let cellRow = 0; cellRow < 3; cellRow += 1) {
+              for (let cellCol = 0; cellCol < 3; cellCol += 1) {
+                const row = blockRow * 3 + cellRow;
+                const col = blockCol * 3 + cellCol;
+                const index = getIdxFromPos({ row, col }, gridSize);
+                const cell = grid[index];
 
-                  if (!cell) {
-                    continue;
-                  }
-
-                  cells.push(
-                    <SudokuCell
-                      key={`cell-[${cell.pos.col}, ${cell.pos.row}]`}
-                      value={cell.value}
-                      candidates={cell.candidates}
-                      pos={cell.pos}
-                      onClick={(pos) => selectCell(pos)}
-                      onFocus={(pos) => selectCell(pos)}
-                      onKeyDown={handleKeyDown}
-                      given={cell.isGiven}
-                      visualState={cell.visualState}
-                      tabIndex={
-                        selectedIndex === undefined
-                          ? index === 0
-                            ? 0
-                            : -1
-                          : index === selectedIndex
-                            ? 0
-                            : -1
-                      }
-                      cellRef={(node) => {
-                        cellRefs.current[index] = node;
-                      }}
-                    />
-                  );
+                if (!cell) {
+                  continue;
                 }
+
+                cells.push(
+                  <SudokuCell
+                    key={`cell-[${cell.pos.col}, ${cell.pos.row}]`}
+                    value={cell.value}
+                    candidates={cell.candidates}
+                    pos={cell.pos}
+                    onClick={(pos) => selectCellFromUser(pos)}
+                    onFocus={(pos) => selectCellFromUser(pos)}
+                    onKeyDown={handleKeyDown}
+                    given={cell.isGiven}
+                    visualState={cell.visualState}
+                    tabIndex={
+                      selectedIndex === undefined
+                        ? index === 0
+                          ? 0
+                          : -1
+                        : index === selectedIndex
+                          ? 0
+                          : -1
+                    }
+                    cellRef={(node) => {
+                      cellRefs.current[index] = node;
+                    }}
+                  />
+                );
               }
+            }
 
-              return (
-                <SudokuBlock key={`block-${blockRow}-${blockCol}`}>
-                  {cells}
-                </SudokuBlock>
-              );
-            })}
-          </div>
-        </PopoverAnchor>
-        <PopoverContent
-          side="top"
-          align="center"
-          className="border-saltong-green-500/25 w-auto px-4 py-3 text-base font-bold"
-        >
-          Success!
-        </PopoverContent>
-      </Popover>
+            return (
+              <SudokuBlock key={`block-${blockRow}-${blockCol}`}>
+                {cells}
+              </SudokuBlock>
+            );
+          })}
+        </div>
 
-      <SudokuController
-        inputMode={inputMode}
-        onInputModeChange={setInputMode}
-        onNumberClick={(value) => enterValue(value)}
-        onClear={() => clearCell()}
-        onUndo={undo}
-        autoCandidates={autoCandidates}
-        onAutoCandidatesChange={setAutoCandidates}
-        autoCheck={autoCheck}
-        onAutoCheckChange={setAutoCheck}
-        onFillCellCandidates={() => fillCellCandidates()}
-        onFillAllCandidates={fillAllCandidates}
-        onCheckCell={() => checkCell()}
-        onCheckGrid={checkGrid}
-        onDeleteCandidates={deleteCandidates}
-        onClearGrid={clearGrid}
-        className="w-[var(--sudoku-board-size)] lg:w-[17rem] xl:w-[18.5rem]"
+        <div className="h-[4.25rem] overflow-hidden sm:h-[4.5rem]">
+          {hint && (
+            <Alert className="border-saltong-orange-700/30 bg-saltong-orange-50/95 text-saltong-orange-950 dark:border-saltong-orange-400/30 dark:bg-saltong-orange-950/70 dark:text-saltong-orange-50 pr-11 shadow-sm backdrop-blur-sm">
+              <LightbulbIcon className="text-saltong-orange-700 dark:text-saltong-orange-200" />
+              <AlertDescription className="text-saltong-orange-900 dark:text-saltong-orange-100 line-clamp-2">
+                <p>{hint.message}</p>
+              </AlertDescription>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label="Dismiss hint"
+                className="absolute top-2 right-2 size-7"
+                onClick={() => setHint(null)}
+              >
+                <XIcon className="size-4" />
+              </Button>
+            </Alert>
+          )}
+        </div>
+      </div>
+
+      <div className="flex w-[var(--sudoku-board-size)] flex-col gap-2 lg:w-[17rem] xl:w-[18.5rem]">
+        <SudokuController
+          inputMode={inputMode}
+          onInputModeChange={setInputMode}
+          onNumberClick={(value) => enterValue(value)}
+          onClear={() => clearCell()}
+          onUndo={undo}
+          autoCandidates={autoCandidates}
+          onAutoCandidatesChange={setAutoCandidates}
+          autoCheck={autoCheck}
+          onAutoCheckChange={setAutoCheck}
+          onFillCellCandidates={() => fillCellCandidates()}
+          onFillAllCandidates={fillAllCandidates}
+          onCheckCell={() => checkCell()}
+          onCheckGrid={checkGrid}
+          onDeleteCandidates={deleteCandidates}
+          onClearGrid={clearGrid}
+          onHint={showHint}
+          hintCount={hintCount}
+          mistakeCount={mistakeCount}
+          readOnly={isComplete}
+        />
+
+        {isComplete && (
+          <Button
+            type="button"
+            size="lg"
+            className="w-full font-bold"
+            onClick={() => setOpenModal(SUDOKU_RESULTS_MODAL_ID)}
+          >
+            View Results
+          </Button>
+        )}
+      </div>
+
+      <SudokuResultsDialog
+        mode={mode}
+        date={date}
+        roundId={roundId}
+        grid={grid}
+        startedAt={startedAt}
+        completedAt={completedAt}
+        hintCount={hintCount}
+        mistakeCount={mistakeCount}
+        moveCount={moveCount}
       />
     </div>
   );

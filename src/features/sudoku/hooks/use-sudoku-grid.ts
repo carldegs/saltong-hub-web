@@ -1,4 +1,6 @@
-import { useCallback, useReducer } from "react";
+import { useCallback, useEffect, useReducer } from "react";
+import { useLocalStorage } from "usehooks-ts";
+import { getCandidateValuesForCell } from "../hints";
 import { getBlockFromPos, getIdxFromPos, getPosFromIdx } from "../utils";
 import {
   Pos,
@@ -209,6 +211,12 @@ type SudokuState = {
   inputMode: SudokuInputMode;
   autoCandidates: boolean;
   autoCheck: boolean;
+  hintCount: number;
+  mistakeCount: number;
+  moveCount: number;
+  startedAt: string;
+  completedAt: string | null;
+  hasLoadedStoredState: boolean;
   selectedPos?: Pos;
 };
 
@@ -225,9 +233,128 @@ type SudokuAction =
   | { type: "check-grid" }
   | { type: "delete-candidates" }
   | { type: "clear-grid" }
+  | { type: "increment-hint-count" }
+  | { type: "restore-stored-state"; state: SudokuState }
   | { type: "undo" };
 
 const MAX_HISTORY_LENGTH = 100;
+const SUDOKU_STORAGE_VERSION = 1;
+const SUDOKU_STORAGE_PREFIX = "saltong:sudoku";
+
+type StoredSudokuState = {
+  version: typeof SUDOKU_STORAGE_VERSION;
+  cells: SudokuSnapshot;
+  inputMode: SudokuInputMode;
+  autoCandidates: boolean;
+  autoCheck: boolean;
+  hintCount: number;
+  mistakeCount: number;
+  moveCount: number;
+  startedAt: string;
+  completedAt: string | null;
+};
+
+const getSudokuStorageKey = (puzzle: number[], solution: number[]) =>
+  `${SUDOKU_STORAGE_PREFIX}:${puzzle.join("")}:${solution.join("")}`;
+
+const isGridComplete = (grid: SudokuCellState[], solution: number[]) =>
+  grid.every(
+    (cell, index) => cell.value !== 0 && cell.value === solution[index]
+  );
+
+const isStoredInputMode = (value: unknown): value is SudokuInputMode =>
+  value === "solution" || value === "candidates";
+
+const normalizeStoredSudokuState = (
+  value: Partial<StoredSudokuState> | null,
+  gridLength: number
+): StoredSudokuState | null => {
+  if (
+    !value ||
+    value.version !== SUDOKU_STORAGE_VERSION ||
+    !Array.isArray(value.cells) ||
+    value.cells.length !== gridLength ||
+    !isStoredInputMode(value.inputMode)
+  ) {
+    return null;
+  }
+
+  return {
+    version: SUDOKU_STORAGE_VERSION,
+    cells: value.cells,
+    inputMode: value.inputMode,
+    autoCandidates: value.autoCandidates === true,
+    autoCheck: value.autoCheck === true,
+    hintCount:
+      typeof value.hintCount === "number" && Number.isFinite(value.hintCount)
+        ? Math.max(0, Math.floor(value.hintCount))
+        : 0,
+    mistakeCount:
+      typeof value.mistakeCount === "number" &&
+      Number.isFinite(value.mistakeCount)
+        ? Math.max(0, Math.floor(value.mistakeCount))
+        : 0,
+    moveCount:
+      typeof value.moveCount === "number" && Number.isFinite(value.moveCount)
+        ? Math.max(0, Math.floor(value.moveCount))
+        : 0,
+    startedAt:
+      typeof value.startedAt === "string" && value.startedAt
+        ? value.startedAt
+        : new Date().toISOString(),
+    completedAt:
+      typeof value.completedAt === "string" && value.completedAt
+        ? value.completedAt
+        : null,
+  };
+};
+
+const getInitialGrid = (puzzle: number[]): SudokuCellState[] =>
+  puzzle.map((value, i) => ({
+    value,
+    candidates: [],
+    pos: getPosFromIdx(i),
+    isGiven: value !== 0,
+    isCorrectUserEntry: false,
+    userCheckState: null,
+    visualState: {
+      highlight: "idle",
+      answer: "none",
+    },
+  }));
+
+const getInitialSudokuState = ({
+  puzzle,
+  solution,
+  storedState,
+  hasLoadedStoredState,
+}: {
+  puzzle: number[];
+  solution: number[];
+  storedState?: StoredSudokuState | null;
+  hasLoadedStoredState: boolean;
+}): SudokuState => {
+  const baseGrid = getInitialGrid(puzzle);
+
+  return {
+    grid: applyDerivedState(
+      storedState
+        ? restoreStoredSnapshot(baseGrid, storedState.cells)
+        : baseGrid
+    ),
+    history: [],
+    solution,
+    inputMode: storedState?.inputMode ?? "solution",
+    autoCandidates: storedState?.autoCandidates ?? false,
+    autoCheck: storedState?.autoCheck ?? false,
+    hintCount: storedState?.hintCount ?? 0,
+    mistakeCount: storedState?.mistakeCount ?? 0,
+    moveCount: storedState?.moveCount ?? 0,
+    startedAt: storedState?.startedAt ?? new Date().toISOString(),
+    completedAt: storedState?.completedAt ?? null,
+    hasLoadedStoredState,
+  };
+};
 
 const snapshotGrid = (grid: SudokuCellState[]): SudokuSnapshot =>
   grid.map(({ value, candidates, isCorrectUserEntry, userCheckState }) => ({
@@ -249,6 +376,52 @@ const restoreSnapshot = (
     userCheckState: snapshot[index].userCheckState,
   }));
 
+const restoreStoredSnapshot = (
+  grid: SudokuCellState[],
+  snapshot: SudokuSnapshot
+): SudokuCellState[] =>
+  grid.map((cell, index) => {
+    const storedCell = snapshot[index];
+
+    if (cell.isGiven || !storedCell) {
+      return cell;
+    }
+
+    const value =
+      typeof storedCell.value === "number" &&
+      Number.isInteger(storedCell.value) &&
+      storedCell.value >= 0 &&
+      storedCell.value <= Math.sqrt(grid.length)
+        ? storedCell.value
+        : 0;
+    const candidates = Array.isArray(storedCell.candidates)
+      ? Array.from(
+          new Set(
+            storedCell.candidates.filter(
+              (candidate) =>
+                Number.isInteger(candidate) &&
+                candidate >= 1 &&
+                candidate <= Math.sqrt(grid.length)
+            )
+          )
+        ).sort((a, b) => a - b)
+      : [];
+    const userCheckState =
+      storedCell.userCheckState === "correct" ||
+      storedCell.userCheckState === "incorrect"
+        ? storedCell.userCheckState
+        : null;
+
+    return {
+      ...cell,
+      value,
+      candidates,
+      isCorrectUserEntry:
+        storedCell.isCorrectUserEntry === true && userCheckState === "correct",
+      userCheckState,
+    };
+  });
+
 const hasGridChanged = (
   currentGrid: SudokuCellState[],
   nextGrid: SudokuCellState[]
@@ -269,11 +442,16 @@ const hasGridChanged = (
 const commitGridChange = (
   state: SudokuState,
   nextGrid: SudokuCellState[],
-  selectedPos = state.selectedPos
+  selectedPos = state.selectedPos,
+  mistakeCountDelta = 0
 ): SudokuState => {
   if (!hasGridChanged(state.grid, nextGrid)) {
     return state;
   }
+
+  const completedAt = isGridComplete(nextGrid, state.solution)
+    ? (state.completedAt ?? new Date().toISOString())
+    : null;
 
   return {
     ...state,
@@ -282,6 +460,9 @@ const commitGridChange = (
       0,
       MAX_HISTORY_LENGTH
     ),
+    completedAt,
+    mistakeCount: state.mistakeCount + mistakeCountDelta,
+    moveCount: state.moveCount + 1,
     selectedPos,
   };
 };
@@ -293,55 +474,6 @@ const toggleCandidate = (candidates: number[], value: number) =>
 
 const getActionPos = (state: SudokuState, pos?: Pos) =>
   pos ?? state.selectedPos;
-
-const getCandidateValuesForCell = (
-  grid: SudokuCellState[],
-  pos: Pos,
-  gridSize = Math.sqrt(grid.length)
-) => {
-  const usedValues = new Set<number>();
-  const blockSize = Math.sqrt(gridSize);
-  const blockRowStart = Math.floor(pos.row / blockSize) * blockSize;
-  const blockColStart = Math.floor(pos.col / blockSize) * blockSize;
-
-  for (let i = 0; i < gridSize; i++) {
-    const rowValue =
-      grid[getIdxFromPos({ row: pos.row, col: i }, gridSize)].value;
-    const colValue =
-      grid[getIdxFromPos({ row: i, col: pos.col }, gridSize)].value;
-
-    if (rowValue !== 0) {
-      usedValues.add(rowValue);
-    }
-
-    if (colValue !== 0) {
-      usedValues.add(colValue);
-    }
-  }
-
-  for (let rowOffset = 0; rowOffset < blockSize; rowOffset++) {
-    for (let colOffset = 0; colOffset < blockSize; colOffset++) {
-      const value =
-        grid[
-          getIdxFromPos(
-            {
-              row: blockRowStart + rowOffset,
-              col: blockColStart + colOffset,
-            },
-            gridSize
-          )
-        ].value;
-
-      if (value !== 0) {
-        usedValues.add(value);
-      }
-    }
-  }
-
-  return Array.from({ length: gridSize }, (_, index) => index + 1).filter(
-    (value) => !usedValues.has(value)
-  );
-};
 
 const applyAutoCandidates = (grid: SudokuCellState[]) => {
   const gridSize = Math.sqrt(grid.length);
@@ -374,6 +506,14 @@ const sudokuGridReducer = (
   state: SudokuState,
   action: SudokuAction
 ): SudokuState => {
+  if (
+    state.completedAt &&
+    action.type !== "select-cell" &&
+    action.type !== "restore-stored-state"
+  ) {
+    return state;
+  }
+
   switch (action.type) {
     case "select-cell":
       return {
@@ -452,6 +592,11 @@ const sudokuGridReducer = (
         );
       }
 
+      const isMistake =
+        state.autoCheck &&
+        action.value !== 0 &&
+        action.value !== state.solution[index];
+
       return commitGridChange(
         state,
         maybeApplyAutoCandidates(
@@ -470,7 +615,8 @@ const sudokuGridReducer = (
           ),
           state.autoCandidates
         ),
-        pos
+        pos,
+        isMistake ? 1 : 0
       );
     }
     case "clear-cell": {
@@ -570,6 +716,9 @@ const sudokuGridReducer = (
         targetCell.value,
         state.solution[index]
       );
+      const isNewMistake =
+        userCheckState === "incorrect" &&
+        targetCell.userCheckState !== "incorrect";
 
       return commitGridChange(
         state,
@@ -582,10 +731,13 @@ const sudokuGridReducer = (
               }
             : cell
         ),
-        pos
+        pos,
+        isNewMistake ? 1 : 0
       );
     }
-    case "check-grid":
+    case "check-grid": {
+      let mistakeCountDelta = 0;
+
       return commitGridChange(
         state,
         state.grid.map((cell, index) => {
@@ -598,14 +750,23 @@ const sudokuGridReducer = (
             state.solution[index]
           );
 
+          if (
+            userCheckState === "incorrect" &&
+            cell.userCheckState !== "incorrect"
+          ) {
+            mistakeCountDelta += 1;
+          }
+
           return {
             ...cell,
             userCheckState,
             isCorrectUserEntry: userCheckState === "correct",
           };
         }),
-        state.selectedPos
+        state.selectedPos,
+        mistakeCountDelta
       );
+    }
     case "delete-candidates":
       return commitGridChange(
         state,
@@ -636,6 +797,13 @@ const sudokuGridReducer = (
         ),
         state.selectedPos
       );
+    case "increment-hint-count":
+      return {
+        ...state,
+        hintCount: state.hintCount + 1,
+      };
+    case "restore-stored-state":
+      return action.state;
     case "undo": {
       const [lastSnapshot, ...history] = state.history;
 
@@ -662,31 +830,54 @@ const useSudokuGrid = ({
   puzzle: number[];
   solution: number[];
 }) => {
+  const storageKey = getSudokuStorageKey(puzzle, solution);
+  const [storedState, setStoredState] =
+    useLocalStorage<StoredSudokuState | null>(storageKey, null);
   const [state, dispatch] = useReducer(
     sudokuGridReducer,
     { puzzle, solution },
-    ({ puzzle, solution }): SudokuState => ({
-      grid: applyDerivedState(
-        puzzle.map((value, i) => ({
-          value,
-          candidates: [],
-          pos: getPosFromIdx(i),
-          isGiven: value !== 0,
-          isCorrectUserEntry: false,
-          userCheckState: null,
-          visualState: {
-            highlight: "idle",
-            answer: "none",
-          },
-        }))
-      ),
-      history: [],
-      solution,
-      inputMode: "solution",
-      autoCandidates: false,
-      autoCheck: false,
-    })
+    ({ puzzle, solution }): SudokuState =>
+      getInitialSudokuState({
+        puzzle,
+        solution,
+        hasLoadedStoredState: false,
+      })
   );
+
+  useEffect(() => {
+    if (state.hasLoadedStoredState) {
+      return;
+    }
+
+    dispatch({
+      type: "restore-stored-state",
+      state: getInitialSudokuState({
+        puzzle,
+        solution,
+        storedState: normalizeStoredSudokuState(storedState, puzzle.length),
+        hasLoadedStoredState: true,
+      }),
+    });
+  }, [puzzle, solution, state.hasLoadedStoredState, storedState]);
+
+  useEffect(() => {
+    if (!state.hasLoadedStoredState) {
+      return;
+    }
+
+    setStoredState({
+      version: SUDOKU_STORAGE_VERSION,
+      cells: snapshotGrid(state.grid),
+      inputMode: state.inputMode,
+      autoCandidates: state.autoCandidates,
+      autoCheck: state.autoCheck,
+      hintCount: state.hintCount,
+      mistakeCount: state.mistakeCount,
+      moveCount: state.moveCount,
+      startedAt: state.startedAt,
+      completedAt: state.completedAt,
+    });
+  }, [setStoredState, state]);
 
   const selectCell = useCallback((pos: Pos) => {
     dispatch({ type: "select-cell", pos });
@@ -740,11 +931,20 @@ const useSudokuGrid = ({
     dispatch({ type: "clear-grid" });
   }, []);
 
+  const incrementHintCount = useCallback(() => {
+    dispatch({ type: "increment-hint-count" });
+  }, []);
+
   return {
     grid: state.grid,
     inputMode: state.inputMode,
     autoCandidates: state.autoCandidates,
     autoCheck: state.autoCheck,
+    hintCount: state.hintCount,
+    mistakeCount: state.mistakeCount,
+    moveCount: state.moveCount,
+    startedAt: state.startedAt,
+    completedAt: state.completedAt,
     isComplete: state.grid.every(
       (cell, index) => cell.value !== 0 && cell.value === state.solution[index]
     ),
@@ -767,6 +967,7 @@ const useSudokuGrid = ({
     checkGrid,
     deleteCandidates,
     clearGrid,
+    incrementHintCount,
   };
 };
 
