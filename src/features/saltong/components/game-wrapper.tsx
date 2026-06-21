@@ -17,6 +17,14 @@ import {
 } from "../hooks/user-round";
 import { useSaltongUserStatsMutation } from "../hooks/user-stats";
 import ResultsDialog, { RESULTS_MODAL_ID } from "./results";
+import { useJoinGroup } from "@/features/groups/hooks/use-join-group";
+
+const AUTO_JOIN_SOLVERS_ENABLED =
+  process.env.NEXT_PUBLIC_AUTO_JOIN_SALTONG_SOLVERS_ENABLED === "true";
+const AUTO_JOIN_SOLVERS_GROUP_ID =
+  process.env.NEXT_PUBLIC_AUTO_JOIN_SALTONG_SOLVERS_GROUP_ID;
+const AUTO_JOIN_SOLVERS_INVITE_CODE =
+  process.env.NEXT_PUBLIC_AUTO_JOIN_SALTONG_SOLVERS_INVITE_CODE;
 
 export default function GameWrapper({
   maxTries,
@@ -40,6 +48,7 @@ export default function GameWrapper({
 
   const { mutate: setAnswer } = useSaltongUserRoundMutation();
   const { mutate: setStats } = useSaltongUserStatsMutation();
+  const { mutate: joinSolverGroup } = useJoinGroup();
 
   const setOpenModal = useModalStore((state) => state.setOpenModal);
 
@@ -144,6 +153,27 @@ export default function GameWrapper({
         date: roundData.date,
       };
       setAnswer(answerData);
+
+      if (
+        isCurrAnswerCorrect &&
+        userId &&
+        userId !== "unauthenticated" &&
+        AUTO_JOIN_SOLVERS_ENABLED &&
+        AUTO_JOIN_SOLVERS_GROUP_ID &&
+        AUTO_JOIN_SOLVERS_INVITE_CODE
+      ) {
+        joinSolverGroup(
+          {
+            groupId: AUTO_JOIN_SOLVERS_GROUP_ID,
+            inviteCode: AUTO_JOIN_SOLVERS_INVITE_CODE,
+          },
+          {
+            onError: () => {
+              // Auto-join is best-effort and should not interrupt gameplay.
+            },
+          }
+        );
+      }
 
       // Update stats when the round ends
       if (isCurrAnswerCorrect || isTriesExceeded) {

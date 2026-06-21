@@ -94,9 +94,11 @@ const TABS = [
 export default function GroupLeaderboards({
   groupId,
   currentUserId,
+  hideUnsolvedMembers,
 }: {
   groupId: string;
   currentUserId: string;
+  hideUnsolvedMembers: boolean;
 }) {
   const [date, setDate] = useState(new Date());
   const [selectedMode, setSelectedMode] = useState(TABS[0].mode);
@@ -182,6 +184,17 @@ export default function GroupLeaderboards({
           ) as typeof leaderboard;
         }
 
+        if (hideUnsolvedMembers) {
+          leaderboard = leaderboard?.filter((row) => {
+            if (tab.mode === "hex") {
+              const hexRow = row as HexLeaderboardEntry;
+              return !!hexRow.liveScore || !!hexRow.vaultScore;
+            }
+
+            return !!(row as SaltongLeaderboardEntry).endedAt;
+          }) as typeof leaderboard;
+        }
+
         return {
           ...tab,
           leaderboard,
@@ -196,7 +209,7 @@ export default function GroupLeaderboards({
                 ),
         };
       }),
-    [currentUserId, queries, dateQueryKey]
+    [currentUserId, hideUnsolvedMembers, queries, dateQueryKey]
   );
 
   const temporaryList = useMemo(

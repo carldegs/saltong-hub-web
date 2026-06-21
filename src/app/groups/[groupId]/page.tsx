@@ -92,6 +92,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
             groupId={groupId}
             groupName={group.name}
             groupAvatarUrl={group.avatarUrl}
+            hideUnsolvedMembers={group.hideUnsolvedMembers}
             isAdmin={isAdmin}
           />
           <GroupMembersDialog
@@ -106,6 +107,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
         <GroupLeaderboards
           groupId={group.id}
           currentUserId={claimData.claims.sub}
+          hideUnsolvedMembers={group.hideUnsolvedMembers}
         />
       ) : (
         <InviteMembers {...group} />

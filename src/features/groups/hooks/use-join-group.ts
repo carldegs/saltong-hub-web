@@ -1,10 +1,12 @@
 import { useSupabaseClient } from "@/lib/supabase/client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { GroupMember, Profile } from "../types";
 import { insertProfile } from "@/features/profiles/queries/insert-profile";
 import { joinGroupAction } from "../actions";
 
 export function useJoinGroup() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (params: { groupId: string; inviteCode: string }) => {
       const { data, error } = await joinGroupAction(
@@ -17,6 +19,11 @@ export function useJoinGroup() {
       }
 
       return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-groups"] });
+      queryClient.invalidateQueries({ queryKey: ["leaderboards"] });
+      queryClient.invalidateQueries({ queryKey: ["group-leaderboards"] });
     },
   });
 }

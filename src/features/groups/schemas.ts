@@ -7,6 +7,7 @@ export const groupValidationSchema = z.object({
     .min(3, "Group name is required")
     .max(50, "Group name is too long"),
   invitesEnabled: z.boolean().optional(),
+  hideUnsolvedMembers: z.boolean().optional(),
   inviteCode: z
     .string()
     .min(8, "Invite code must be 8 characters")

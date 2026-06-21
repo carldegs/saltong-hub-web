@@ -55,6 +55,7 @@ export type Database = {
           avatarUrl: string | null;
           createdAt: string;
           createdBy: string | null;
+          hideUnsolvedMembers: boolean;
           id: string;
           inviteCode: string;
           invitesEnabled: boolean | null;
@@ -67,6 +68,7 @@ export type Database = {
           avatarUrl?: string | null;
           createdAt?: string;
           createdBy?: string | null;
+          hideUnsolvedMembers?: boolean;
           id?: string;
           inviteCode: string;
           invitesEnabled?: boolean | null;
@@ -79,6 +81,7 @@ export type Database = {
           avatarUrl?: string | null;
           createdAt?: string;
           createdBy?: string | null;
+          hideUnsolvedMembers?: boolean;
           id?: string;
           inviteCode?: string;
           invitesEnabled?: boolean | null;

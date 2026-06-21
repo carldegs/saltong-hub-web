@@ -6,9 +6,15 @@ export function joinGroup(
   client: SupabaseClient<Database>,
   data: Omit<GroupMember, "joinedAt" | "role">
 ) {
-  return client.from("group_members").insert({
-    ...data,
-    joinedAt: new Date().toISOString(),
-    role: "member",
-  });
+  return client.from("group_members").upsert(
+    {
+      ...data,
+      joinedAt: new Date().toISOString(),
+      role: "member",
+    },
+    {
+      ignoreDuplicates: true,
+      onConflict: "groupId,userId",
+    }
+  );
 }
