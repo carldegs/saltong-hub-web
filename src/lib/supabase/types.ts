@@ -50,30 +50,6 @@ export type Database = {
           },
         ];
       };
-      app_feature_flags: {
-        Row: {
-          config: Json;
-          createdAt: string;
-          enabled: boolean;
-          key: string;
-          updatedAt: string;
-        };
-        Insert: {
-          config?: Json;
-          createdAt?: string;
-          enabled?: boolean;
-          key: string;
-          updatedAt?: string;
-        };
-        Update: {
-          config?: Json;
-          createdAt?: string;
-          enabled?: boolean;
-          key?: string;
-          updatedAt?: string;
-        };
-        Relationships: [];
-      };
       groups: {
         Row: {
           avatarUrl: string | null;
