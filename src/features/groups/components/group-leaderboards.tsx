@@ -184,10 +184,15 @@ export default function GroupLeaderboards({
           ) as typeof leaderboard;
         }
 
-        if (hideUnsolvedMembers && tab.mode !== "hex") {
-          leaderboard = leaderboard?.filter(
-            (row) => !!(row as SaltongLeaderboardEntry).endedAt
-          ) as typeof leaderboard;
+        if (hideUnsolvedMembers) {
+          leaderboard = leaderboard?.filter((row) => {
+            if (tab.mode === "hex") {
+              const hexRow = row as HexLeaderboardEntry;
+              return !!hexRow.liveScore || !!hexRow.vaultScore;
+            }
+
+            return !!(row as SaltongLeaderboardEntry).endedAt;
+          }) as typeof leaderboard;
         }
 
         return {
