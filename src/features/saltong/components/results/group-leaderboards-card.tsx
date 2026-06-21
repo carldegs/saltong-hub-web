@@ -268,6 +268,18 @@ export default function GroupLeaderboardsCard({
     return groupList?.find((group) => group.id === selectedGroupId);
   }, [groupList, selectedGroupId]);
 
+  const visibleLeaderboards = useMemo(() => {
+    const saltongLeaderboards = leaderboards as
+      | SaltongLeaderboardEntry[]
+      | undefined;
+
+    if (!selectedGroup?.hideUnsolvedMembers) {
+      return saltongLeaderboards;
+    }
+
+    return saltongLeaderboards?.filter((row) => !!row.endedAt);
+  }, [leaderboards, selectedGroup?.hideUnsolvedMembers]);
+
   const mockData = useMemo(() => {
     // randomize the mock data by using Math.random
     const randomizedData = [...MOCK_LEADERBOARDS].sort(
@@ -317,7 +329,7 @@ export default function GroupLeaderboardsCard({
 
   const isLoading = isLoadingGroupList && !isLoadingLeaderboards;
   const canShowLeaderboards =
-    !isLoading && !!leaderboards && leaderboards.length > 1;
+    !isLoading && !!visibleLeaderboards && visibleLeaderboards.length > 0;
 
   return (
     <Card className="gap-4">
@@ -400,7 +412,7 @@ export default function GroupLeaderboardsCard({
         ) : canShowLeaderboards ? (
           <ScrollArea className="h-full max-h-[209px] overflow-auto rounded-md">
             <div className="bg-muted/50 grid grid-cols-2 gap-4 rounded-md p-4">
-              {leaderboards.map((data) => (
+              {visibleLeaderboards?.map((data) => (
                 <GroupLeaderboardEntry
                   key={data.userId}
                   data={data}

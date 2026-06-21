@@ -50,11 +50,36 @@ export type Database = {
           },
         ];
       };
+      app_feature_flags: {
+        Row: {
+          config: Json;
+          createdAt: string;
+          enabled: boolean;
+          key: string;
+          updatedAt: string;
+        };
+        Insert: {
+          config?: Json;
+          createdAt?: string;
+          enabled?: boolean;
+          key: string;
+          updatedAt?: string;
+        };
+        Update: {
+          config?: Json;
+          createdAt?: string;
+          enabled?: boolean;
+          key?: string;
+          updatedAt?: string;
+        };
+        Relationships: [];
+      };
       groups: {
         Row: {
           avatarUrl: string | null;
           createdAt: string;
           createdBy: string | null;
+          hideUnsolvedMembers: boolean;
           id: string;
           inviteCode: string;
           invitesEnabled: boolean | null;
@@ -67,6 +92,7 @@ export type Database = {
           avatarUrl?: string | null;
           createdAt?: string;
           createdBy?: string | null;
+          hideUnsolvedMembers?: boolean;
           id?: string;
           inviteCode: string;
           invitesEnabled?: boolean | null;
@@ -79,6 +105,7 @@ export type Database = {
           avatarUrl?: string | null;
           createdAt?: string;
           createdBy?: string | null;
+          hideUnsolvedMembers?: boolean;
           id?: string;
           inviteCode?: string;
           invitesEnabled?: boolean | null;

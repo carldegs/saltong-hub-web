@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -29,7 +30,10 @@ import ProfileAvatar from "@/app/components/profile-avatar";
 import { getBoringAvatarUrl } from "@/utils/user";
 import { useRouter } from "next/navigation";
 
-const groupEditSchema = groupValidationSchema.pick({ name: true });
+const groupEditSchema = groupValidationSchema.pick({
+  name: true,
+  hideUnsolvedMembers: true,
+});
 
 type GroupEditFormData = z.infer<typeof groupEditSchema>;
 
@@ -37,6 +41,7 @@ interface GroupEditDialogProps {
   groupId: string;
   groupName: string;
   groupAvatarUrl: string | null;
+  hideUnsolvedMembers: boolean;
   isAdmin: boolean;
 }
 
@@ -44,6 +49,7 @@ export default function GroupEditDialog({
   groupId,
   groupName,
   groupAvatarUrl,
+  hideUnsolvedMembers,
   isAdmin,
 }: GroupEditDialogProps) {
   const [open, setOpen] = useState(false);
@@ -57,6 +63,7 @@ export default function GroupEditDialog({
     resolver: zodResolver(groupEditSchema),
     defaultValues: {
       name: groupName,
+      hideUnsolvedMembers,
     },
   });
 
@@ -70,6 +77,7 @@ export default function GroupEditDialog({
     const updates: {
       name?: string;
       avatarUrl?: string;
+      hideUnsolvedMembers?: boolean;
     } = {};
 
     if (data.name !== groupName) {
@@ -78,6 +86,10 @@ export default function GroupEditDialog({
 
     if (currentAvatarUrl !== (groupAvatarUrl || "")) {
       updates.avatarUrl = currentAvatarUrl;
+    }
+
+    if (data.hideUnsolvedMembers !== hideUnsolvedMembers) {
+      updates.hideUnsolvedMembers = data.hideUnsolvedMembers;
     }
 
     // Only update if something changed
@@ -153,6 +165,31 @@ export default function GroupEditDialog({
                     <Input {...field} placeholder="Enter group name" />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="hideUnsolvedMembers"
+              render={({ field }) => (
+                <FormItem className="flex items-start gap-3 rounded-md border p-4">
+                  <FormControl>
+                    <Input
+                      type="checkbox"
+                      checked={field.value ?? false}
+                      onChange={(event) => field.onChange(event.target.checked)}
+                      className="mt-1 size-4"
+                    />
+                  </FormControl>
+                  <div className="space-y-1">
+                    <FormLabel>Hide unfinished members</FormLabel>
+                    <FormDescription>
+                      Only show members who have finished the selected Saltong
+                      round on group leaderboards.
+                    </FormDescription>
+                    <FormMessage />
+                  </div>
                 </FormItem>
               )}
             />

@@ -207,6 +207,7 @@ export async function updateGroupAction(
   updates: {
     name?: string;
     avatarUrl?: string;
+    hideUnsolvedMembers?: boolean;
     isPublic?: boolean;
     invitesEnabled?: boolean;
   }
@@ -247,6 +248,10 @@ export async function updateGroupAction(
 
   if (updates.avatarUrl !== undefined) {
     updateData.avatarUrl = updates.avatarUrl;
+  }
+
+  if (updates.hideUnsolvedMembers !== undefined) {
+    updateData.hideUnsolvedMembers = updates.hideUnsolvedMembers;
   }
 
   if (updates.isPublic !== undefined) {

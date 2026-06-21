@@ -10,6 +10,7 @@ export function useUpdateGroup() {
       updates: {
         name?: string;
         avatarUrl?: string;
+        hideUnsolvedMembers?: boolean;
         isPublic?: boolean;
         invitesEnabled?: boolean;
       };
