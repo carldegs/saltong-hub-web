@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavUserDropdown, UserDetail } from "../../nav-user-dropdown";
 import { ChevronsUpDown } from "lucide-react";
+import CompleteProfileSessionPrompt from "@/features/profiles/components/complete-profile-session-prompt";
 
 export default async function NavUser() {
   const supabase = await createClient();
@@ -37,22 +38,33 @@ export default async function NavUser() {
   const { profile, isTemporaryProfile, avatarOptions } = profileFormData ?? {};
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <NavUserDropdown
-          profile={profile}
-          isTemporaryProfile={isTemporaryProfile}
+    <>
+      {isTemporaryProfile && (
+        <CompleteProfileSessionPrompt
+          userId={profile.id}
+          username={profile.username}
+          avatarUrl={profile.avatar_url ?? ""}
+          displayName={profile.display_name ?? ""}
           avatarOptions={avatarOptions}
-        >
-          <SidebarMenuButton
-            size="lg"
-            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+        />
+      )}
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <NavUserDropdown
+            profile={profile}
+            isTemporaryProfile={isTemporaryProfile}
+            avatarOptions={avatarOptions}
           >
-            <UserDetail {...profile} />
-            <ChevronsUpDown className="ml-auto size-4" />
-          </SidebarMenuButton>
-        </NavUserDropdown>
-      </SidebarMenuItem>
-    </SidebarMenu>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <UserDetail {...profile} />
+              <ChevronsUpDown className="ml-auto size-4" />
+            </SidebarMenuButton>
+          </NavUserDropdown>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </>
   );
 }
