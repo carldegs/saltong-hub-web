@@ -117,6 +117,35 @@ export async function joinGroupAction(groupId: string, inviteCode: string) {
     throw new Error("Unauthorized: User not found");
   }
 
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("id", data.claims.sub)
+    .maybeSingle();
+
+  if (profileError) {
+    throw new Error(`Failed to get profile: ${profileError.message}`);
+  }
+
+  if (!profile) {
+    throw new Error("Profile required to join group");
+  }
+
+  const { data: group, error: groupError } = await supabase
+    .from("groups")
+    .select("id")
+    .eq("id", groupId)
+    .eq("inviteCode", inviteCode)
+    .maybeSingle();
+
+  if (groupError) {
+    throw new Error(`Failed to get group: ${groupError.message}`);
+  }
+
+  if (!group) {
+    throw new Error("Group not found");
+  }
+
   const response = await joinGroup(supabase, {
     groupId,
     userId: data.claims.sub,
