@@ -12,6 +12,7 @@ import { ReactNode } from "react";
 import ProfileEditorForm from "./profile-editor-form";
 import { useInsertProfileMutation } from "../hooks/profile";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function CompleteProfileDialog({
   children,
@@ -35,6 +36,7 @@ export default function CompleteProfileDialog({
   action?: "redirect" | "close";
 }) {
   const { mutateAsync, isPending } = useInsertProfileMutation();
+  const router = useRouter();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -62,12 +64,14 @@ export default function CompleteProfileDialog({
                 window.location.href = `/u/${data.username}`;
               } else if (onOpenChange) {
                 onOpenChange(false);
+                router.refresh();
               } else {
                 // Close the dialog by simulating a click on the overlay
                 const overlay = document.querySelector(
                   '[data-slot="dialog-overlay"]'
                 ) as HTMLElement;
                 overlay?.click();
+                router.refresh();
               }
             } catch (error) {
               let errorMessage = "An unknown error occurred";
