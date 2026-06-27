@@ -41,7 +41,9 @@ export function useSaltongUserRound(params: SaltongUserRoundPrimaryKeys) {
         const data =
           localPlayerRound?.find(
             (round) =>
-              round.mode === params.mode && round.userId === params.userId
+              round.mode === params.mode &&
+              round.userId === params.userId &&
+              round.date === params.date
           ) ?? null;
         return data;
       }
@@ -74,7 +76,9 @@ export function useSaltongUserRoundMutation() {
         setLocalPlayerRound((prev) => {
           const existingIndex = prev.findIndex(
             (round) =>
-              round.mode === params.mode && round.userId === params.userId
+              round.mode === params.mode &&
+              round.userId === params.userId &&
+              round.date === params.date
           );
 
           const datedParams = {
