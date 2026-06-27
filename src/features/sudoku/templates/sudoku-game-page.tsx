@@ -40,7 +40,10 @@ export default async function SudokuGamePage({
   const searchParams = await _searchParams;
   const date = getSudokuGameDate(searchParams?.d);
 
-  if (isFormattedDateInFuture(date) || isSudokuDateBeforeStart(date)) {
+  if (
+    (searchParams?.d && isFormattedDateInFuture(searchParams.d)) ||
+    isSudokuDateBeforeStart(date)
+  ) {
     return notFound();
   }
 

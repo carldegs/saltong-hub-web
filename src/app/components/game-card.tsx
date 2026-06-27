@@ -9,10 +9,13 @@ import { BaseConfig } from "@/features/game-registry/types";
 export default async function GameCard({
   className,
   ...gameSettings
-}: { className?: string } & BaseConfig) {
-  const { icon, displayName, blurb, colorScheme, path } = gameSettings;
+}: { className?: string } & BaseConfig & { vaultPath?: string }) {
+  const { icon, displayName, blurb, colorScheme, path, vaultPath } =
+    gameSettings;
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
+  const playHref = toPlayHref(path);
+  const vaultHref = toPlayHref(vaultPath ?? `${path}/vault`);
 
   return (
     <div
@@ -29,6 +32,8 @@ export default async function GameCard({
             colorScheme === "purple",
           "from-saltong-orange-300 to-saltong-orange-50 dark:from-saltong-orange-500/70 dark:to-saltong-orange-900/70":
             colorScheme === "orange",
+          "from-saltong-teal-300 to-saltong-teal-50 dark:from-saltong-teal-500/70 dark:to-saltong-teal-900/70":
+            colorScheme === "teal",
         },
         className
       )}
@@ -50,13 +55,15 @@ export default async function GameCard({
             "bg-purple-500 dark:bg-purple-200": colorScheme === "purple",
             "bg-saltong-orange-500 dark:bg-saltong-orange-200":
               colorScheme === "orange",
+            "bg-saltong-teal-500 dark:bg-saltong-teal-200":
+              colorScheme === "teal",
           })}
         >
-          <HoverPrefetchLink href={`/play${path}`}>Play Game</HoverPrefetchLink>
+          <HoverPrefetchLink href={playHref}>Play Game</HoverPrefetchLink>
         </Button>
         {data?.claims && (
           <Button className="flex-1" variant="outline" asChild>
-            <HoverPrefetchLink href={`/play${path}/vault`}>
+            <HoverPrefetchLink href={vaultHref}>
               <VaultIcon className="mr-1 size-5" />
               Vault
             </HoverPrefetchLink>
@@ -65,4 +72,8 @@ export default async function GameCard({
       </div>
     </div>
   );
+}
+
+function toPlayHref(path: string) {
+  return path.startsWith("/play") ? path : `/play${path}`;
 }

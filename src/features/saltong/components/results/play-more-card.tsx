@@ -21,6 +21,7 @@ import Link from "next/link";
 import { HEX_CONFIG } from "@/features/hex/config";
 import { sendEvent } from "@/lib/analytics";
 import { SUDOKU_CONFIG } from "@/features/sudoku/config";
+import { MATHINIK_CONFIG } from "@/features/mathinik/config";
 
 const GAMES = [
   ...Object.values(SALTONG_CONFIG.modes),
@@ -31,6 +32,10 @@ const GAMES = [
   {
     ...SUDOKU_CONFIG,
     mode: "sudoku",
+  },
+  {
+    ...MATHINIK_CONFIG,
+    mode: "mathinik",
   },
 ];
 
@@ -101,7 +106,7 @@ export default function PlayMoreCard({ mode }: { mode: SaltongMode }) {
               <ItemActions>
                 <Button size="sm" asChild className="font-bold">
                   <Link
-                    href={`/play${game.mode === "classic" ? "" : `/${game.mode}`}`}
+                    href={toPlayHref(game.path)}
                     prefetch={false}
                     onClick={() => {
                       sendEvent("button_click", {
@@ -123,4 +128,8 @@ export default function PlayMoreCard({ mode }: { mode: SaltongMode }) {
       </CardDescription>
     </Card>
   );
+}
+
+function toPlayHref(path: string) {
+  return path.startsWith("/play") ? path : `/play${path}`;
 }

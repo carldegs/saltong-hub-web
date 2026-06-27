@@ -11,7 +11,7 @@
     "test": "vitest run",
     "prepare": "husky",
     "supabase:login": "supabase login",
-    "supabase:typegen": "supabase gen types typescript --project-id ibsmehfecfosjhjtywmr > src/lib/supabase/types.ts"
+    "supabase:typegen": "supabase gen types typescript --local > src/lib/supabase/types.ts"
   },
   "dependencies": {
     "@c15t/nextjs": "^1.8.2",
@@ -96,7 +96,7 @@
     "postcss": "^8.5.6",
     "prettier": "^3.6.1",
     "prettier-plugin-tailwindcss": "^0.6.13",
-    "supabase": "^2.72.8",
+    "supabase": "^2.108.0",
     "tailwindcss": "^4.1.10",
     "tailwindcss-easing": "^0.2.1",
     "typescript": "^5.8.3",
@@ -108,6 +108,9 @@
     "overrides": {
       "@types/react": "19.2.10",
       "@types/react-dom": "19.2.3"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "supabase"
+    ]
   }
 }

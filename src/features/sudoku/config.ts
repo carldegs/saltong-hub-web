@@ -38,7 +38,7 @@ export const SUDOKU_CONFIG = {
   blurb:
     "Place the numbers so everything fits perfectly together, one clue at a time.",
   colorScheme: "orange",
-  startDate: "2026-05-24",
+  startDate: "2026-06-19",
   hasModes: true,
   modes: SUDOKU_MODES,
 } as const satisfies SudokuConfig;

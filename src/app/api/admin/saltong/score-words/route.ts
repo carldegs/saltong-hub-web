@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
 
 IMPORTANT: Score 0 for English words or words that have Filipino/Tagalog equivalents (e.g., IDEA should be 0 because the Filipino word is IDEYA)
 
-0: English word (not Filipino/Tagalog, or has a Filipino equivalent)
+0: English word (not Filipino/Tagalog, or has a Filipino equivalent THAT IS COMMONLY USED AS WELL)
 1: Very common Filipino words known by almost everyone
 2: Common Filipino words used regularly
 3: Moderately common Filipino words

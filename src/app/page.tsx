@@ -7,9 +7,10 @@ import HomeNavbarBrand from "./components/home-navbar-brand";
 import { SALTONG_CONFIG } from "@/features/saltong/config";
 import { HEX_CONFIG } from "@/features/hex/config";
 import { SUDOKU_CONFIG } from "@/features/sudoku/config";
+import { MATHINIK_CONFIG } from "@/features/mathinik/config";
 import CreateAccountBanner from "@/components/banners/create-account-banner";
-import GlobalLeaderboardsBanner from "@/components/banners/global-leaderboards-banner";
 import { pageIndexingMetadata } from "@/lib/seo";
+import NumbersGamesBanner from "@/components/banners/numbers-games-banner";
 
 const GAME_LIST = [
   ...Object.values(SALTONG_CONFIG.modes),
@@ -21,6 +22,7 @@ const GAME_LIST = [
     ...SUDOKU_CONFIG,
     displayName: "Sudoku",
   },
+  MATHINIK_CONFIG,
 ];
 
 export const metadata: Metadata = {
@@ -44,14 +46,13 @@ export default async function HomePage() {
       <main className="@container/top h-full w-full">
         <div className="bg-muted/10 relative h-fit w-full overflow-hidden border-b">
           <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-4 px-4 py-8 @min-[600px]/top:grid-cols-12">
-            <DailyGamesCard className="@min-[600px]/top:col-span-7" />
-            <HexGamesCard className="@min-[600px]/top:col-span-5" />
+            <DailyGamesCard className="@min-[600px]/top:col-span-8" />
+            <HexGamesCard className="@min-[600px]/top:col-span-4" />
           </div>
         </div>
 
         <div className="mx-auto mt-6 max-w-6xl px-4">
-          <GlobalLeaderboardsBanner />
-          {/* <VaultBanner /> */}
+          <NumbersGamesBanner />
         </div>
         <div className="@container/bot mx-auto w-full max-w-5xl space-y-8 px-4 py-8">
           <h3>All Games</h3>

@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useModalStore } from "@/providers/modal/modal-provider";
 import { LightbulbIcon, XIcon } from "lucide-react";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { triggerSuccessConfetti } from "@/features/saltong/components/results/utils";
 import { getSudokuHint, type SudokuHint } from "../hints";
 import useSudokuGrid from "../hooks/use-sudoku-grid";
 import { Pos, SudokuCellVisualState, SudokuMode } from "../types";
@@ -54,7 +55,7 @@ function SudokuCell({
       tabIndex={tabIndex}
       aria-label={ariaLabel}
       className={cn(
-        "border-primary [container-type:size] relative flex aspect-square cursor-pointer items-center justify-center overflow-hidden border-[0.5px] font-semibold transition-colors"
+        "bg-background [container-type:size] relative flex aspect-square cursor-pointer items-center justify-center overflow-hidden border-[0.5px] border-[color:rgba(120,53,15,0.22)] font-semibold transition-colors dark:border-[color:rgba(251,191,36,0.14)] dark:bg-[color:rgba(28,25,23,0.74)]"
       )}
       onClick={(event) => {
         event.currentTarget.focus();
@@ -112,7 +113,7 @@ function SudokuCell({
 
 function SudokuBlock({ children }: { children: React.ReactNode }) {
   return (
-    <div className="outline-primary relative grid h-full w-full grid-cols-3 grid-rows-3 outline-2">
+    <div className="relative grid h-full w-full grid-cols-3 grid-rows-3 outline-2 outline-[color:rgba(120,53,15,0.46)] dark:outline-[color:rgba(251,191,36,0.24)]">
       {children}
     </div>
   );
@@ -161,6 +162,8 @@ export default function SudokuGrid({
   const setOpenModal = useModalStore((state) => state.setOpenModal);
   const gridSize = Math.sqrt(grid.length);
   const cellRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const wasCompleteRef = useRef(isComplete);
+  const confettiShownRef = useRef(false);
   const [hint, setHint] = useState<SudokuHint | null>(null);
   const selectedIndex = selectedCell
     ? getIdxFromPos(selectedCell.pos, gridSize)
@@ -175,9 +178,15 @@ export default function SudokuGrid({
   }, [gridSize, selectedCell]);
 
   useEffect(() => {
-    if (isComplete) {
+    if (isComplete && !wasCompleteRef.current) {
+      if (!confettiShownRef.current) {
+        confettiShownRef.current = true;
+        triggerSuccessConfetti();
+      }
       setOpenModal(SUDOKU_RESULTS_MODAL_ID);
     }
+
+    wasCompleteRef.current = isComplete;
   }, [isComplete, setOpenModal]);
 
   const selectCellFromUser = (pos: Pos) => {
@@ -254,7 +263,7 @@ export default function SudokuGrid({
   return (
     <div className="mx-auto flex h-full min-h-0 w-full max-w-[58rem] flex-col items-center justify-center gap-2 [--sudoku-board-size:min(calc(100vw-1rem),calc(48svh-4.75rem),42rem)] sm:gap-4 sm:[--sudoku-board-size:min(calc(100vw-2rem),calc(50svh-4.75rem),44rem)] lg:flex-row lg:items-start lg:gap-7 lg:[--sudoku-board-size:min(34rem,calc(100vw-24rem),calc(100svh-12rem))]">
       <div className="flex w-[var(--sudoku-board-size)] flex-col gap-3">
-        <div className="outline-primary relative grid aspect-square w-full grid-cols-3 overflow-hidden outline-4">
+        <div className="relative grid aspect-square w-full grid-cols-3 overflow-hidden bg-[radial-gradient(circle_at_20%_18%,rgba(255,255,255,0.75),transparent_28%),linear-gradient(135deg,rgba(254,235,200,0.95),rgba(252,211,141,0.72)_48%,rgba(217,119,6,0.28))] shadow-[0_18px_50px_rgba(120,53,15,0.16)] outline-4 outline-[color:rgba(120,53,15,0.58)] dark:bg-[radial-gradient(circle_at_20%_18%,rgba(120,53,15,0.22),transparent_30%),linear-gradient(135deg,rgba(69,20,3,0.92),rgba(41,37,36,0.96)_52%,rgba(15,23,42,0.88))] dark:shadow-[0_18px_50px_rgba(0,0,0,0.35)] dark:outline-[color:rgba(251,191,36,0.28)]">
           {Array.from({ length: gridSize }, (_, blockIndex) => {
             const blockRow = Math.floor(blockIndex / 3);
             const blockCol = blockIndex % 3;
@@ -369,7 +378,6 @@ export default function SudokuGrid({
         mode={mode}
         date={date}
         roundId={roundId}
-        grid={grid}
         startedAt={startedAt}
         completedAt={completedAt}
         hintCount={hintCount}

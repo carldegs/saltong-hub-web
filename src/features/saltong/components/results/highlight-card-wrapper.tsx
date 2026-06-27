@@ -8,7 +8,7 @@ export function HighlightCardWrapper({
   children,
   className,
 }: {
-  theme?: "green" | "red" | "blue" | "purple";
+  theme?: "green" | "red" | "blue" | "purple" | "orange" | "teal";
   className?: string;
   children: React.ReactNode;
 }) {
@@ -25,6 +25,10 @@ export function HighlightCardWrapper({
             theme === "blue",
           "from-saltong-purple-600 to-saltong-purple-700 border-saltong-purple-700 dark:from-saltong-purple-950 dark:to-saltong-purple-900 dark:border-saltong-purple-950":
             theme === "purple",
+          "from-saltong-orange-600 to-saltong-orange-700 border-saltong-orange-700 dark:from-saltong-orange-950 dark:to-saltong-orange-900 dark:border-saltong-orange-950":
+            theme === "orange",
+          "from-saltong-teal-600 to-saltong-teal-700 border-saltong-teal-700 dark:from-saltong-teal-950 dark:to-saltong-teal-900 dark:border-saltong-teal-950":
+            theme === "teal",
         },
         className
       )}

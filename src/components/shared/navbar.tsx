@@ -16,6 +16,7 @@ export const navbarBrandTitleVariants = cva("", {
       blue: "text-saltong-blue",
       red: "text-saltong-red",
       orange: "text-saltong-orange",
+      teal: "text-saltong-teal",
       default: "text-[#252827] dark:text-[#EFFFF7]",
     },
   },
@@ -32,6 +33,7 @@ const navbarBrandBoxedVariants = cva("", {
       blue: "bg-saltong-blue text-saltong-blue-200",
       red: "bg-saltong-red text-saltong-red-200",
       orange: "bg-saltong-orange text-saltong-orange-100",
+      teal: "bg-saltong-teal text-saltong-teal-200",
       default: "bg-black text-white dark:bg-white dark:text-black",
     },
   },
@@ -51,6 +53,7 @@ const navbarBackgroundGradientVariants = cva("", {
       red: "from-saltong-red-400/20 to-background/20 hover:from-saltong-red-400/30",
       orange:
         "from-saltong-orange-400/20 to-background/20 hover:from-saltong-orange-400/30",
+      teal: "from-saltong-teal-400/20 to-background/20 hover:from-saltong-teal-400/30",
       default: "background-20",
     },
   },

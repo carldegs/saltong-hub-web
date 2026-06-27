@@ -1,18 +1,23 @@
 "use client";
 
 import { DigitalClock } from "@/components/ui/digital-clock";
+import { cn } from "@/lib/utils";
 import { HighlightCardWrapper } from "./highlight-card-wrapper";
 import { differenceInSeconds } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
+
+type TimeCardTheme = "green" | "red" | "blue" | "purple" | "orange" | "teal";
 
 export function TimeCard({
   startTime,
   endTime,
   theme = "green",
+  className,
 }: {
   startTime: string;
   endTime: string;
-  theme?: "green" | "red" | "blue" | "purple";
+  theme?: TimeCardTheme;
+  className?: string;
 }) {
   const start = new Date(startTime);
   const end = new Date(endTime);
@@ -75,13 +80,17 @@ export function TimeCard({
         return { clockColor: "#4EC1FF", clockOff: "#4EC1FF22" };
       case "purple":
         return { clockColor: "#C084FC", clockOff: "#C084FC22" };
+      case "orange":
+        return { clockColor: "#FDBA74", clockOff: "#FDBA7422" };
+      case "teal":
+        return { clockColor: "#5EEAD4", clockOff: "#5EEAD422" };
       default:
         return { clockColor: "#31FF98", clockOff: "#31FF9822" };
     }
   }, [theme]);
 
   return (
-    <HighlightCardWrapper theme={theme} className="w-full">
+    <HighlightCardWrapper theme={theme} className={cn("w-full", className)}>
       <DigitalClock
         scale={targetDays ? 0.25 : 0.35}
         value={displayDuration}

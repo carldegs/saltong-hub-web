@@ -3,15 +3,13 @@
 import { DigitalClock } from "@/components/ui/digital-clock";
 import { HighlightCardWrapper } from "./highlight-card-wrapper";
 import { useMemo } from "react";
-import type { SaltongUserRound, SaltongUserStats } from "../../types";
+import type { SaltongUserRound } from "../../types";
 
 export function TurnCard({
   solvedTurn,
-  winTurns,
   theme = "green",
 }: {
   solvedTurn?: SaltongUserRound["solvedTurn"];
-  winTurns?: SaltongUserStats["winTurns"];
   theme?: "green" | "red" | "blue" | "purple";
 }) {
   const { clockColor, clockOff } = useMemo(() => {
@@ -27,24 +25,7 @@ export function TurnCard({
     }
   }, [theme]);
 
-  const avgTurns = useMemo(() => {
-    const counts = (winTurns ?? [])
-      .map((value) => Number(value))
-      .map((value) => (Number.isFinite(value) ? value : 0));
-
-    const totalWins = counts.reduce((sum, count) => sum + count, 0);
-    if (!totalWins) return null;
-
-    const weighted = counts.reduce(
-      (sum, count, index) => sum + (index + 1) * count,
-      0
-    );
-
-    return weighted / totalWins;
-  }, [winTurns]);
-
   const turnsDisplay = solvedTurn ? String(solvedTurn) : "FAIL";
-  const avgTurnsDisplay = avgTurns ? avgTurns.toFixed(1) : "—";
 
   return (
     <HighlightCardWrapper

@@ -42,11 +42,12 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function SudokuDifficultyPage(props: Props) {
   const params = await props.params;
-  const date = getSudokuGameDate((await props.searchParams)?.d);
+  const searchParams = await props.searchParams;
+  const date = getSudokuGameDate(searchParams?.d);
 
   if (
     !isSudokuMode(params.difficulty) ||
-    isFormattedDateInFuture(date) ||
+    (searchParams?.d && isFormattedDateInFuture(searchParams.d)) ||
     isSudokuDateBeforeStart(date)
   ) {
     return notFound();

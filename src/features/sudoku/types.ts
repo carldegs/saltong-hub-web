@@ -1,9 +1,17 @@
+import { Tables } from "@/lib/supabase/types";
 import { BaseConfig, BaseGameRegistry } from "../game-registry/types";
 import { LucideIcon } from "lucide-react";
 
 export type SudokuMode = "easy" | "medium" | "hard" | "bathala";
 
 export type SudokuSeedDifficulty = "easy" | "medium" | "hard" | "expert";
+
+export type SudokuUserRound = Tables<"sudoku-user-rounds">;
+
+export type SudokuUserRoundPrimaryKeys = Pick<
+  SudokuUserRound,
+  "userId" | "date" | "mode"
+>;
 
 export type SudokuRemovalRange = readonly [min: number, max: number];
 

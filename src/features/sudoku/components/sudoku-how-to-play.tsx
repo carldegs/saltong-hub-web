@@ -10,7 +10,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 import { BadgeQuestionMarkIcon } from "lucide-react";
+import { useState } from "react";
+import { useIsClient, useLocalStorage } from "usehooks-ts";
 
 const EXAMPLE_GRID = [
   [5, 3, 4, 6, 7, 8, 9, 1, 2],
@@ -26,77 +29,167 @@ const EXAMPLE_GRID = [
 
 const PLAY_TIPS = [
   "Tap a cell, then select a number.",
-  "Rows, columns, and 3x3 boxes cannot repeat a number.",
+  "Rows, columns, and blocks cannot repeat a number.",
   "Use Notes to mark possible numbers when a cell has several options.",
-  "Use Hint when you want the next simple logical clue.",
+  "If you got stuck, use the hint button to help you solve the puzzle!",
 ] as const;
 
 const SETTINGS = [
-  ["Fill Cell Candidate", "adds every legal note to the selected cell."],
-  ["Fill Grid Candidates", "adds legal notes to every empty cell."],
-  ["Auto-Candidates", "keeps notes updated after each entry."],
-  ["Check Cell", "checks the selected filled cell."],
-  ["Check Grid", "checks every filled cell."],
-  ["Auto-Check", "checks entries as you make them."],
-  ["Delete Candidates", "removes all notes."],
+  ["Fill Cell with Notes", "list down the possible values of the cell."],
+  [
+    "Fill Grid with Notes",
+    "fill up all empty cells with their possible values.",
+  ],
+  ["Auto-Notes", "keeps notes updated after each entry."],
+  ["Check Cell", "check if the selected cell has the correct value."],
+  ["Check Grid", "checks every filled cell if it's correct."],
+  ["Auto-Check", "checks your answer as you submit it."],
+  ["Delete Notes", "removes all notes."],
   ["Clear Grid", "resets your entries and notes."],
 ] as const;
 
+const EXAMPLE_SELECTED_CELL = { row: 1, col: 1 } as const;
+const NOTE_EXAMPLE_CANDIDATES = [2, 4, 7] as const;
+
 function ExampleBoard() {
+  return (
+    <>
+      <style>
+        {`
+          @keyframes sudoku-example-row-highlight {
+            0%, 28% { opacity: 1; transform: scale(1); }
+            33%, 100% { opacity: 0; transform: scale(0.94); }
+          }
+
+          @keyframes sudoku-example-column-highlight {
+            0%, 28% { opacity: 0; transform: scale(0.94); }
+            33%, 61% { opacity: 1; transform: scale(1); }
+            66%, 100% { opacity: 0; transform: scale(0.94); }
+          }
+
+          @keyframes sudoku-example-block-highlight {
+            0%, 61% { opacity: 0; transform: scale(0.94); }
+            66%, 94% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.94); }
+          }
+        `}
+      </style>
+      <div
+        aria-hidden
+        className="border-primary bg-background mx-auto grid aspect-square w-full max-w-[18rem] grid-cols-9 overflow-hidden rounded-md border-2 shadow-sm"
+      >
+        {EXAMPLE_GRID.flatMap((row, rowIndex) =>
+          row.map((value, colIndex) => {
+            const isRow = rowIndex === EXAMPLE_SELECTED_CELL.row;
+            const isColumn = colIndex === EXAMPLE_SELECTED_CELL.col;
+            const isBlock = rowIndex < 3 && colIndex < 3;
+            const isSelected =
+              rowIndex === EXAMPLE_SELECTED_CELL.row &&
+              colIndex === EXAMPLE_SELECTED_CELL.col;
+
+            return (
+              <div
+                key={`${rowIndex}-${colIndex}`}
+                className={[
+                  "border-primary/35 relative flex aspect-square items-center justify-center overflow-hidden border text-sm font-black sm:text-base",
+                  colIndex === 2 || colIndex === 5 ? "border-r-2" : "",
+                  rowIndex === 2 || rowIndex === 5 ? "border-b-2" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                {isRow && (
+                  <span className="bg-saltong-green-100 dark:bg-saltong-green-900/45 pointer-events-none absolute inset-0 [animation:sudoku-example-row-highlight_4.8s_ease-in-out_infinite]" />
+                )}
+                {isColumn && (
+                  <span className="bg-saltong-blue-100 dark:bg-saltong-blue-900/45 pointer-events-none absolute inset-0 [animation:sudoku-example-column-highlight_4.8s_ease-in-out_infinite]" />
+                )}
+                {isBlock && (
+                  <span className="bg-saltong-orange-100 dark:bg-saltong-orange-900/45 pointer-events-none absolute inset-0 [animation:sudoku-example-block-highlight_4.8s_ease-in-out_infinite]" />
+                )}
+                {isSelected && (
+                  <span className="ring-saltong-orange-500 dark:ring-saltong-orange-300 pointer-events-none absolute inset-0 z-10 ring-2 ring-inset" />
+                )}
+                <span className="relative z-10">
+                  <span
+                    className={cn("opacity-60", {
+                      "opacity-100": isRow || isColumn || isBlock,
+                    })}
+                  >
+                    {value}
+                  </span>
+                </span>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </>
+  );
+}
+
+function NotesCellExample() {
   return (
     <div
       aria-hidden
-      className="border-primary bg-background mx-auto grid aspect-square w-full max-w-[18rem] grid-cols-9 overflow-hidden rounded-md border-2 shadow-sm"
+      className="border-primary/35 bg-background text-primary/65 mt-3 grid size-16 grid-cols-3 grid-rows-3 place-items-center rounded border font-[family-name:var(--font-handwriting)] text-sm leading-none shadow-sm sm:size-20 sm:text-base dark:bg-stone-900/70"
     >
-      {EXAMPLE_GRID.flatMap((row, rowIndex) =>
-        row.map((value, colIndex) => {
-          const isRow = rowIndex === 0;
-          const isColumn = colIndex === 0;
-          const isBox = rowIndex < 3 && colIndex < 3;
+      {Array.from({ length: 9 }, (_, index) => {
+        const candidate = index + 1;
 
-          return (
-            <div
-              key={`${rowIndex}-${colIndex}`}
-              className={[
-                "border-primary/35 flex aspect-square items-center justify-center border text-sm font-black sm:text-base",
-                isBox && "bg-saltong-orange-100 dark:bg-saltong-orange-900/35",
-                isRow && "bg-saltong-green-100 dark:bg-saltong-green-900/35",
-                isColumn && "bg-saltong-blue-100 dark:bg-saltong-blue-900/35",
-                colIndex === 2 || colIndex === 5 ? "border-r-2" : "",
-                rowIndex === 2 || rowIndex === 5 ? "border-b-2" : "",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-            >
-              {value}
-            </div>
-          );
-        })
-      )}
+        return (
+          <span
+            key={candidate}
+            className={
+              NOTE_EXAMPLE_CANDIDATES.includes(
+                candidate as (typeof NOTE_EXAMPLE_CANDIDATES)[number]
+              )
+                ? "text-current"
+                : "invisible"
+            }
+          >
+            {candidate}
+          </span>
+        );
+      })}
     </div>
   );
 }
 
 export default function SudokuHowToPlay() {
+  const [isOpen, setIsOpen] = useState(false);
+  const isClient = useIsClient();
+  const [hasSeenHowToPlay, setHasSeenHowToPlay] = useLocalStorage(
+    "sudoku-has-seen-how-to-play",
+    false,
+    { initializeWithValue: false }
+  );
+  const open = isOpen || (isClient && !hasSeenHowToPlay);
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!hasSeenHowToPlay) {
+      setHasSeenHowToPlay(true);
+    }
+    setIsOpen(nextOpen);
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline" size="respIcon">
           <BadgeQuestionMarkIcon />
           <span className="hidden md:block">How to Play</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="grid max-h-[calc(100dvh-2rem)] grid-rows-[auto_1fr_auto] gap-0 overflow-hidden p-0 sm:max-w-2xl">
-        <DialogHeader className="border-b px-6 py-5 text-left">
-          <DialogTitle className="text-2xl font-black">
-            How to Play Sudoku
-          </DialogTitle>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="decoration-0">How to Play</DialogTitle>
         </DialogHeader>
-        <div className="no-scrollbar overflow-y-auto px-6 py-5">
+        <div className="no-scrollbar -mx-4 max-h-[50vh] overflow-y-auto px-4">
           <div className="space-y-6">
             <div>
               <p className="text-muted-foreground mt-1 text-sm">
-                Fill the board so every row, column, and 3x3 box has 1-9.
+                Fill the board so every row, column, and block has 1-9.
               </p>
             </div>
             <ExampleBoard />
@@ -112,7 +205,7 @@ export default function SudokuHowToPlay() {
                 </span>
                 , and{" "}
                 <span className="bg-saltong-orange-100 text-saltong-orange-800 dark:bg-saltong-orange-900/45 dark:text-saltong-orange-100 rounded px-1 font-semibold">
-                  box
+                  block
                 </span>{" "}
                 must contain the numbers 1-9, with no repeats.
               </p>
@@ -121,7 +214,13 @@ export default function SudokuHowToPlay() {
               <h3 className="text-lg font-black">Play modes and tips</h3>
               <ul className="text-muted-foreground list-disc space-y-2 pl-5 text-sm leading-6">
                 {PLAY_TIPS.map((tip) => (
-                  <li key={tip}>{tip}</li>
+                  <li key={tip}>
+                    {tip}
+                    {tip ===
+                      "Use Notes to mark possible numbers when a cell has several options." && (
+                      <NotesCellExample />
+                    )}
+                  </li>
                 ))}
               </ul>
             </section>
