@@ -8,19 +8,19 @@ import { SALTONG_CONFIG } from "@/features/saltong/config";
 import { HEX_CONFIG } from "@/features/hex/config";
 import CreateAccountBanner from "@/components/banners/create-account-banner";
 import GlobalLeaderboardsBanner from "@/components/banners/global-leaderboards-banner";
+import { pageIndexingMetadata } from "@/lib/seo";
 
 const GAME_LIST = [...Object.values(SALTONG_CONFIG.modes), HEX_CONFIG];
 
 export const metadata: Metadata = {
   title: "Saltong Hub",
-  description:
-    "Challenge yourself with Saltong, Saltong Mini, Saltong Max, and Saltong Hex. Play daily games, solve puzzles, and compete with friends.",
+  description: "Play daily Filipino word games and puzzles on Saltong Hub.",
+  ...pageIndexingMetadata("/", true),
   openGraph: {
     title: "Saltong Hub",
-    description:
-      "Challenge yourself with Saltong, Saltong Mini, Saltong Max, and Saltong Hex. Play daily games, solve puzzles, and compete with friends.",
+    description: "Play daily Filipino word games and puzzles on Saltong Hub.",
     type: "website",
-    url: "https://saltong.com",
+    url: "/",
   },
 };
 

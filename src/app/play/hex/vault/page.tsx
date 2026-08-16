@@ -8,15 +8,19 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { HEX_CONFIG } from "@/features/hex/config";
 import NavbarUser from "@/components/shared/navbar-user";
+import { canonicalUrl, pageIndexingMetadata } from "@/lib/seo";
+
+const path = "/play/hex/vault";
 
 export const metadata: Metadata = {
+  ...pageIndexingMetadata(path, false),
   title: "Saltong Hex Vault",
   description: "Play with previous Saltong Hex rounds at the Saltong Vault.",
   openGraph: {
     title: "Saltong Hex Vault",
     description: "Play with previous Saltong Hex rounds at the Saltong Vault.",
     type: "website",
-    url: "https://saltong.com/play/hex/vault",
+    url: canonicalUrl(path),
   },
 };
 

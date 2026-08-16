@@ -60,6 +60,15 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/blog",
+        destination: "/patch-notes",
+        permanent: true,
+      },
+    ];
+  },
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
 };
 

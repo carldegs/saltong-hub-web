@@ -1,7 +1,9 @@
 import { Metadata } from "next";
 import { getCachedSaltongRound } from "@/features/saltong/queries/getSaltongRound";
 import { SALTONG_CONFIG } from "@/features/saltong/config";
-import { SaltongMode } from "../types";
+import { canonicalUrl } from "@/lib/seo";
+import type { SaltongMode } from "../types";
+import { getSaltongGameSeo } from "./game-seo";
 
 export interface SaltongMetadataParams {
   searchParams: Promise<{ d?: string }>;
@@ -15,29 +17,34 @@ export async function generateSaltongMetadata({
   const params = await searchParams;
   const round = await getCachedSaltongRound(params.d, mode);
   const displayName = SALTONG_CONFIG.modes[mode]?.displayName || "Saltong";
-  const description = `Play ${displayName} on Saltong Hub.`;
+  const { description, indexing, path } = getSaltongGameSeo(
+    mode,
+    Boolean(params.d)
+  );
 
   if (!round) {
     return {
       title: displayName,
       description,
+      ...indexing,
       openGraph: {
         title: displayName,
         description,
         type: "website",
-        url: `https://saltong.com/play${mode === "classic" ? "" : `/${mode}`}`,
+        url: canonicalUrl(path),
       },
     };
   }
 
   return {
     title: `${displayName} #${round.roundId}`,
-    description: `Play ${displayName} #${round.roundId} on Saltong Hub.`,
+    description,
+    ...indexing,
     openGraph: {
       title: `${displayName} #${round.roundId}`,
-      description: `Play ${displayName} #${round.roundId} on Saltong Hub.`,
+      description,
       type: "website",
-      url: `https://saltong.com/play${mode === "classic" ? "" : `/${mode}`}`,
+      url: canonicalUrl(path),
     },
   };
 }

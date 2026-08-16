@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "test": "vitest run",
     "prepare": "husky",
     "supabase:login": "supabase login",
     "supabase:typegen": "supabase gen types typescript --project-id ibsmehfecfosjhjtywmr > src/lib/supabase/types.ts"
@@ -97,7 +98,8 @@
     "tailwindcss": "^4.1.10",
     "tailwindcss-easing": "^0.2.1",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.35.0"
+    "typescript-eslint": "^8.35.0",
+    "vitest": "^4.1.10"
   },
   "packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264",
   "pnpm": {

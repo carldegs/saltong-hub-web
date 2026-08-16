@@ -1,9 +1,8 @@
 import { MetadataRoute } from "next";
 import { getBlogPosts } from "./patch-notes/utils";
+import { SITE_URL } from "@/lib/seo";
 
-const baseUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL || "https://saltong.com"
-).replace(/\/$/, "");
+const baseUrl = SITE_URL;
 
 // Play game variants
 const playVariants = ["", "mini", "max", "hex"];
@@ -26,14 +25,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
     changeFrequency: "daily" as const,
     priority: 1.0,
-  }));
-
-  // Generate vault pages dynamically - Priority 0.8
-  const vaultPages = playVariants.map((variant) => ({
-    url: `${baseUrl}/play${variant ? `/${variant}` : ""}/vault`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
   }));
 
   // Static routes sorted by priority
@@ -91,5 +82,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  return [...playPages, ...routes, ...vaultPages, ...blogs];
+  return [...playPages, ...routes, ...blogs];
 }

@@ -17,12 +17,14 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { ReactQueryClientProvider } from "@/components/providers/react-query-client-providers";
 import GoogleAdSense from "@/components/ads/adsense";
 import { ConsentManager } from "./consent-manager";
+import { SITE_URL } from "@/lib/seo";
 
 const APP_NAME = "Saltong Hub";
 const APP_TITLE_TEMPLATE = "%s | Saltong Hub";
 const APP_DESCRIPTION = "The place for Filipino word games";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   applicationName: APP_NAME,
   title: {
     default: APP_NAME,
@@ -44,7 +46,7 @@ export const metadata: Metadata = {
       default: APP_NAME,
       template: APP_TITLE_TEMPLATE,
     },
-    url: "https://saltong.com",
+    url: SITE_URL,
     description: APP_DESCRIPTION,
   },
 };
