@@ -3,9 +3,9 @@ import { metadata } from "./page";
 import { FILIPINO_WORDLE_LANDING_COPY } from "./copy";
 
 describe("Filipino word-game landing page", () => {
-  it("publishes indexable, canonical Saltong metadata without competitor terms in its description", () => {
+  it("publishes an absolute, indexable canonical title without competitor terms in its description", () => {
     expect(metadata).toMatchObject({
-      title: "Saltong: A Daily Filipino Word Game",
+      title: { absolute: "Saltong: A Daily Filipino Word Game" },
       description:
         "Play Saltong, a daily Filipino word game built around Filipino language and words.",
       alternates: {

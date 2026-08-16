@@ -8,7 +8,7 @@ import { canonicalUrl, pageIndexingMetadata } from "@/lib/seo";
 import { FILIPINO_WORDLE_LANDING_COPY } from "./copy";
 
 export const metadata: Metadata = {
-  title: FILIPINO_WORDLE_LANDING_COPY.title,
+  title: { absolute: FILIPINO_WORDLE_LANDING_COPY.title },
   description: FILIPINO_WORDLE_LANDING_COPY.description,
   ...pageIndexingMetadata("/filipino-wordle", true),
   openGraph: {
