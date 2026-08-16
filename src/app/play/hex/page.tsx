@@ -17,6 +17,7 @@ import { getCachedHexRound } from "@/features/hex/queries/getHexRound";
 import { getCachedHexUserRound } from "@/features/hex/queries/getHexUserRound";
 import { getCharSet } from "@/features/hex/utils";
 import NavbarUser from "@/components/shared/navbar-user";
+import { canonicalUrl, pageIndexingMetadata } from "@/lib/seo";
 
 export async function generateMetadata({
   searchParams: _searchParams,
@@ -25,28 +26,32 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const searchParams = await _searchParams;
   const round = await getCachedHexRound(searchParams?.d);
+  const description = "Play Saltong Hex, a daily Filipino word-finding puzzle.";
+  const indexing = pageIndexingMetadata("/play/hex", !Boolean(searchParams.d));
 
   if (!round) {
     return {
       title: "Saltong Hex",
-      description: "Play Saltong Hex.",
+      description,
+      ...indexing,
       openGraph: {
         title: "Saltong Hex",
-        description: "Play Saltong Hex.",
+        description,
         type: "website",
-        url: "https://saltong.com/play/hex",
+        url: canonicalUrl("/play/hex"),
       },
     };
   }
 
   return {
     title: `Saltong Hex #${round.roundId}`,
-    description: `Play Saltong Hex #${round.roundId}. Find all possible words in the hexagonal grid and compete against players worldwide.`,
+    description,
+    ...indexing,
     openGraph: {
       title: `Saltong Hex #${round.roundId}`,
-      description: `Play today's Saltong Hex puzzle #${round.roundId}. Find words in the hex grid.`,
+      description,
       type: "website",
-      url: "https://saltong.com/play/hex",
+      url: canonicalUrl("/play/hex"),
     },
   };
 }
