@@ -22,4 +22,13 @@ describe("SEO metadata", () => {
       robots: { index: false, follow: true },
     });
   });
+
+  it("marks a vault route noindex while retaining its canonical destination", () => {
+    expect(pageIndexingMetadata("/play/mini/vault", false)).toEqual({
+      alternates: {
+        canonical: "https://www.saltong.com/play/mini/vault",
+      },
+      robots: { index: false, follow: true },
+    });
+  });
 });
