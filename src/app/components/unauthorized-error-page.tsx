@@ -45,12 +45,15 @@ export default function UnauthorizedErrorPage(
               colorScheme === "purple",
             "from-saltong-red-400/20 to-background dark:from-saltong-red-900/20":
               colorScheme === "red",
+            "from-saltong-orange-400/20 to-background dark:from-saltong-orange-900/20":
+              colorScheme === "orange",
             "from-blue-50 via-white to-pink-100 dark:from-zinc-900 dark:via-zinc-950 dark:to-zinc-900":
               !(
                 colorScheme === "green" ||
                 colorScheme === "blue" ||
                 colorScheme === "purple" ||
-                colorScheme === "red"
+                colorScheme === "red" ||
+                colorScheme === "orange"
               ),
           }
         )}
@@ -64,11 +67,13 @@ export default function UnauthorizedErrorPage(
                 "bg-saltong-blue-100": colorScheme === "blue",
                 "bg-saltong-purple-100": colorScheme === "purple",
                 "bg-saltong-red-100": colorScheme === "red",
+                "bg-saltong-orange-100": colorScheme === "orange",
                 "bg-pink-100 dark:bg-zinc-800": !(
                   "green" === colorScheme ||
                   "blue" === colorScheme ||
                   "purple" === colorScheme ||
-                  "red" === colorScheme
+                  "red" === colorScheme ||
+                  "orange" === colorScheme
                 ),
               }
             )}
@@ -79,11 +84,13 @@ export default function UnauthorizedErrorPage(
                 "text-saltong-blue-600": colorScheme === "blue",
                 "text-saltong-purple-600": colorScheme === "purple",
                 "text-saltong-red-600": colorScheme === "red",
+                "text-saltong-orange-600": colorScheme === "orange",
                 "text-pink-500 dark:text-pink-400": !(
                   "green" === colorScheme ||
                   "blue" === colorScheme ||
                   "purple" === colorScheme ||
-                  "red" === colorScheme
+                  "red" === colorScheme ||
+                  "orange" === colorScheme
                 ),
               })}
             />
@@ -96,11 +103,13 @@ export default function UnauthorizedErrorPage(
                 "text-saltong-blue": colorScheme === "blue",
                 "text-saltong-purple": colorScheme === "purple",
                 "text-saltong-red": colorScheme === "red",
+                "text-saltong-orange": colorScheme === "orange",
                 "text-pink-600 dark:text-pink-400": !(
                   "green" === colorScheme ||
                   "blue" === colorScheme ||
                   "purple" === colorScheme ||
-                  "red" === colorScheme
+                  "red" === colorScheme ||
+                  "orange" === colorScheme
                 ),
               }
             )}
@@ -121,11 +130,13 @@ export default function UnauthorizedErrorPage(
                 "text-saltong-blue": colorScheme === "blue",
                 "text-saltong-purple": colorScheme === "purple",
                 "text-saltong-red": colorScheme === "red",
+                "text-saltong-orange": colorScheme === "orange",
                 "text-pink-600 dark:text-pink-400": !(
                   "green" === colorScheme ||
                   "blue" === colorScheme ||
                   "purple" === colorScheme ||
-                  "red" === colorScheme
+                  "red" === colorScheme ||
+                  "orange" === colorScheme
                 ),
               })}
             >

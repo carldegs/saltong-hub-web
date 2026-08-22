@@ -5,6 +5,10 @@ import { useSupabaseClient } from "@/lib/supabase/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import getSaltongUserRound from "../queries/getSaltongUserRound";
 import upsertSaltongUserRound from "../queries/upsertSaltongUserRound";
+import {
+  findLocalSaltongUserRound,
+  upsertLocalSaltongUserRound,
+} from "./local-user-round";
 
 export function useSaltongUserRound(params: SaltongUserRoundPrimaryKeys) {
   // TODO(persistence): Consider removing direct useLocalStorage usage and instead
@@ -22,13 +26,7 @@ export function useSaltongUserRound(params: SaltongUserRoundPrimaryKeys) {
   // Ensure cache updates once localStorage hydrates (since initializeWithValue:false returns empty first render)
   useEffect(() => {
     if (params.userId === "unauthenticated") {
-      const data =
-        localPlayerRound?.find(
-          (round) =>
-            round.mode === params.mode &&
-            round.userId === params.userId &&
-            round.date === params.date
-        ) ?? null;
+      const data = findLocalSaltongUserRound(localPlayerRound, params) ?? null;
       queryClient.setQueryData(["saltong-user-round", params], data);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -38,14 +36,7 @@ export function useSaltongUserRound(params: SaltongUserRoundPrimaryKeys) {
     queryKey: ["saltong-user-round", params],
     queryFn: async () => {
       if (params.userId === "unauthenticated") {
-        const data =
-          localPlayerRound?.find(
-            (round) =>
-              round.mode === params.mode &&
-              round.userId === params.userId &&
-              round.date === params.date
-          ) ?? null;
-        return data;
+        return findLocalSaltongUserRound(localPlayerRound, params) ?? null;
       }
 
       return (await getSaltongUserRound(supabase, params)).data;
@@ -73,31 +64,9 @@ export function useSaltongUserRoundMutation() {
       }
     ) => {
       if (params.userId === "unauthenticated") {
-        setLocalPlayerRound((prev) => {
-          const existingIndex = prev.findIndex(
-            (round) =>
-              round.mode === params.mode &&
-              round.userId === params.userId &&
-              round.date === params.date
-          );
-
-          const datedParams = {
-            ...params,
-            startedAt: params.startedAt ?? new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
-
-          if (existingIndex > -1) {
-            const updatedRounds = [...prev];
-            updatedRounds[existingIndex] = {
-              ...updatedRounds[existingIndex],
-              ...datedParams,
-            };
-            return updatedRounds;
-          }
-
-          return [...prev, datedParams];
-        });
+        setLocalPlayerRound((prev) =>
+          upsertLocalSaltongUserRound(prev, params)
+        );
       } else {
         const response = await upsertSaltongUserRound(supabase, params);
         return response;

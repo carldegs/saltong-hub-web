@@ -30,7 +30,7 @@ export default function GameCountdownCard({
       )}
     >
       <CountdownTimer countdown={countdown} />
-      <div className="mx-auto mt-5 flex w-full max-w-[400px] justify-center gap-4">
+      <div className="mx-auto mt-5 flex w-full max-w-[520px] flex-wrap justify-center gap-0">
         {games.map(({ href, icon, name, className }) => (
           <Link
             className={cn(

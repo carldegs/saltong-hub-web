@@ -1,6 +1,7 @@
 "use client";
 
 import { getDailyGameCountdown } from "@/utils/time";
+import { MATHINIK_CONFIG } from "@/features/mathinik/config";
 import GameCountdownCard from "./game-countdown-card";
 
 const DAILY_GAMES = [
@@ -21,6 +22,18 @@ const DAILY_GAMES = [
     icon: "/mini.svg",
     name: "Mini",
     className: "hover:bg-saltong-blue-200 dark:hover:bg-saltong-blue-500",
+  },
+  {
+    href: "/play/sudoku",
+    icon: "/sudoku.svg",
+    name: "Sudoku",
+    className: "hover:bg-saltong-orange-200 dark:hover:bg-saltong-orange-500",
+  },
+  {
+    href: MATHINIK_CONFIG.path,
+    icon: MATHINIK_CONFIG.icon,
+    name: MATHINIK_CONFIG.displayName,
+    className: "hover:bg-saltong-teal-200 dark:hover:bg-saltong-teal-500",
   },
 ];
 

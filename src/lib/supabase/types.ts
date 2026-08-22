@@ -7,10 +7,30 @@ export type Json =
   | Json[];
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "13.0.5";
+  graphql_public: {
+    Tables: {
+      [_ in never]: never;
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json;
+          operationName?: string;
+          query?: string;
+          variables?: Json;
+        };
+        Returns: Json;
+      };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
   };
   public: {
     Tables: {
@@ -89,6 +109,39 @@ export type Database = {
           memberCount?: number | null;
           name?: string;
           updatedAt?: string;
+        };
+        Relationships: [];
+      };
+      "mathinik-user-rounds": {
+        Row: {
+          completedAt: string | null;
+          date: string;
+          equations: string | null;
+          roundId: number;
+          solvedLive: boolean;
+          startedAt: string;
+          updatedAt: string;
+          userId: string;
+        };
+        Insert: {
+          completedAt?: string | null;
+          date: string;
+          equations?: string | null;
+          roundId: number;
+          solvedLive?: boolean;
+          startedAt?: string;
+          updatedAt?: string;
+          userId: string;
+        };
+        Update: {
+          completedAt?: string | null;
+          date?: string;
+          equations?: string | null;
+          roundId?: number;
+          solvedLive?: boolean;
+          startedAt?: string;
+          updatedAt?: string;
+          userId?: string;
         };
         Relationships: [];
       };
@@ -384,6 +437,102 @@ export type Database = {
         };
         Relationships: [];
       };
+      "sudoku-user-rounds": {
+        Row: {
+          cells: string;
+          completedAt: string | null;
+          date: string;
+          hintCount: number;
+          mistakeCount: number;
+          mode: string;
+          moveCount: number;
+          roundId: number;
+          solvedLive: boolean;
+          startedAt: string;
+          updatedAt: string;
+          userId: string;
+        };
+        Insert: {
+          cells?: string;
+          completedAt?: string | null;
+          date: string;
+          hintCount?: number;
+          mistakeCount?: number;
+          mode: string;
+          moveCount?: number;
+          roundId: number;
+          solvedLive?: boolean;
+          startedAt?: string;
+          updatedAt?: string;
+          userId: string;
+        };
+        Update: {
+          cells?: string;
+          completedAt?: string | null;
+          date?: string;
+          hintCount?: number;
+          mistakeCount?: number;
+          mode?: string;
+          moveCount?: number;
+          roundId?: number;
+          solvedLive?: boolean;
+          startedAt?: string;
+          updatedAt?: string;
+          userId?: string;
+        };
+        Relationships: [];
+      };
+      "user-game-stats": {
+        Row: {
+          bests: Json;
+          createdAt: string;
+          currentCompletionStreak: number;
+          gameId: string;
+          lastCompletedDate: string | null;
+          lastCompletedRoundId: number | null;
+          lastPlayedDate: string | null;
+          longestCompletionStreak: number;
+          mode: string;
+          totalCompleted: number;
+          totals: Json;
+          totalStarted: number;
+          updatedAt: string;
+          userId: string;
+        };
+        Insert: {
+          bests?: Json;
+          createdAt?: string;
+          currentCompletionStreak?: number;
+          gameId: string;
+          lastCompletedDate?: string | null;
+          lastCompletedRoundId?: number | null;
+          lastPlayedDate?: string | null;
+          longestCompletionStreak?: number;
+          mode?: string;
+          totalCompleted?: number;
+          totals?: Json;
+          totalStarted?: number;
+          updatedAt?: string;
+          userId: string;
+        };
+        Update: {
+          bests?: Json;
+          createdAt?: string;
+          currentCompletionStreak?: number;
+          gameId?: string;
+          lastCompletedDate?: string | null;
+          lastCompletedRoundId?: number | null;
+          lastPlayedDate?: string | null;
+          longestCompletionStreak?: number;
+          mode?: string;
+          totalCompleted?: number;
+          totals?: Json;
+          totalStarted?: number;
+          updatedAt?: string;
+          userId?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -555,6 +704,9 @@ export type CompositeTypes<
     : never;
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },

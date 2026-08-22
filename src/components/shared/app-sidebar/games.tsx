@@ -12,13 +12,15 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import {
-  VaultIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  // CrownIcon,
-} from "lucide-react";
+import { VaultIcon, ChevronDownIcon, ChevronRightIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SUDOKU_MODES } from "@/features/sudoku/config";
+import {
+  getSudokuDifficultySelectorPath,
+  getSudokuGamePath,
+  getSudokuVaultPath,
+} from "@/features/sudoku/paths";
+import NewFeatureBadge from "../new-feature-badge";
 
 const getDefaultSubItems = (path: string) => {
   return [
@@ -34,6 +36,20 @@ const getDefaultSubItems = (path: string) => {
     // },
   ];
 };
+
+const SUDOKU_SUB_ITEMS = [
+  ...Object.values(SUDOKU_MODES).map(({ mode, displayName, icon: Icon }) => ({
+    href: `/play${getSudokuGamePath(mode)}`,
+    name: displayName,
+    icon: <Icon />,
+  })),
+  {
+    href: `/play${getSudokuVaultPath()}`,
+    name: "Vault",
+    icon: <VaultIcon />,
+  },
+];
+
 export const GAMES = [
   {
     href: "/play",
@@ -59,16 +75,30 @@ export const GAMES = [
     name: "Hex",
     sub: getDefaultSubItems("/play/hex"),
   },
+  {
+    href: `/play${getSudokuDifficultySelectorPath()}`,
+    icon: "/sudoku.svg",
+    name: "Sudoku",
+    isNew: true,
+    sub: SUDOKU_SUB_ITEMS,
+  },
+  {
+    href: "/play/mathinik",
+    icon: "/mathinik.svg",
+    name: "Mathinik",
+    isNew: true,
+    sub: getDefaultSubItems("/play/mathinik"),
+  },
 ];
 
 export function GamesSidebarMenu() {
   return (
     <SidebarMenu className="gap-0.5">
       {GAMES.map((game) => (
-        <Collapsible className="group/collapsible" key={game.name}>
+        <Collapsible asChild className="group/collapsible" key={game.name}>
           <SidebarMenuItem>
             <div className="flex items-center">
-              <SidebarMenuButton className="h-auto">
+              <SidebarMenuButton className="h-auto" asChild>
                 <HoverPrefetchLink
                   href={game.href}
                   className="flex w-full items-center gap-3"
@@ -81,7 +111,9 @@ export function GamesSidebarMenu() {
                       height={28}
                     />
                   )}
-                  <span className="text-base">{game.name}</span>
+                  <span className="flex items-center justify-center text-base">
+                    {game.name} {game.isNew && <NewFeatureBadge />}
+                  </span>
                 </HoverPrefetchLink>
               </SidebarMenuButton>
               <CollapsibleTrigger asChild>

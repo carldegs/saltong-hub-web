@@ -17,6 +17,7 @@ import { SaltongMode } from "../../types";
 import { useModalStore } from "@/providers/modal/modal-provider";
 import { useLocalStorage } from "usehooks-ts";
 import { useEffect } from "react";
+import { HOW_TO_PLAY_INTROS } from "@/features/game-registry/how-to-play-copy";
 
 export const HOW_TO_PLAY_MODAL_ID = "how-to-play";
 
@@ -26,8 +27,14 @@ export default function HowToPlayDialog({ mode }: { mode: SaltongMode }) {
   );
   const setOpenModal = useModalStore((state) => state.setOpenModal);
 
-  const { displayName, maxTries, wordLen, howToPlayExamples } =
+  const { wordLen, howToPlayExamples } =
     SALTONG_CONFIG.modes[mode as keyof typeof SALTONG_CONFIG.modes];
+  const intro =
+    mode === "classic"
+      ? HOW_TO_PLAY_INTROS.saltongClassic
+      : mode === "mini"
+        ? HOW_TO_PLAY_INTROS.saltongMini
+        : HOW_TO_PLAY_INTROS.saltongMax;
   const [hasSeenHowToPlay, setHasSeenHowToPlay] = useLocalStorage(
     `saltong-results-has-seen-how-to-play-${mode}`,
     false
@@ -65,8 +72,7 @@ export default function HowToPlayDialog({ mode }: { mode: SaltongMode }) {
         </SheetHeader>
         <div className="no-scrollbar mx-auto max-w-lg overflow-y-auto px-4 pt-6 pb-16">
           <SaltongHowToPlayCard
-            displayName={displayName}
-            maxTries={maxTries}
+            intro={intro}
             wordLen={wordLen}
             examples={howToPlayExamples}
           />

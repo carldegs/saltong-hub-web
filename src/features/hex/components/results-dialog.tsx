@@ -39,6 +39,7 @@ import { sendEvent } from "@/lib/analytics";
 import { HexRound } from "../types";
 import { useHexUserRound, useHexUserRoundMutation } from "../hooks/user-round";
 import HexHowToPlayAccordion from "./how-to-play-accordion";
+import { MATHINIK_CONFIG } from "@/features/mathinik/config";
 import {
   Select,
   SelectContent,
@@ -72,6 +73,12 @@ const OTHER_GAMES_LIST = [
     name: "Saltong Mini",
     icon: "/mini.svg",
     href: "/play/mini",
+  },
+  {
+    mode: MATHINIK_CONFIG.id,
+    name: MATHINIK_CONFIG.displayName,
+    icon: MATHINIK_CONFIG.icon,
+    href: MATHINIK_CONFIG.path,
   },
 ];
 

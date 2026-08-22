@@ -128,7 +128,6 @@ export default function ResultsDialog({
               />
               <TurnCard
                 solvedTurn={userRoundData.solvedTurn}
-                winTurns={userStats?.winTurns}
                 theme={modeConfig.colorScheme}
               />
             </div>

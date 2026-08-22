@@ -7,27 +7,24 @@ import SaltongGrid from "../saltong-grid";
 type ExampleDefinition = SaltongHowToPlayExample;
 
 type SaltongHowToPlayCardProps = {
-  displayName: string;
-  maxTries: number;
+  intro: string;
   wordLen: number;
   examples: ExampleDefinition[];
 };
 
 export function SaltongHowToPlayCard({
-  displayName,
-  maxTries,
+  intro,
   wordLen,
   examples,
 }: SaltongHowToPlayCardProps) {
-  const gameLabel = displayName.toUpperCase();
-
   return (
     <div>
       <div className="space-y-1">
         <h3 className="text-lg font-semibold">How to Play</h3>
+        <p className="text-muted-foreground text-sm">{intro}</p>
         <p className="text-muted-foreground text-sm">
-          Guess the {gameLabel} word in {maxTries} tries. Each guess must be a
-          valid {wordLen}-letter word—press Enter to submit.
+          Each guess must be a valid {wordLen}-letter word—press Enter to
+          submit.
         </p>
         <p className="text-muted-foreground text-sm">
           After each guess, the color of the tiles will change to show how close

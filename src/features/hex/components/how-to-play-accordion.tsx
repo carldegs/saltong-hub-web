@@ -12,6 +12,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { HEX_CONFIG } from "../config";
+import { HOW_TO_PLAY_INTROS } from "@/features/game-registry/how-to-play-copy";
 
 export type HexHowToPlayAccordionProps = {
   wordCount: number;
@@ -61,6 +62,7 @@ export default function HexHowToPlayAccordion({
         title: "Rules & Scoring",
         content: (
           <div className="space-y-4 text-sm">
+            <p className="text-muted-foreground">{HOW_TO_PLAY_INTROS.hex}</p>
             <div>
               <p className="text-foreground font-semibold">How to play</p>
               <ul className="mt-1 list-disc space-y-1 pl-5">

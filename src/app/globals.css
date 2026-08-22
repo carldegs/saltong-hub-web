@@ -156,6 +156,32 @@
   --color-saltong-purple-950: hsl(250 53% 23%);
   --color-saltong-purple: hsl(250 51% 52%);
 
+  --color-saltong-orange-50: #fff8eb;
+  --color-saltong-orange-100: #feebc8;
+  --color-saltong-orange-200: #fcd48d;
+  --color-saltong-orange-300: #f9bc4d;
+  --color-saltong-orange-400: #f7aa22;
+  --color-saltong-orange-500: #f59e0b;
+  --color-saltong-orange-600: #d97706;
+  --color-saltong-orange-700: #b45309;
+  --color-saltong-orange-800: #92400e;
+  --color-saltong-orange-900: #752c05;
+  --color-saltong-orange-950: #451403;
+  --color-saltong-orange: #b45309;
+
+  --color-saltong-teal-50: hsl(188 55% 96%);
+  --color-saltong-teal-100: hsl(188 52% 89%);
+  --color-saltong-teal-200: hsl(188 55% 80%);
+  --color-saltong-teal-300: hsl(188 52% 67%);
+  --color-saltong-teal-400: hsl(188 46% 52%);
+  --color-saltong-teal-500: hsl(188 58% 38%);
+  --color-saltong-teal-600: hsl(188 60% 31%);
+  --color-saltong-teal-700: hsl(188 58% 25%);
+  --color-saltong-teal-800: hsl(188 56% 21%);
+  --color-saltong-teal-900: hsl(188 54% 17%);
+  --color-saltong-teal-950: hsl(188 48% 9%);
+  --color-saltong-teal: hsl(188 58% 38%);
+
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -343,7 +369,7 @@
   }
 
   h2 {
-    @apply scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0;
+    @apply scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0;
   }
 
   h3 {

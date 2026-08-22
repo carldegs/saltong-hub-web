@@ -18,4 +18,21 @@ describe("sitemap", () => {
       })
     );
   });
+
+  it("submits the evergreen Sudoku and Mathinik game pages", () => {
+    expect(sitemap()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          url: "https://www.saltong.com/play/sudoku",
+          changeFrequency: "daily",
+          priority: 1,
+        }),
+        expect.objectContaining({
+          url: "https://www.saltong.com/play/mathinik",
+          changeFrequency: "daily",
+          priority: 1,
+        }),
+      ])
+    );
+  });
 });
