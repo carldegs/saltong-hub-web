@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { BadgeQuestionMarkIcon } from "lucide-react";
 import { useState } from "react";
 import { useIsClient, useLocalStorage } from "usehooks-ts";
+import { HOW_TO_PLAY_INTROS } from "@/features/game-registry/how-to-play-copy";
 
 const EXAMPLE_GRID = [
   [5, 3, 4, 6, 7, 8, 9, 1, 2],
@@ -189,7 +190,7 @@ export default function SudokuHowToPlay() {
           <div className="space-y-6">
             <div>
               <p className="text-muted-foreground mt-1 text-sm">
-                Fill the board so every row, column, and block has 1-9.
+                {HOW_TO_PLAY_INTROS.sudoku}
               </p>
             </div>
             <ExampleBoard />

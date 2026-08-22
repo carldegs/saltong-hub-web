@@ -13,6 +13,7 @@ import {
 import { BadgeQuestionMarkIcon } from "lucide-react";
 import { useState } from "react";
 import { useIsClient, useLocalStorage } from "usehooks-ts";
+import { HOW_TO_PLAY_INTROS } from "@/features/game-registry/how-to-play-copy";
 import type { MathinikOperator } from "../utils";
 import {
   MathinikStaticBox,
@@ -97,9 +98,7 @@ export function MathinikHowToPlayDialog() {
           <div className="space-y-6">
             <section>
               <p className="text-muted-foreground text-sm leading-6">
-                In <span className="text-foreground font-bold">Mathinik</span>,
-                your goal is to combine 6 numbers using the four math operations
-                (+, -, ×, ÷) to hit the target number as fast as possible.
+                {HOW_TO_PLAY_INTROS.mathinik}
               </p>
             </section>
 

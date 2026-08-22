@@ -6,9 +6,9 @@ export const MATHINIK_CONFIG = {
   path: "/play/mathinik",
   vaultPath: "/play/mathinik/vault",
   icon: "/mathinik.svg",
-  blurb: "Combine six random numbers using basic arithmetic to hit a target.",
+  blurb: "Combine six random numbers using basic math to hit a target.",
   colorScheme: "teal",
-  startDate: "2026-06-19",
+  startDate: "2026-08-22",
 } as const satisfies BaseGameRegistry &
   BaseConfig & {
     vaultPath: string;

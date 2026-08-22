@@ -19,6 +19,7 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import { getResultDialogFeaturedGameList } from "../utils/getResultDialogFeaturedGameList";
 import { sendEvent } from "@/lib/analytics";
+import NewFeatureBadge from "@/components/shared/new-feature-badge";
 
 type FeaturedItem = {
   id: string;
@@ -27,6 +28,7 @@ type FeaturedItem = {
   title: string;
   description: string;
   isVault?: boolean;
+  isNew: boolean;
 };
 
 export default function ResultPlayMoreCard({
@@ -50,6 +52,7 @@ export default function ResultPlayMoreCard({
         ? `Play previous rounds of ${game.displayName}`
         : game.blurb,
     isVault: game.id === "vault",
+    isNew: game.isNew,
   }));
 
   return (
@@ -80,7 +83,10 @@ export default function ResultPlayMoreCard({
                 )}
               </ItemMedia>
               <ItemContent>
-                <ItemTitle className="text-primary">{game.title}</ItemTitle>
+                <ItemTitle className="text-primary flex items-center">
+                  {game.title}
+                  {game.isNew && <NewFeatureBadge className="ml-1" />}
+                </ItemTitle>
                 <ItemDescription className="m-0 -mt-0.5">
                   {game.description}
                 </ItemDescription>

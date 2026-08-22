@@ -8,6 +8,7 @@ import {
 } from "@/features/sudoku/utils";
 import { isFormattedDateInFuture } from "@/utils/time";
 import { isSudokuDateBeforeStart } from "@/features/sudoku/utils";
+import { canonicalUrl, pageIndexingMetadata } from "@/lib/seo";
 
 interface Props {
   params: Promise<{ difficulty: string }>;
@@ -24,18 +25,23 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     };
   }
 
-  const date = getSudokuGameDate((await props.searchParams)?.d);
+  const searchParams = await props.searchParams;
+  const date = getSudokuGameDate(searchParams?.d);
   const difficulty = params.difficulty;
+  const path = `/play/sudoku/${difficulty}`;
   const title = `Sudoku ${getSudokuModeConfig(difficulty).displayName}`;
+  const description = `Play the ${difficulty} Sudoku grid for ${date}.`;
+  const indexing = pageIndexingMetadata(path, !Boolean(searchParams?.d));
 
   return {
     title,
-    description: `Play the ${difficulty} Sudoku grid for ${date}.`,
+    description,
+    ...indexing,
     openGraph: {
       title,
-      description: `Play the ${difficulty} Sudoku grid for ${date}.`,
+      description,
       type: "website",
-      url: `https://saltong.com/play/sudoku/${difficulty}`,
+      url: canonicalUrl(path),
     },
   };
 }

@@ -13,26 +13,35 @@ import { MathinikGenerator } from "@/features/mathinik/generator";
 import { Navbar, NavbarBrand } from "@/components/shared/navbar";
 import { ComponentProps } from "react";
 import { playPageBackgroundVariants } from "@/components/shared/play-page-background";
+import { Button } from "@/components/ui/button";
+import { VaultIcon } from "lucide-react";
+import Link from "next/link";
 import PlayArea, {
   MathinikHowToPlayDialog,
 } from "@/features/mathinik/components/play-area";
+import { canonicalUrl, pageIndexingMetadata } from "@/lib/seo";
 
 interface Props {
   searchParams: Promise<{ d?: string }>;
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const date = getMathinikGameDate((await props.searchParams)?.d);
+  const searchParams = await props.searchParams;
+  const date = getMathinikGameDate(searchParams?.d);
   const title = "Mathinik";
+  const path = "/play/mathinik";
+  const description = `Combine six random numbers using basic math to hit a target. Play the Mathinik game for ${date}.`;
+  const indexing = pageIndexingMetadata(path, !Boolean(searchParams?.d));
 
   return {
     title,
-    description: `Combine six random numbers using basic arithmetic to hit a target. Play the Mathinik game for ${date}.`,
+    description,
+    ...indexing,
     openGraph: {
       title,
-      description: `Combine six random numbers using basic arithmetic to hit a target. Play the Mathinik game for ${date}.`,
+      description,
       type: "website",
-      url: `https://saltong.com/play/mathinik?d=${date}`,
+      url: canonicalUrl(path),
     },
   };
 }
@@ -86,6 +95,12 @@ export default async function MathinikPage(props: Props) {
         />
         <div className="flex gap-1.5">
           <MathinikHowToPlayDialog />
+          <Button variant="outline" asChild>
+            <Link href={MATHINIK_CONFIG.vaultPath} prefetch={false}>
+              <VaultIcon />
+              <span className="hidden md:block">Vault</span>
+            </Link>
+          </Button>
         </div>
       </Navbar>
       <main

@@ -5,7 +5,7 @@ import { SITE_URL } from "@/lib/seo";
 const baseUrl = SITE_URL;
 
 // Play game variants
-const playVariants = ["", "mini", "max", "hex"];
+const playVariants = ["", "mini", "max", "hex", "sudoku", "mathinik"];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Get all published blog posts

@@ -172,6 +172,22 @@ function isEquationEmpty(equation: MathinikEquationRow) {
   return !equation.first && !equation.operator && !equation.second;
 }
 
+export function canDeleteMathinikEquation(
+  rowId: string,
+  rows: MathinikEquationRow[]
+) {
+  const row = rows.find((equation) => equation.id === rowId);
+
+  if (!row) {
+    return false;
+  }
+
+  return (
+    !isEquationEmpty(row) ||
+    rows.filter((equation) => isEquationEmpty(equation)).length > 1
+  );
+}
+
 function pruneRowsDependingOn(
   sourceRowIds: Set<string>,
   rows: MathinikEquationRow[]
@@ -201,6 +217,24 @@ function pruneRowsDependingOn(
   }
 
   return rows.filter((equation) => !deletedIds.has(equation.id));
+}
+
+export function removeMathinikEquationRows(
+  rowIds: Set<string>,
+  rows: MathinikEquationRow[]
+) {
+  const remainingRows = pruneRowsDependingOn(rowIds, rows).filter(
+    (equation) => !rowIds.has(equation.id)
+  );
+
+  if (
+    remainingRows.length >= MAX_EQUATIONS ||
+    remainingRows.some((equation) => isEquationEmpty(equation))
+  ) {
+    return remainingRows;
+  }
+
+  return [...remainingRows, createEquation()];
 }
 
 export default function PlayArea({
@@ -534,15 +568,14 @@ export default function PlayArea({
     }
 
     setEquations((previousRows) => {
-      const nextRows = pruneRowsDependingOn(rowIds, previousRows).filter(
-        (equation) => !rowIds.has(equation.id)
-      );
-
-      if (nextRows.length === 0) {
-        const nextRow = createEquation();
-        setCursor({ rowId: nextRow.id, slot: "first" });
-        return [nextRow];
+      if (
+        rowIds.size === 1 &&
+        !canDeleteMathinikEquation([...rowIds][0], previousRows)
+      ) {
+        return previousRows;
       }
+
+      const nextRows = removeMathinikEquationRows(rowIds, previousRows);
 
       if (!nextRows.some((equation) => equation.id === cursor.rowId)) {
         setCursor({ rowId: nextRows[nextRows.length - 1].id, slot: "first" });
@@ -842,7 +875,10 @@ export default function PlayArea({
                       variant="ghost"
                       size="icon"
                       aria-label={`Delete equation ${variable}`}
-                      disabled={solved}
+                      disabled={
+                        solved ||
+                        !canDeleteMathinikEquation(equation.id, equations)
+                      }
                       onClick={() => removeRowsById(new Set([equation.id]))}
                     >
                       <Trash2Icon />
