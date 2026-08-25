@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const SITE_URL = "https://www.saltong.com";
+export const SITE_URL = "https://saltong.com";
 
 export function canonicalUrl(path: string) {
   return new URL(path, SITE_URL).toString();

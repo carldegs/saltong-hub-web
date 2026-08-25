@@ -20,9 +20,9 @@ describe("generateSaltongMetadata", () => {
 
       expect(metadata).toMatchObject({
         title,
-        alternates: { canonical: `https://www.saltong.com${path}` },
+        alternates: { canonical: `https://saltong.com${path}` },
         robots: { index: false, follow: true },
-        openGraph: { url: `https://www.saltong.com${path}` },
+        openGraph: { url: `https://saltong.com${path}` },
       });
     }
   );

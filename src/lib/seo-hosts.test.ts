@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const PUBLIC_SOURCE_FILES = [
+  "src/lib/seo.ts",
   "src/app/about/page.tsx",
   "src/app/contribute/layout.tsx",
   "src/app/groups/page.tsx",
@@ -21,9 +22,9 @@ const PUBLIC_SOURCE_FILES = [
 ] as const;
 
 describe("public SEO host references", () => {
-  it.each(PUBLIC_SOURCE_FILES)("does not use the apex host in %s", (file) => {
+  it.each(PUBLIC_SOURCE_FILES)("does not use the www host in %s", (file) => {
     const source = readFileSync(resolve(process.cwd(), file), "utf8");
 
-    expect(source).not.toContain("https://saltong.com");
+    expect(source).not.toContain("https://www.saltong.com");
   });
 });

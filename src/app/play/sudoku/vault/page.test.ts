@@ -5,10 +5,10 @@ describe("Sudoku Vault metadata", () => {
   it("uses a stable noindex canonical", () => {
     expect(metadata).toMatchObject({
       alternates: {
-        canonical: "https://www.saltong.com/play/sudoku/vault",
+        canonical: "https://saltong.com/play/sudoku/vault",
       },
       robots: { index: false, follow: true },
-      openGraph: { url: "https://www.saltong.com/play/sudoku/vault" },
+      openGraph: { url: "https://saltong.com/play/sudoku/vault" },
     });
   });
 });

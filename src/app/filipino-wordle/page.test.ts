@@ -9,11 +9,11 @@ describe("Filipino word-game landing page", () => {
       description:
         "Play Saltong, a daily Filipino word game built around Filipino language and words.",
       alternates: {
-        canonical: "https://www.saltong.com/filipino-wordle",
+        canonical: "https://saltong.com/filipino-wordle",
       },
       robots: { index: true, follow: true },
       openGraph: {
-        url: "https://www.saltong.com/filipino-wordle",
+        url: "https://saltong.com/filipino-wordle",
       },
     });
     expect(String(metadata.description)).not.toMatch(/wordle|spelling bee/i);

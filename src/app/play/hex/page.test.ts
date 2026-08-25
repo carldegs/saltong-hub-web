@@ -14,9 +14,9 @@ describe("Saltong Hex metadata", () => {
 
     expect(metadata).toMatchObject({
       title: "Saltong Hex #27",
-      alternates: { canonical: "https://www.saltong.com/play/hex" },
+      alternates: { canonical: "https://saltong.com/play/hex" },
       robots: { index: false, follow: true },
-      openGraph: { url: "https://www.saltong.com/play/hex" },
+      openGraph: { url: "https://saltong.com/play/hex" },
     });
   });
 });
