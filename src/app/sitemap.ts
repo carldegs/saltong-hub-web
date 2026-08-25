@@ -3,6 +3,7 @@ import { getBlogPosts } from "./patch-notes/utils";
 import { SITE_URL } from "@/lib/seo";
 
 const baseUrl = SITE_URL;
+const FILIPINO_WORDLE_LAST_MODIFIED = new Date("2026-08-21T00:00:00.000Z");
 
 // Play game variants
 const playVariants = ["", "mini", "max", "hex", "sudoku", "mathinik"];
@@ -45,7 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/filipino-wordle`,
-      lastModified: new Date(),
+      lastModified: FILIPINO_WORDLE_LAST_MODIFIED,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     },
