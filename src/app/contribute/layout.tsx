@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import React from "react";
+import { canonicalUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Support Saltong Hub - Contribute & Donate",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
     description:
       "Support the development of Saltong Hub. Help us keep Filipino word games free and accessible.",
     type: "website",
-    url: "https://saltong.com/contribute",
+    url: canonicalUrl("/contribute"),
   },
 };
 

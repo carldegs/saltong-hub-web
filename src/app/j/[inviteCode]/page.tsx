@@ -19,6 +19,7 @@ import { getProfileFormData } from "@/features/profiles/utils";
 import { createClient } from "@/lib/supabase/server";
 import JoinGroupButton from "./join-group-button";
 import { Metadata } from "next";
+import { canonicalUrl } from "@/lib/seo";
 
 interface JoinGroupPageProps {
   params: Promise<{
@@ -45,7 +46,7 @@ export async function generateMetadata({
       title: `Join ${group.name} | Saltong Hub`,
       description: `Join ${group.name} on Saltong Hub.`,
       type: "website",
-      url: `https://saltong.com/j/${inviteCode}`,
+      url: canonicalUrl(`/j/${inviteCode}`),
     },
   };
 }

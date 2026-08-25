@@ -14,6 +14,7 @@ import {
   SettingsSectionList,
   SettingsSectionItemLink,
 } from "../settings/components/settings-section";
+import { canonicalUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Policies | Saltong Hub",
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     title: "Policies - Saltong Hub",
     description: "Review our policies and terms for using Saltong Hub.",
     type: "website",
-    url: "https://saltong.com/policies",
+    url: canonicalUrl("/policies"),
   },
 };
 

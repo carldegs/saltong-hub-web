@@ -1,14 +1,18 @@
 import { Metadata } from "next";
 import SudokuVaultPage from "@/features/sudoku/templates/sudoku-vault-page";
+import { canonicalUrl, pageIndexingMetadata } from "@/lib/seo";
+
+const path = "/play/sudoku/vault";
 
 export const metadata: Metadata = {
+  ...pageIndexingMetadata(path, false),
   title: "Sudoku Vault",
   description: "Browse archived Sudoku routes and open previous dates.",
   openGraph: {
     title: "Sudoku Vault",
     description: "Browse archived Sudoku routes and open previous dates.",
     type: "website",
-    url: "https://saltong.com/play/sudoku/vault",
+    url: canonicalUrl(path),
   },
 };
 
