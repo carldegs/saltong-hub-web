@@ -14,6 +14,7 @@ import ContributeDialog from "@/components/shared/contribute-dialog";
 import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "../components/home-navbar-brand";
 import { VERSION } from "@/version";
+import { canonicalUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "About Saltong Hub",
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
     description:
       "Learn about Saltong Hub, the platform for Filipino word games created to celebrate the Filipino language.",
     type: "website",
-    url: "https://saltong.com/about",
+    url: canonicalUrl("/about"),
   },
 };
 

@@ -10,6 +10,7 @@ import { getUserGroupRole } from "@/features/groups/queries/get-user-group-role"
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
+import { canonicalUrl } from "@/lib/seo";
 
 interface GroupPageProps {
   params: Promise<{
@@ -37,7 +38,7 @@ export async function generateMetadata({
       title: `${group.name} | Saltong Hub`,
       description: `Join ${group.name} on Saltong Hub and compete with friends on group leaderboards.`,
       type: "website",
-      url: `https://saltong.com/groups/${groupId}`,
+      url: canonicalUrl(`/groups/${groupId}`),
     },
   };
 }

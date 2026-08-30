@@ -22,6 +22,7 @@ import { NumberTicker } from "@/components/ui/number-ticker";
 import Link from "next/link";
 import { getProfileById } from "@/features/profiles/queries/get-profile";
 import { Metadata } from "next";
+import { canonicalUrl } from "@/lib/seo";
 
 // For now, only the user can view their own profile. Need to setup a public table for profiles later.
 
@@ -52,7 +53,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: `${profile.display_name} - Saltong Hub Profile`,
       description: `Check out ${profile.display_name}'s Saltong Hub profile and stats.`,
       type: "profile",
-      url: `https://saltong.com/u/${userId}`,
+      url: canonicalUrl(`/u/${userId}`),
     },
   };
 }
