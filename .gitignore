@@ -46,3 +46,6 @@ certificates
 # local Superpowers planning artifacts
 docs/superpowers/*
 /plans
+
+# local Git worktrees
+.worktrees/
