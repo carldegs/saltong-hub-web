@@ -2,6 +2,10 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { generateInviteCode } from "./utils/code";
+import {
+  buildGroupUpdateData,
+  type GroupSettingsUpdate,
+} from "./utils/build-group-update";
 import { joinGroup } from "./queries/join-group";
 import { createServiceRoleClient } from "@/lib/supabase/admin-server";
 
@@ -204,13 +208,7 @@ export async function removeGroupMemberAction(
 
 export async function updateGroupAction(
   groupId: string,
-  updates: {
-    name?: string;
-    avatarUrl?: string;
-    hideUnsolvedMembers?: boolean;
-    isPublic?: boolean;
-    invitesEnabled?: boolean;
-  }
+  updates: GroupSettingsUpdate
 ) {
   const supabase = await createClient();
   const supabaseAdmin = await createServiceRoleClient();
@@ -239,35 +237,7 @@ export async function updateGroupAction(
     throw new Error("Only admins can update group settings");
   }
 
-  // Prepare the update object
-  const updateData: Record<string, unknown> = {};
-
-  if (updates.name !== undefined) {
-    updateData.name = updates.name;
-  }
-
-  if (updates.avatarUrl !== undefined) {
-    updateData.avatarUrl = updates.avatarUrl;
-  }
-
-  if (updates.hideUnsolvedMembers !== undefined) {
-    updateData.hideUnsolvedMembers = updates.hideUnsolvedMembers;
-  }
-
-  if (updates.isPublic !== undefined) {
-    updateData.isPublic = updates.isPublic;
-  }
-
-  if (updates.invitesEnabled !== undefined) {
-    updateData.invitesEnabled = updates.invitesEnabled;
-    if (updates.invitesEnabled) {
-      // Generate new invite code
-      updateData.inviteCode = generateInviteCode();
-    } else {
-      // Set invite code to null
-      updateData.inviteCode = null;
-    }
-  }
+  const updateData = buildGroupUpdateData(updates);
 
   // Perform the update
   const { data: groupData, error: updateError } = await supabaseAdmin

@@ -154,8 +154,6 @@ export default function VaultCalendar({ userId }: { userId?: string }) {
   useEffect(() => {
     if (!availableMonths.includes(selectedRange.month)) {
       const latestMonth = months[months.length - 1];
-      // TODO: FIx the setState in useEffect warning
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedRange({ year: latestMonth.year, month: latestMonth.month });
     }
   }, [availableMonths, selectedRange.month, months]);

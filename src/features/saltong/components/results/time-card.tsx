@@ -30,7 +30,6 @@ export function TimeCard({
     let rafId: number | null = null;
 
     if (targetSeconds <= 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDisplaySeconds(0);
       return;
     }

@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/server";
 export default async function CreateAccountBanner() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
+  const hasAccount = Boolean(data?.claims?.sub);
 
   const features: BentoCardProps[] = [
     {
@@ -17,8 +18,8 @@ export default async function CreateAccountBanner() {
       name: "Access the Vault",
       description:
         "Play all past Saltong puzzles anytime you want and never miss a challenge again.",
-      href: data?.claims?.sub ? "/play/vault" : "/auth",
-      cta: data?.claims?.sub ? "Play Now" : "Create Account",
+      href: hasAccount ? "/play/vault" : "/auth",
+      cta: "Explore Vault",
       className: "col-span-3 row-span-1 lg:col-span-1 lg:row-span-2",
       background: (
         <div className="bg-background absolute flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg border">
@@ -41,8 +42,8 @@ export default async function CreateAccountBanner() {
       name: "Sync Across Devices",
       description:
         "Pick up right where you left off — your progress automatically syncs on all your devices.",
-      href: data?.claims?.sub ? "/play" : "/auth",
-      cta: data?.claims?.sub ? "Gballs" : "Sign Up",
+      href: hasAccount ? "/play" : "/auth",
+      cta: "Sync Progress",
       className: "col-span-3 lg:col-span-2",
       background: <OrbitingCircleIcons />,
     },
@@ -51,8 +52,8 @@ export default async function CreateAccountBanner() {
       name: "Compete with Friends",
       description:
         "Create a leaderboard with your friends and see who tops the charts.",
-      href: data?.claims?.sub ? "/groups" : "/auth?redirectTo=/groups",
-      cta: data?.claims?.sub ? "Fight!" : "Taralets!",
+      href: hasAccount ? "/groups" : "/auth?redirectTo=/groups",
+      cta: "Play With Friends",
       className: "col-span-3 lg:col-span-1",
       background: <></>,
       pill: "IT'S HERE!",
@@ -63,8 +64,8 @@ export default async function CreateAccountBanner() {
       Icon: MedalIcon,
       name: "Earn Achievements",
       description: "Collect badges as you reach new milestones.",
-      href: data?.claims?.sub ? "#" : "/auth",
-      cta: data?.claims?.sub ? "Sandale!" : "Taralets!",
+      href: hasAccount ? "#" : "/auth",
+      cta: "View Achievements",
       className: "col-span-3 lg:col-span-1",
       background: <></>,
       pill: "COMING SOON",
@@ -72,23 +73,27 @@ export default async function CreateAccountBanner() {
   ];
   return (
     <div>
-      <div className="mb-6 flex flex-col gap-0">
-        <h3>
-          {data?.claims?.sub
-            ? "Full Saltong Experience Unlocked"
-            : "Create a Saltong Account"}
-        </h3>
-        <span>
-          {data?.claims?.sub
-            ? "Everything’s saved, synced, and ready. Access past puzzles, track your progress, and see what’s coming next."
-            : "Unlock the full Saltong experience. Save your progress, track milestones, and play your way — anywhere, anytime."}
-        </span>
-      </div>
+      <header className="mb-6 flex flex-col gap-2">
+        <div className="flex flex-col gap-0">
+          <h2>Get More From a Saltong Account</h2>
+          <p className="m-0 p-0">
+            Save your progress, revisit past puzzles, keep playing across
+            devices, and compete with friends.
+          </p>
+        </div>
+      </header>
       <BentoGrid>
         {features.map((feature, idx) => (
           <BentoCard key={idx} {...feature} />
         ))}
       </BentoGrid>
+      <div className="mt-4 flex flex-col gap-0">
+        <h2>Daily Filipino Word Games</h2>
+        <p className="m-0 p-0">
+          Saltong Hub brings together Saltong, Saltong Mini, Saltong Max, and
+          Saltong Hex—fresh Filipino word-game challenges to enjoy every day.
+        </p>
+      </div>
     </div>
   );
 }

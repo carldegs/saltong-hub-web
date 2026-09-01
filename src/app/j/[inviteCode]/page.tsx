@@ -17,9 +17,9 @@ import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "@/app/components/home-navbar-brand";
 import { getProfileFormData } from "@/features/profiles/utils";
 import { createClient } from "@/lib/supabase/server";
+import { canonicalUrl } from "@/lib/seo";
 import JoinGroupButton from "./join-group-button";
 import { Metadata } from "next";
-import { canonicalUrl } from "@/lib/seo";
 
 interface JoinGroupPageProps {
   params: Promise<{

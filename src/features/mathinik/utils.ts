@@ -33,10 +33,7 @@ export type MathinikCursor = {
 };
 
 export type MathinikScoreBand =
-  | "Perfect"
-  | "Excellent"
-  | "Good"
-  | "Keep Trying";
+  "Perfect" | "Excellent" | "Good" | "Keep Trying";
 
 export const MATHINIK_RANKS = [
   { name: "bathala", minDifference: 0, maxDifference: 0, icon: "⚡" },

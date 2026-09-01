@@ -12,9 +12,9 @@ import { Github, Linkedin, Mail } from "lucide-react";
 import CarldegsLogo from "@/components/shared/carldegs-logo";
 import ContributeDialog from "@/components/shared/contribute-dialog";
 import { Navbar } from "@/components/shared/navbar";
+import { canonicalUrl } from "@/lib/seo";
 import HomeNavbarBrand from "../components/home-navbar-brand";
 import { VERSION } from "@/version";
-import { canonicalUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "About Saltong Hub",

@@ -1,9 +1,10 @@
 export const FILIPINO_WORDLE_LANDING_COPY = {
-  title: "Saltong: A Daily Filipino Word Game",
+  title: "Saltong Hub: Daily Filipino Word Games",
   description:
-    "Play Saltong, a daily Filipino word game built around Filipino language and words.",
-  hero: "Play Saltong",
-  introduction: "A daily Filipino word game with four ways to play.",
+    "Discover daily Filipino word games from Saltong Hub, including Saltong, Saltong Mini, Saltong Max, and Saltong Hex.",
+  hero: "Discover Filipino Word Games on Saltong Hub",
+  introduction:
+    "Play a fresh Filipino word game every day with Saltong, Saltong Mini, Saltong Max, and Saltong Hex.",
   searchCopy:
     "Looking for a Filipino Wordle, Tagalog Wordle, or Filipino Spelling Bee? Saltong Hub is a collection of independent daily Filipino word games with a fresh puzzle to solve every day.",
   history:

@@ -26,7 +26,6 @@ export default function InviteQRCode({
   useEffect(() => {
     // Check if share is available on mount
     if (typeof navigator !== "undefined" && !!window?.navigator?.canShare) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCanShare(true);
     }
   }, []);

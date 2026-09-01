@@ -60,7 +60,6 @@ export default function AvatarSelectionModal({
   useEffect(() => {
     if (open) {
       const initialSeed = getInitialGeneratedSeed();
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setGeneratedAvatarSeed(initialSeed);
       setSelectedAvatar(currentAvatarUrl || getBoringAvatarUrl(initialSeed));
 

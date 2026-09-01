@@ -27,12 +27,14 @@ const GAME_LIST = [
 ];
 
 export const metadata: Metadata = {
-  title: "Saltong Hub",
-  description: "Play daily Filipino word games and puzzles on Saltong Hub.",
+  title: { absolute: "Daily Filipino Word Games | Saltong Hub" },
+  description:
+    "Play daily Filipino word games and puzzles from Saltong Hub, including Saltong, Mini, Max, Hex, Sudoku, and Mathinik.",
   ...pageIndexingMetadata("/", true),
   openGraph: {
     title: "Saltong Hub",
-    description: "Play daily Filipino word games and puzzles on Saltong Hub.",
+    description:
+      "Play daily Filipino word games and puzzles from Saltong Hub, including Saltong, Mini, Max, Hex, Sudoku, and Mathinik.",
     type: "website",
     url: "/",
   },

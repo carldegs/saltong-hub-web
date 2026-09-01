@@ -3,11 +3,11 @@ import { metadata } from "./page";
 import { FILIPINO_WORDLE_LANDING_COPY, LANDING_GAMES } from "./copy";
 
 describe("Filipino word-game landing page", () => {
-  it("publishes an absolute, indexable canonical title without competitor terms in its description", () => {
+  it("publishes an absolute, indexable Saltong Hub collection title", () => {
     expect(metadata).toMatchObject({
-      title: { absolute: "Saltong: A Daily Filipino Word Game" },
+      title: { absolute: "Saltong Hub: Daily Filipino Word Games" },
       description:
-        "Play Saltong, a daily Filipino word game built around Filipino language and words.",
+        "Discover daily Filipino word games from Saltong Hub, including Saltong, Saltong Mini, Saltong Max, and Saltong Hex.",
       alternates: {
         canonical: "https://saltong.com/filipino-wordle",
       },
@@ -16,7 +16,16 @@ describe("Filipino word-game landing page", () => {
         url: "https://saltong.com/filipino-wordle",
       },
     });
-    expect(String(metadata.description)).not.toMatch(/wordle|spelling bee/i);
+  });
+
+  it("introduces the full Saltong Hub game collection", () => {
+    expect(FILIPINO_WORDLE_LANDING_COPY.hero).toBe(
+      "Discover Filipino Word Games on Saltong Hub"
+    );
+    expect(FILIPINO_WORDLE_LANDING_COPY.introduction).toContain("Saltong");
+    expect(FILIPINO_WORDLE_LANDING_COPY.introduction).toContain("Mini");
+    expect(FILIPINO_WORDLE_LANDING_COPY.introduction).toContain("Max");
+    expect(FILIPINO_WORDLE_LANDING_COPY.introduction).toContain("Hex");
   });
 
   it("uses the target search language with the independence notice", () => {

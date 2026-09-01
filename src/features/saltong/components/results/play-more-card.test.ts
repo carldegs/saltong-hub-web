@@ -2,18 +2,32 @@ import { Children, isValidElement, ReactElement, ReactNode } from "react";
 import { describe, expect, it } from "vitest";
 import PlayMoreCard from "./play-more-card";
 
-function getItemTitleParts(item: ReactElement) {
-  const content = Children.toArray(item.props.children).find(
-    (child) => isValidElement(child) && child.type.name === "ItemContent"
-  ) as ReactElement;
-  const title = Children.toArray(content.props.children).find(
-    (child) => isValidElement(child) && child.type.name === "ItemTitle"
-  ) as ReactElement;
+function findChildByComponentName(
+  children: ReactNode,
+  componentName: string
+): ReactElement<{ children: ReactNode }> {
+  const child = Children.toArray(children).find(
+    (candidate): candidate is ReactElement<{ children: ReactNode }> =>
+      isValidElement<{ children: ReactNode }>(candidate) &&
+      typeof candidate.type === "function" &&
+      candidate.type.name === componentName
+  );
+
+  if (!child) {
+    throw new Error(`Expected ${componentName} to be present`);
+  }
+
+  return child;
+}
+
+function getItemTitleParts(item: ReactElement<{ children: ReactNode }>) {
+  const content = findChildByComponentName(item.props.children, "ItemContent");
+  const title = findChildByComponentName(content.props.children, "ItemTitle");
 
   return Children.toArray(title.props.children);
 }
 
-function getItemLabel(item: ReactElement) {
+function getItemLabel(item: ReactElement<{ children: ReactNode }>) {
   return getItemTitleParts(item)
     .filter((child): child is string => typeof child === "string")
     .join("");
@@ -21,14 +35,17 @@ function getItemLabel(item: ReactElement) {
 
 function getPlayMoreItems(mode: "classic" | "mini" | "max") {
   const card = PlayMoreCard({ mode });
-  const description = Children.toArray(card.props.children).find(
-    (child) => isValidElement(child) && child.type.name === "CardDescription"
-  ) as ReactElement;
+  const description = findChildByComponentName(
+    card.props.children,
+    "CardDescription"
+  );
   const list = description.props.children as ReactElement<{
     children: ReactNode;
   }>;
 
-  return Children.toArray(list.props.children) as ReactElement[];
+  return Children.toArray(list.props.children) as ReactElement<{
+    children: ReactNode;
+  }>[];
 }
 
 describe("Saltong PlayMoreCard", () => {
@@ -50,9 +67,14 @@ describe("Saltong PlayMoreCard", () => {
       .filter((item) => ["Sudoku", "Mathinik"].includes(getItemLabel(item)))
       .map((item) => getItemTitleParts(item)[1]);
 
-    expect(badges.every(isValidElement)).toBe(true);
-    expect(
-      badges.map((badge) => (badge as ReactElement).props.className)
-    ).toEqual(["ml-1", "ml-1"]);
+    const badgeElements = badges.filter(
+      (badge): badge is ReactElement<{ className: string }> =>
+        isValidElement<{ className: string }>(badge)
+    );
+
+    expect(badgeElements.map((badge) => badge.props.className)).toEqual([
+      "ml-1",
+      "ml-1",
+    ]);
   });
 });

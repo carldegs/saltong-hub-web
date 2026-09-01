@@ -23,7 +23,8 @@ export interface SudokuModeConfig {
 }
 
 export interface SudokuConfig
-  extends BaseGameRegistry,
+  extends
+    BaseGameRegistry,
     BaseConfig,
     Readonly<{
       hasModes: true;
@@ -37,16 +38,10 @@ export type Pos = { col: number; row: number };
 export type SudokuInputMode = "solution" | "candidates";
 
 export type SudokuCellHighlightState =
-  | "idle"
-  | "related"
-  | "same-value"
-  | "selected";
+  "idle" | "related" | "same-value" | "selected";
 
 export type SudokuCellAnswerState =
-  | "none"
-  | "correct"
-  | "user-error"
-  | "given-error";
+  "none" | "correct" | "user-error" | "given-error";
 
 export type SudokuUserCheckState = "correct" | "incorrect" | null;
 

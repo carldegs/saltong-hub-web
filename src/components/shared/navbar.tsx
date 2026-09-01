@@ -95,7 +95,8 @@ const Navbar = ({
 Navbar.displayName = "Navbar";
 
 export interface NavbarBrandProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof navbarBrandTitleVariants> {
   title?: string;
   subtitle?: string;
