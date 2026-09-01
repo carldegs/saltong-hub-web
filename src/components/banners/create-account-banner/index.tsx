@@ -74,22 +74,26 @@ export default async function CreateAccountBanner() {
   return (
     <div>
       <header className="mb-6 flex flex-col gap-2">
-        <h1>Daily Filipino Word Games</h1>
-        <p>
-          Saltong Hub brings together Saltong, Saltong Mini, Saltong Max, and
-          Saltong Hex—fresh Filipino word-game challenges to enjoy every day.
-        </p>
-        <h2>Get More From a Saltong Account</h2>
-        <p>
-          Save your progress, revisit past puzzles, keep playing across devices,
-          and compete with friends.
-        </p>
+        <div className="flex flex-col gap-0">
+          <h2>Get More From a Saltong Account</h2>
+          <p className="m-0 p-0">
+            Save your progress, revisit past puzzles, keep playing across
+            devices, and compete with friends.
+          </p>
+        </div>
       </header>
       <BentoGrid>
         {features.map((feature, idx) => (
           <BentoCard key={idx} {...feature} />
         ))}
       </BentoGrid>
+      <div className="mt-4 flex flex-col gap-0">
+        <h2>Daily Filipino Word Games</h2>
+        <p className="m-0 p-0">
+          Saltong Hub brings together Saltong, Saltong Mini, Saltong Max, and
+          Saltong Hex—fresh Filipino word-game challenges to enjoy every day.
+        </p>
+      </div>
     </div>
   );
 }

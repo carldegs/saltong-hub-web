@@ -9,7 +9,7 @@ describe("patch notes", () => {
         metadata: expect.objectContaining({
           title: "Saltong Tips and Tricks for Competitive Folks Like You",
           publishedAt: "2026-09-01",
-          tags: ["guide", "tips"],
+          tags: ["guide", "saltong"],
         }),
       })
     );
