@@ -7,7 +7,6 @@ import GroupListScreen from "@/features/groups/components/group-list-screen";
 import { Navbar } from "@/components/shared/navbar";
 import { canonicalUrl } from "@/lib/seo";
 import HomeNavbarBrand from "../components/home-navbar-brand";
-import { canonicalUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Saltong Hub | Groups",

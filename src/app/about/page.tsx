@@ -15,7 +15,6 @@ import { Navbar } from "@/components/shared/navbar";
 import { canonicalUrl } from "@/lib/seo";
 import HomeNavbarBrand from "../components/home-navbar-brand";
 import { VERSION } from "@/version";
-import { canonicalUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "About Saltong Hub",

@@ -20,7 +20,6 @@ import { createClient } from "@/lib/supabase/server";
 import { canonicalUrl } from "@/lib/seo";
 import JoinGroupButton from "./join-group-button";
 import { Metadata } from "next";
-import { canonicalUrl } from "@/lib/seo";
 
 interface JoinGroupPageProps {
   params: Promise<{
