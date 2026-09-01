@@ -6,7 +6,7 @@ const appDirectory = join(process.cwd(), "src/app");
 const apexHost = ["https://", "saltong.com"].join("");
 
 function publicSourceFiles() {
-  return readdirSync(appDirectory, { recursive: true })
+  return readdirSync(appDirectory, { encoding: "utf8", recursive: true })
     .filter((entry) => /\.(ts|tsx|md|mdx)$/.test(entry))
     .filter((entry) => !/\.test\.(ts|tsx)$/.test(entry))
     .map((entry) => join(appDirectory, entry));
