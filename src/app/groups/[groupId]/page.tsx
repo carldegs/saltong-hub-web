@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/server";
 import { canonicalUrl } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
+import { canonicalUrl } from "@/lib/seo";
 
 interface GroupPageProps {
   params: Promise<{

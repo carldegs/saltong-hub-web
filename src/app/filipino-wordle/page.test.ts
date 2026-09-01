@@ -9,11 +9,11 @@ describe("Filipino word-game landing page", () => {
       description:
         "Discover daily Filipino word games from Saltong Hub, including Saltong, Saltong Mini, Saltong Max, and Saltong Hex.",
       alternates: {
-        canonical: "https://www.saltong.com/filipino-wordle",
+        canonical: "https://saltong.com/filipino-wordle",
       },
       robots: { index: true, follow: true },
       openGraph: {
-        url: "https://www.saltong.com/filipino-wordle",
+        url: "https://saltong.com/filipino-wordle",
       },
     });
   });

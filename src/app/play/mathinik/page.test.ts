@@ -9,9 +9,9 @@ describe("Mathinik metadata", () => {
     });
 
     expect(metadata).toMatchObject({
-      alternates: { canonical: "https://www.saltong.com/play/mathinik" },
+      alternates: { canonical: "https://saltong.com/play/mathinik" },
       robots: { index: false, follow: true },
-      openGraph: { url: "https://www.saltong.com/play/mathinik" },
+      openGraph: { url: "https://saltong.com/play/mathinik" },
     });
   });
 });

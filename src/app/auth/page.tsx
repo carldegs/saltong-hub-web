@@ -3,9 +3,11 @@ import AuthForm from "./auth-form";
 import { createClient } from "@/lib/supabase/server";
 import { redirect, RedirectType } from "next/navigation";
 import { validateRedirect } from "@/lib/auth/validate-redirect";
+import { pageIndexingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Saltong Hub | Log in",
+  ...pageIndexingMetadata("/auth", false),
 };
 
 export default async function LoginPage({

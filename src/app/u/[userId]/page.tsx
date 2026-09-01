@@ -23,6 +23,7 @@ import { NumberTicker } from "@/components/ui/number-ticker";
 import Link from "next/link";
 import { getProfileById } from "@/features/profiles/queries/get-profile";
 import { Metadata } from "next";
+import { canonicalUrl } from "@/lib/seo";
 
 // For now, only the user can view their own profile. Need to setup a public table for profiles later.
 
