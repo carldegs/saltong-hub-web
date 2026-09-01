@@ -12,6 +12,7 @@ import { Github, Linkedin, Mail } from "lucide-react";
 import CarldegsLogo from "@/components/shared/carldegs-logo";
 import ContributeDialog from "@/components/shared/contribute-dialog";
 import { Navbar } from "@/components/shared/navbar";
+import { canonicalUrl } from "@/lib/seo";
 import HomeNavbarBrand from "../components/home-navbar-brand";
 import { VERSION } from "@/version";
 
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
     description:
       "Learn about Saltong Hub, the platform for Filipino word games created to celebrate the Filipino language.",
     type: "website",
-    url: "https://saltong.com/about",
+    url: canonicalUrl("/about"),
   },
 };
 

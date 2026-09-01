@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "../components/home-navbar-brand";
+import { canonicalUrl } from "@/lib/seo";
 import {
   SettingsSectionHeader,
   SettingsSectionList,
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     title: "Policies - Saltong Hub",
     description: "Review our policies and terms for using Saltong Hub.",
     type: "website",
-    url: "https://saltong.com/policies",
+    url: canonicalUrl("/policies"),
   },
 };
 

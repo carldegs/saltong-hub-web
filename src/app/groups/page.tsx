@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getUserGroups } from "@/features/groups/queries/get-group";
 import GroupListScreen from "@/features/groups/components/group-list-screen";
 import { Navbar } from "@/components/shared/navbar";
+import { canonicalUrl } from "@/lib/seo";
 import HomeNavbarBrand from "../components/home-navbar-brand";
 
 export const metadata: Metadata = {
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
     description:
       "Create and join groups. Play Saltong with friends and compete on group leaderboards.",
     type: "website",
-    url: "https://saltong.com/groups",
+    url: canonicalUrl("/groups"),
   },
 };
 

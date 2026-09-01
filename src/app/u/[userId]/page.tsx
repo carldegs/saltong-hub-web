@@ -13,6 +13,7 @@ import getSaltongProfileStats from "@/features/profiles/queries/get-profile-stat
 import ResultsChart from "@/features/saltong/components/results-chart";
 import { SALTONG_CONFIG } from "@/features/saltong/config";
 import { createClient } from "@/lib/supabase/server";
+import { canonicalUrl } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import { PencilIcon, PlayIcon } from "lucide-react";
 import Image from "next/image";
@@ -52,7 +53,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: `${profile.display_name} - Saltong Hub Profile`,
       description: `Check out ${profile.display_name}'s Saltong Hub profile and stats.`,
       type: "profile",
-      url: `https://saltong.com/u/${userId}`,
+      url: canonicalUrl(`/u/${userId}`),
     },
   };
 }

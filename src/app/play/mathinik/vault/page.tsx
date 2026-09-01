@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import MathinikVaultPage from "@/features/mathinik/templates/mathinik-vault-page";
+import { canonicalUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Mathinik Vault",
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
     title: "Mathinik Vault",
     description: "Browse archived Mathinik rounds and open previous dates.",
     type: "website",
-    url: "https://saltong.com/play/mathinik/vault",
+    url: canonicalUrl("/play/mathinik/vault"),
   },
 };
 
