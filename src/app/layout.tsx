@@ -18,6 +18,7 @@ import { ReactQueryClientProvider } from "@/components/providers/react-query-cli
 import GoogleAdSense from "@/components/ads/adsense";
 import { ConsentManager } from "./consent-manager";
 import { SITE_URL } from "@/lib/seo";
+import { AppFooter } from "@/components/shared/app-footer";
 
 const APP_NAME = "Saltong Hub";
 const APP_TITLE_TEMPLATE = "%s | Saltong Hub";
@@ -85,9 +86,12 @@ export default async function RootLayout({
             >
               <SidebarProvider defaultOpen={defaultOpen}>
                 <AppSidebar />
-                <main className="flex min-h-dvh w-full flex-col">
-                  {children}
-                </main>
+                <div className="flex min-h-dvh w-full flex-col">
+                  <main className="flex w-full flex-1 flex-col">
+                    {children}
+                  </main>
+                  <AppFooter />
+                </div>
               </SidebarProvider>
               <Toaster richColors />
             </ThemeProvider>
