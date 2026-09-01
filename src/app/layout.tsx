@@ -87,9 +87,7 @@ export default async function RootLayout({
               <SidebarProvider defaultOpen={defaultOpen}>
                 <AppSidebar />
                 <div className="flex min-h-dvh w-full flex-col">
-                  <main className="flex w-full flex-1 flex-col">
-                    {children}
-                  </main>
+                  <div className="flex w-full flex-1 flex-col">{children}</div>
                   <AppFooter />
                 </div>
               </SidebarProvider>
