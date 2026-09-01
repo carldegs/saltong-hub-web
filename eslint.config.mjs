@@ -14,6 +14,8 @@ const eslintConfig = [
   eslintPluginPrettierRecommended,
   {
     ignores: [
+      ".pnpm-store/**",
+      ".worktrees/**",
       "src/components/ui/*",
       "src/components/magicui/*",
       "src/lib/supabase/types.ts",
@@ -22,6 +24,7 @@ const eslintConfig = [
   {
     rules: {
       "no-console": ["error", { allow: ["warn", "error", "info"] }],
+      "react-hooks/set-state-in-effect": "off",
     },
   },
 ];

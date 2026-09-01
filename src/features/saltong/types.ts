@@ -38,10 +38,7 @@ export enum LetterStatus {
   Empty = " ",
 }
 export type SaltongUserRoundStatus =
-  | "correct"
-  | "incorrect"
-  | "partial"
-  | "idle";
+  "correct" | "incorrect" | "partial" | "idle";
 
 export interface DetailedSaltongUserRound extends SaltongUserRound {
   isCorrect: boolean;

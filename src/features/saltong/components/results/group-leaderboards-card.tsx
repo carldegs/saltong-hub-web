@@ -270,8 +270,7 @@ export default function GroupLeaderboardsCard({
 
   const visibleLeaderboards = useMemo(() => {
     const saltongLeaderboards = leaderboards as
-      | SaltongLeaderboardEntry[]
-      | undefined;
+      SaltongLeaderboardEntry[] | undefined;
 
     if (!selectedGroup?.hideUnsolvedMembers) {
       return saltongLeaderboards;

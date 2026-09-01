@@ -35,11 +35,7 @@ export interface FacebookIdentityData extends ProfileIdentityData {
 }
 
 export type ProviderType =
-  | "google"
-  | "email"
-  | "discord"
-  | "twitter"
-  | "facebook";
+  "google" | "email" | "discord" | "twitter" | "facebook";
 
 export type IdentityProviderMap =
   | {
@@ -64,7 +60,8 @@ export type IdentityProviderMap =
     };
 
 export interface UserMetadata
-  extends GoogleIdentityData,
+  extends
+    GoogleIdentityData,
     EmailIdentityData,
     DiscordIdentityData,
     TwitterIdentityData,
