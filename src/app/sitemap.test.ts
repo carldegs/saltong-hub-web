@@ -20,6 +20,25 @@ describe("sitemap", () => {
     );
   });
 
+  it("submits the public how-to-play directory and game guides", () => {
+    expect(sitemap()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          url: "https://saltong.com/how-to-play",
+          changeFrequency: "monthly",
+        }),
+        expect.objectContaining({
+          url: "https://saltong.com/how-to-play/saltong",
+          changeFrequency: "monthly",
+        }),
+        expect.objectContaining({
+          url: "https://saltong.com/how-to-play/mathinik",
+          changeFrequency: "monthly",
+        }),
+      ])
+    );
+  });
+
   it("submits the evergreen Sudoku and Mathinik game pages", () => {
     expect(sitemap()).toEqual(
       expect.arrayContaining([

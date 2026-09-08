@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { getBlogPosts } from "./patch-notes/utils";
 import { SITE_URL } from "@/lib/seo";
+import { GAME_GUIDES } from "@/features/game-guides/config";
 
 const baseUrl = SITE_URL;
 const FILIPINO_WORDLE_LAST_MODIFIED = new Date("2026-08-21T00:00:00.000Z");
@@ -30,6 +31,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 1.0,
   }));
 
+  const guidePages = GAME_GUIDES.map((guide) => ({
+    url: `${baseUrl}${guide.path}`,
+    lastModified: SITE_LAST_MODIFIED,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
   // Static routes sorted by priority
   const routes = [
     // Home page - Priority 0.9
@@ -51,6 +59,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: FILIPINO_WORDLE_LAST_MODIFIED,
       changeFrequency: "monthly" as const,
       priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/how-to-play`,
+      lastModified: SITE_LAST_MODIFIED,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     },
     // Other pages - Priority 0.3
     {
@@ -97,5 +111,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  return [...playPages, ...routes, ...blogs];
+  return [...playPages, ...guidePages, ...routes, ...blogs];
 }
