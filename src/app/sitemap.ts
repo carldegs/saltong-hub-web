@@ -4,6 +4,8 @@ import { SITE_URL } from "@/lib/seo";
 
 const baseUrl = SITE_URL;
 const FILIPINO_WORDLE_LAST_MODIFIED = new Date("2026-08-21T00:00:00.000Z");
+const SITE_LAST_MODIFIED = new Date("2026-09-08T00:00:00.000Z");
+const GAME_ROUTES_LAST_MODIFIED = new Date("2026-08-21T00:00:00.000Z");
 
 // Play game variants
 const playVariants = ["", "mini", "max", "hex", "sudoku", "mathinik"];
@@ -23,7 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Generate play pages dynamically - Priority 1.0
   const playPages = playVariants.map((variant) => ({
     url: `${baseUrl}/play${variant ? `/${variant}` : ""}`,
-    lastModified: new Date(),
+    lastModified: GAME_ROUTES_LAST_MODIFIED,
     changeFrequency: "daily" as const,
     priority: 1.0,
   }));
@@ -33,14 +35,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Home page - Priority 0.9
     {
       url: baseUrl,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "daily" as const,
       priority: 0.9,
     },
     // Contribute - Priority 0.8
     {
       url: `${baseUrl}/contribute`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     },
@@ -53,37 +55,43 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Other pages - Priority 0.3
     {
       url: `${baseUrl}/about`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
+      changeFrequency: "monthly" as const,
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "monthly" as const,
       priority: 0.3,
     },
     {
       url: `${baseUrl}/patch-notes`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "weekly" as const,
       priority: 0.3,
     },
     {
       url: `${baseUrl}/policies`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "yearly" as const,
       priority: 0.3,
     },
     {
       url: `${baseUrl}/policies/privacy`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "yearly" as const,
       priority: 0.3,
     },
     {
       url: `${baseUrl}/policies/terms`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "yearly" as const,
       priority: 0.3,
     },
     {
       url: `${baseUrl}/policies/cookies`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "yearly" as const,
       priority: 0.3,
     },

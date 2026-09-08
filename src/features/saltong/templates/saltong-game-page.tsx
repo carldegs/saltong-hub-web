@@ -23,6 +23,8 @@ import NavbarUser from "@/components/shared/navbar-user";
 import VaultButton from "../components/vault/vault-button";
 import HowToPlayDialog from "../components/how-to-play";
 import { cn } from "@/lib/utils";
+import { JsonLd } from "@/components/seo/json-ld";
+import { gameJsonLd } from "@/lib/structured-data";
 
 async function SaltongGamePage({
   searchParams: _searchParams,
@@ -170,9 +172,20 @@ export default async function SaltongMainPageWithSuspense({
   searchParams: Promise<{ d?: string }>;
   mode: SaltongMode;
 }) {
+  const gameSettings = SALTONG_CONFIG.modes[mode];
+
   return (
-    <Suspense key={mode} fallback={<SaltongGamePageLoading mode={mode} />}>
-      <SaltongGamePage searchParams={searchParams} mode={mode} />
-    </Suspense>
+    <>
+      <JsonLd
+        data={gameJsonLd({
+          name: gameSettings.displayName,
+          description: `A daily Filipino ${gameSettings.wordLen}-letter word puzzle.`,
+          path: `/play${gameSettings.path}`,
+        })}
+      />
+      <Suspense key={mode} fallback={<SaltongGamePageLoading mode={mode} />}>
+        <SaltongGamePage searchParams={searchParams} mode={mode} />
+      </Suspense>
+    </>
   );
 }

@@ -36,4 +36,11 @@ describe("sitemap", () => {
       ])
     );
   });
+
+  it("uses stable last-modified values rather than the request time", () => {
+    const entries = sitemap();
+    const laterEntries = sitemap();
+
+    expect(entries).toEqual(laterEntries);
+  });
 });

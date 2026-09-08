@@ -20,6 +20,8 @@ import PlayArea, {
   MathinikHowToPlayDialog,
 } from "@/features/mathinik/components/play-area";
 import { canonicalUrl, pageIndexingMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { gameJsonLd } from "@/lib/structured-data";
 
 interface Props {
   searchParams: Promise<{ d?: string }>;
@@ -84,6 +86,15 @@ export default async function MathinikPage(props: Props) {
 
   return (
     <div className="grid h-svh w-full grid-rows-[auto_minmax(0,1fr)] overflow-hidden">
+      <JsonLd
+        data={gameJsonLd({
+          name: "Mathinik",
+          description:
+            "A daily numbers puzzle that challenges players to reach a target.",
+          path: "/play/mathinik",
+          genre: "Puzzle game",
+        })}
+      />
       <Navbar colorScheme={navbarColorScheme} hideUserDropdown>
         <NavbarBrand
           colorScheme={navbarColorScheme}

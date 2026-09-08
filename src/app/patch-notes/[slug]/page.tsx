@@ -11,6 +11,8 @@ import { TableOfContents } from "./components/table-of-contents";
 import { BlogDate } from "../components/blog-date";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { createClient } from "@/lib/supabase/server";
+import { JsonLd } from "@/components/seo/json-ld";
+import { articleJsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
 
 // Extract headings from markdown content for table of contents
 function extractHeadings(content: string) {
@@ -88,6 +90,22 @@ export default async function BlogPost({
       <Navbar>
         <HomeNavbarBrand />
       </Navbar>
+      <JsonLd
+        data={articleJsonLd({
+          title: post.metadata.title,
+          description: post.metadata.summary,
+          path: `/patch-notes/${post.slug}`,
+          publishedAt: post.metadata.publishedAt,
+          author: post.metadata.author,
+        })}
+      />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Patch Notes", path: "/patch-notes" },
+          { name: post.metadata.title, path: `/patch-notes/${post.slug}` },
+        ])}
+      />
       <main className="dark:from-background dark:via-muted/60 dark:to-muted/80 relative min-h-[100dvh] bg-gradient-to-br from-[#f8fafc] via-[#e0e7ef] to-[#f1f5f9]">
         {/* Hero Image with Title and Back Button */}
         <div className="relative h-[60vh] w-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-400 dark:to-gray-600">

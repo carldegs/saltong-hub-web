@@ -28,11 +28,11 @@ vi.mock("@/components/shared/navbar", () => ({
 import HomePage from "./page";
 
 describe("home page SEO discovery", () => {
-  it("links visitors and crawlers to the Filipino word-game landing page", async () => {
+  it("does not repeat the Filipino Wordle promo line in the game hub", async () => {
     const page = await HomePage();
     const markup = renderToStaticMarkup(page);
 
-    expect(markup).toContain('href="/filipino-wordle"');
-    expect(markup).toContain("Looking for a Filipino word game?");
+    expect(markup).not.toContain('href="/filipino-wordle"');
+    expect(markup).not.toContain("Looking for a Filipino word game?");
   });
 });
