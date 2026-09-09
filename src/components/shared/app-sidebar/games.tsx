@@ -12,7 +12,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { VaultIcon, ChevronDownIcon, ChevronRightIcon } from "lucide-react";
+import {
+  VaultIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  BadgeQuestionMarkIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SUDOKU_MODES } from "@/features/sudoku/config";
 import {
@@ -21,13 +26,19 @@ import {
   getSudokuVaultPath,
 } from "@/features/sudoku/paths";
 import NewFeatureBadge from "../new-feature-badge";
+import { GAME_GUIDES } from "@/features/game-guides/config";
 
-const getDefaultSubItems = (path: string) => {
+const getDefaultSubItems = (path: string, howToPlayPath: string) => {
   return [
     {
       href: `${path}/vault`,
       name: "Vault",
       icon: <VaultIcon />,
+    },
+    {
+      href: howToPlayPath,
+      name: "How to Play",
+      icon: <BadgeQuestionMarkIcon />,
     },
     // {
     //   href: `${path}/leaderboards`,
@@ -48,6 +59,11 @@ const SUDOKU_SUB_ITEMS = [
     name: "Vault",
     icon: <VaultIcon />,
   },
+  {
+    href: GAME_GUIDES.find((guide) => guide.slug === "sudoku")!.path,
+    name: "How to Play",
+    icon: <BadgeQuestionMarkIcon />,
+  },
 ];
 
 export const GAMES = [
@@ -55,25 +71,37 @@ export const GAMES = [
     href: "/play",
     icon: "/main.svg",
     name: "Saltong",
-    sub: getDefaultSubItems("/play"),
+    sub: getDefaultSubItems(
+      "/play",
+      GAME_GUIDES.find((guide) => guide.slug === "saltong")!.path
+    ),
   },
   {
     href: "/play/max",
     icon: "/max.svg",
     name: "Saltong Max",
-    sub: getDefaultSubItems("/play/max"),
+    sub: getDefaultSubItems(
+      "/play/max",
+      GAME_GUIDES.find((guide) => guide.slug === "max")!.path
+    ),
   },
   {
     href: "/play/mini",
     icon: "/mini.svg",
     name: "Saltong Mini",
-    sub: getDefaultSubItems("/play/mini"),
+    sub: getDefaultSubItems(
+      "/play/mini",
+      GAME_GUIDES.find((guide) => guide.slug === "mini")!.path
+    ),
   },
   {
     href: "/play/hex",
     icon: "/hex.svg",
     name: "Hex",
-    sub: getDefaultSubItems("/play/hex"),
+    sub: getDefaultSubItems(
+      "/play/hex",
+      GAME_GUIDES.find((guide) => guide.slug === "hex")!.path
+    ),
   },
   {
     href: `/play${getSudokuDifficultySelectorPath()}`,
@@ -87,7 +115,10 @@ export const GAMES = [
     icon: "/mathinik.svg",
     name: "Mathinik",
     isNew: true,
-    sub: getDefaultSubItems("/play/mathinik"),
+    sub: getDefaultSubItems(
+      "/play/mathinik",
+      GAME_GUIDES.find((guide) => guide.slug === "mathinik")!.path
+    ),
   },
 ];
 

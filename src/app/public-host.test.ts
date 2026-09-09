@@ -3,7 +3,7 @@ import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const appDirectory = join(process.cwd(), "src/app");
-const apexHost = ["https://", "saltong.com"].join("");
+const nonCanonicalHost = ["https://www.", "saltong.com"].join("");
 
 function publicSourceFiles() {
   return readdirSync(appDirectory, { encoding: "utf8", recursive: true })
@@ -13,9 +13,9 @@ function publicSourceFiles() {
 }
 
 describe("public host signals", () => {
-  it("does not emit first-party URLs on the apex host", () => {
+  it("does not emit first-party URLs on the non-canonical www host", () => {
     const offendingFiles = publicSourceFiles()
-      .filter((path) => readFileSync(path, "utf8").includes(apexHost))
+      .filter((path) => readFileSync(path, "utf8").includes(nonCanonicalHost))
       .map((path) => relative(process.cwd(), path));
 
     expect(offendingFiles).toEqual([]);

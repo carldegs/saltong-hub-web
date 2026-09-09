@@ -21,7 +21,7 @@ import {
   NumberValue,
 } from "./mathinik-display";
 
-function MathinikExampleEquation({
+export function MathinikExampleEquation({
   variable,
   first,
   operator,

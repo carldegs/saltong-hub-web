@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/accordion";
 import { HEX_CONFIG } from "../config";
 import { HOW_TO_PLAY_INTROS } from "@/features/game-registry/how-to-play-copy";
+import { HEX_HOW_TO_PLAY_COPY } from "../how-to-play-copy";
 
 export type HexHowToPlayAccordionProps = {
   wordCount: number;
@@ -66,50 +67,41 @@ export default function HexHowToPlayAccordion({
             <div>
               <p className="text-foreground font-semibold">How to play</p>
               <ul className="mt-1 list-disc space-y-1 pl-5">
-                <li>Words must be at least four letters long.</li>
-                <li>Words must contain the center letter.</li>
-                <li>You may reuse letters as often as you need.</li>
+                {HEX_HOW_TO_PLAY_COPY.rules.slice(0, 4).map((rule) => (
+                  <li key={rule}>{rule}</li>
+                ))}
                 <li>
-                  Proper nouns, hyphenated terms, or obscene words are filtered
-                  out of the official list.
-                </li>
-                <li>
-                  Duplicate submissions don&apos;t add points, so keep pushing
-                  for new finds until you reach <BathalaTag className="ml-1" />.
+                  {HEX_HOW_TO_PLAY_COPY.rules[4]} so keep pushing for new finds
+                  until you reach <BathalaTag className="ml-1" />.
                 </li>
               </ul>
             </div>
             <div>
               <p className="text-foreground font-semibold">Earning points</p>
               <ul className="mt-1 list-disc space-y-1 pl-5">
-                <li>4-letter words are worth 1 point.</li>
-                <li>
-                  Longer words earn 1 point per letter (e.g., MANONG = 6 pts).
-                </li>
-                <li>Pangrams add an extra 7 points on top of their length.</li>
+                {HEX_HOW_TO_PLAY_COPY.scoring.map((rule) => (
+                  <li key={rule}>{rule}</li>
+                ))}
               </ul>
+              <p className="text-muted-foreground mt-2">
+                {HEX_HOW_TO_PLAY_COPY.pangramExplanation}
+              </p>
             </div>
             <Alert className="bg-muted">
               <AlertTitle className="text-foreground">Example</AlertTitle>
               <AlertDescription className="text-foreground space-y-2">
                 <p>
-                  Given the letters <b>K T O R E S P</b> with <b>O</b> as the
+                  Given the letters{" "}
+                  <b>{HEX_HOW_TO_PLAY_COPY.example.letters}</b> with{" "}
+                  <b>{HEX_HOW_TO_PLAY_COPY.example.centerLetter}</b> as the
                   center letter:
                 </p>
                 <ul className="mt-2 list-disc space-y-1 pl-5">
-                  <li>
-                    <b>KESO</b> is worth 1 pt.
-                  </li>
-                  <li>
-                    <b>TORPE</b> is worth 5 pts.
-                  </li>
-                  <li>
-                    <b>EKSPORT</b> is worth 14 pts because it&apos;s 7 letters
-                    long and a pangram.
-                  </li>
-                  <li>
-                    <b>EKSPERTO</b> is worth 15 pts.
-                  </li>
+                  {HEX_HOW_TO_PLAY_COPY.example.entries.map((entry) => (
+                    <li key={entry.word}>
+                      <b>{entry.word}</b> {entry.description}
+                    </li>
+                  ))}
                 </ul>
               </AlertDescription>
             </Alert>

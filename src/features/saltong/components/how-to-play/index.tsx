@@ -12,12 +12,11 @@ import {
 } from "@/components/ui/sheet";
 import { BadgeQuestionMarkIcon } from "lucide-react";
 import { SaltongHowToPlayCard } from "./card";
-import { SALTONG_CONFIG } from "../../config";
 import { SaltongMode } from "../../types";
 import { useModalStore } from "@/providers/modal/modal-provider";
 import { useLocalStorage } from "usehooks-ts";
 import { useEffect } from "react";
-import { HOW_TO_PLAY_INTROS } from "@/features/game-registry/how-to-play-copy";
+import { getSaltongHowToPlayContent } from "../../how-to-play-content";
 
 export const HOW_TO_PLAY_MODAL_ID = "how-to-play";
 
@@ -27,14 +26,7 @@ export default function HowToPlayDialog({ mode }: { mode: SaltongMode }) {
   );
   const setOpenModal = useModalStore((state) => state.setOpenModal);
 
-  const { wordLen, howToPlayExamples } =
-    SALTONG_CONFIG.modes[mode as keyof typeof SALTONG_CONFIG.modes];
-  const intro =
-    mode === "classic"
-      ? HOW_TO_PLAY_INTROS.saltongClassic
-      : mode === "mini"
-        ? HOW_TO_PLAY_INTROS.saltongMini
-        : HOW_TO_PLAY_INTROS.saltongMax;
+  const { intro, wordLen, examples } = getSaltongHowToPlayContent(mode);
   const [hasSeenHowToPlay, setHasSeenHowToPlay] = useLocalStorage(
     `saltong-results-has-seen-how-to-play-${mode}`,
     false
@@ -74,7 +66,7 @@ export default function HowToPlayDialog({ mode }: { mode: SaltongMode }) {
           <SaltongHowToPlayCard
             intro={intro}
             wordLen={wordLen}
-            examples={howToPlayExamples}
+            examples={examples}
           />
         </div>
         <SheetFooter className="mx-auto w-full max-w-lg px-4 pt-2 pb-4">

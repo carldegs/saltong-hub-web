@@ -1,9 +1,12 @@
 import { MetadataRoute } from "next";
 import { getBlogPosts } from "./patch-notes/utils";
 import { SITE_URL } from "@/lib/seo";
+import { GAME_GUIDES } from "@/features/game-guides/config";
 
 const baseUrl = SITE_URL;
 const FILIPINO_WORDLE_LAST_MODIFIED = new Date("2026-08-21T00:00:00.000Z");
+const SITE_LAST_MODIFIED = new Date("2026-09-09T00:00:00.000Z");
+const GAME_ROUTES_LAST_MODIFIED = new Date("2026-08-21T00:00:00.000Z");
 
 // Play game variants
 const playVariants = ["", "mini", "max", "hex", "sudoku", "mathinik"];
@@ -23,9 +26,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Generate play pages dynamically - Priority 1.0
   const playPages = playVariants.map((variant) => ({
     url: `${baseUrl}/play${variant ? `/${variant}` : ""}`,
-    lastModified: new Date(),
+    lastModified: GAME_ROUTES_LAST_MODIFIED,
     changeFrequency: "daily" as const,
     priority: 1.0,
+  }));
+
+  const guidePages = GAME_GUIDES.map((guide) => ({
+    url: `${baseUrl}${guide.path}`,
+    lastModified: SITE_LAST_MODIFIED,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
   }));
 
   // Static routes sorted by priority
@@ -33,14 +43,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Home page - Priority 0.9
     {
       url: baseUrl,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "daily" as const,
       priority: 0.9,
     },
     // Contribute - Priority 0.8
     {
       url: `${baseUrl}/contribute`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     },
@@ -50,44 +60,56 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     },
+    {
+      url: `${baseUrl}/how-to-play`,
+      lastModified: SITE_LAST_MODIFIED,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
     // Other pages - Priority 0.3
     {
       url: `${baseUrl}/about`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
+      changeFrequency: "monthly" as const,
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "monthly" as const,
       priority: 0.3,
     },
     {
       url: `${baseUrl}/patch-notes`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "weekly" as const,
       priority: 0.3,
     },
     {
       url: `${baseUrl}/policies`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "yearly" as const,
       priority: 0.3,
     },
     {
       url: `${baseUrl}/policies/privacy`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "yearly" as const,
       priority: 0.3,
     },
     {
       url: `${baseUrl}/policies/terms`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "yearly" as const,
       priority: 0.3,
     },
     {
       url: `${baseUrl}/policies/cookies`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "yearly" as const,
       priority: 0.3,
     },
   ];
 
-  return [...playPages, ...routes, ...blogs];
+  return [...playPages, ...guidePages, ...routes, ...blogs];
 }

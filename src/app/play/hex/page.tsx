@@ -19,6 +19,8 @@ import { getCharSet } from "@/features/hex/utils";
 import NavbarUser from "@/components/shared/navbar-user";
 import { canonicalUrl, pageIndexingMetadata } from "@/lib/seo";
 import { playPageBackgroundVariants } from "@/components/shared/play-page-background";
+import { JsonLd } from "@/components/seo/json-ld";
+import { gameJsonLd } from "@/lib/structured-data";
 
 export async function generateMetadata({
   searchParams: _searchParams,
@@ -111,6 +113,13 @@ export default async function SaltongHexPage({
 
   return (
     <div className="grid min-h-screen w-full grid-rows-[auto_1fr]">
+      <JsonLd
+        data={gameJsonLd({
+          name: "Saltong Hex",
+          description: "A daily Filipino word-finding puzzle.",
+          path: "/play/hex",
+        })}
+      />
       <Navbar colorScheme={gameSettings.colorScheme} hideUserDropdown>
         <NavbarBrand
           colorScheme={gameSettings.colorScheme}

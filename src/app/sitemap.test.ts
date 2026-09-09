@@ -20,6 +20,34 @@ describe("sitemap", () => {
     );
   });
 
+  it("marks the homepage as updated with the latest site release", () => {
+    expect(sitemap()).toContainEqual(
+      expect.objectContaining({
+        url: "https://saltong.com",
+        lastModified: new Date("2026-09-09T00:00:00.000Z"),
+      })
+    );
+  });
+
+  it("submits the public how-to-play directory and game guides", () => {
+    expect(sitemap()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          url: "https://saltong.com/how-to-play",
+          changeFrequency: "monthly",
+        }),
+        expect.objectContaining({
+          url: "https://saltong.com/how-to-play/saltong",
+          changeFrequency: "monthly",
+        }),
+        expect.objectContaining({
+          url: "https://saltong.com/how-to-play/mathinik",
+          changeFrequency: "monthly",
+        }),
+      ])
+    );
+  });
+
   it("submits the evergreen Sudoku and Mathinik game pages", () => {
     expect(sitemap()).toEqual(
       expect.arrayContaining([
@@ -35,5 +63,12 @@ describe("sitemap", () => {
         }),
       ])
     );
+  });
+
+  it("uses stable last-modified values rather than the request time", () => {
+    const entries = sitemap();
+    const laterEntries = sitemap();
+
+    expect(entries).toEqual(laterEntries);
   });
 });

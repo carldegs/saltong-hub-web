@@ -52,7 +52,7 @@ const SETTINGS = [
 const EXAMPLE_SELECTED_CELL = { row: 1, col: 1 } as const;
 const NOTE_EXAMPLE_CANDIDATES = [2, 4, 7] as const;
 
-function ExampleBoard() {
+export function SudokuExampleBoard() {
   return (
     <>
       <style>
@@ -157,6 +157,19 @@ function NotesCellExample() {
   );
 }
 
+export function SudokuSettingsTable() {
+  return (
+    <div className="divide-border divide-y rounded-lg border text-sm">
+      {SETTINGS.map(([name, description]) => (
+        <div key={name} className="grid grid-cols-[8rem_1fr] divide-x">
+          <div className="p-3 font-bold">{name}</div>
+          <div className="text-muted-foreground p-3">{description}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function SudokuHowToPlay() {
   const [isOpen, setIsOpen] = useState(false);
   const isClient = useIsClient();
@@ -193,7 +206,7 @@ export default function SudokuHowToPlay() {
                 {HOW_TO_PLAY_INTROS.sudoku}
               </p>
             </div>
-            <ExampleBoard />
+            <SudokuExampleBoard />
             <section className="rounded-lg border p-4">
               <p className="text-sm leading-6">
                 Each{" "}
@@ -227,14 +240,7 @@ export default function SudokuHowToPlay() {
             </section>
             <section className="space-y-3">
               <h3 className="text-lg font-black">Settings</h3>
-              <div className="divide-border divide-y rounded-lg border">
-                {SETTINGS.map(([name, description]) => (
-                  <div key={name} className="p-3 text-sm leading-6">
-                    <span className="font-bold">{name}</span>{" "}
-                    <span className="text-muted-foreground">{description}</span>
-                  </div>
-                ))}
-              </div>
+              <SudokuSettingsTable />
             </section>
           </div>
         </div>
