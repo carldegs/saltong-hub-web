@@ -5,7 +5,7 @@ import { GAME_GUIDES } from "@/features/game-guides/config";
 
 const baseUrl = SITE_URL;
 const FILIPINO_WORDLE_LAST_MODIFIED = new Date("2026-08-21T00:00:00.000Z");
-const SITE_LAST_MODIFIED = new Date("2026-09-08T00:00:00.000Z");
+const SITE_LAST_MODIFIED = new Date("2026-09-09T00:00:00.000Z");
 const GAME_ROUTES_LAST_MODIFIED = new Date("2026-08-21T00:00:00.000Z");
 
 // Play game variants

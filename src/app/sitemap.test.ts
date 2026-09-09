@@ -20,6 +20,15 @@ describe("sitemap", () => {
     );
   });
 
+  it("marks the homepage as updated with the latest site release", () => {
+    expect(sitemap()).toContainEqual(
+      expect.objectContaining({
+        url: "https://saltong.com",
+        lastModified: new Date("2026-09-09T00:00:00.000Z"),
+      })
+    );
+  });
+
   it("submits the public how-to-play directory and game guides", () => {
     expect(sitemap()).toEqual(
       expect.arrayContaining([
