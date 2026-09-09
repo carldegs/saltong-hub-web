@@ -75,7 +75,9 @@ export default async function CreateAccountBanner() {
     <div>
       <header className="mb-6 flex flex-col gap-2">
         <div className="flex flex-col gap-0">
-          <h2>Get More From a Saltong Account</h2>
+          <h2 className="scroll-m-20 pb-0 text-2xl font-semibold tracking-tight">
+            Get More From a Saltong Account
+          </h2>
           <p className="m-0 p-0">
             Save your progress, revisit past puzzles, keep playing across
             devices, and compete with friends.
@@ -88,7 +90,9 @@ export default async function CreateAccountBanner() {
         ))}
       </BentoGrid>
       <div className="mt-4 flex flex-col gap-0">
-        <h2>Daily Filipino Word Games</h2>
+        <h2 className="scroll-m-20 pb-0 text-2xl font-semibold tracking-tight">
+          Daily Filipino Word Games
+        </h2>
         <p className="m-0 p-0">
           Saltong Hub brings together Saltong, Saltong Mini, Saltong Max, and
           Saltong Hex—fresh Filipino word-game challenges to enjoy every day.

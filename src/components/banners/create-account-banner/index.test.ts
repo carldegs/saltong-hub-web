@@ -31,6 +31,11 @@ describe("CreateAccountBanner", () => {
     for (const markup of [signedOut, signedIn]) {
       expect(markup).toContain("Daily Filipino Word Games");
       expect(markup).toContain("Get More From a Saltong Account");
+      expect(
+        markup.match(
+          /class="scroll-m-20 pb-0 text-2xl font-semibold tracking-tight"/g
+        )
+      ).toHaveLength(2);
       expect(markup).toContain(
         "Saltong, Saltong Mini, Saltong Max, and Saltong Hex"
       );

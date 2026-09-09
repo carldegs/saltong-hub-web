@@ -13,6 +13,8 @@ import { pageIndexingMetadata } from "@/lib/seo";
 import NumbersGamesBanner from "@/components/banners/numbers-games-banner";
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteJsonLd } from "@/lib/structured-data";
+import { getBlogPosts } from "./patch-notes/utils";
+import PatchNotesCarousel from "./components/patch-notes-carousel";
 
 const GAME_LIST = [
   ...Object.values(SALTONG_CONFIG.modes),
@@ -42,6 +44,14 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
+  const recentPosts = getBlogPosts(false)
+    .sort(
+      (a, b) =>
+        new Date(b.metadata.publishedAt).getTime() -
+        new Date(a.metadata.publishedAt).getTime()
+    )
+    .slice(0, 5);
+
   return (
     <div className="grid min-h-screen w-full grid-rows-[auto_1fr]">
       <JsonLd data={siteJsonLd()} />
@@ -66,6 +76,9 @@ export default async function HomePage() {
               <GameCard key={config?.displayName} {...config} />
             ))}
           </div>
+        </div>
+        <div className="mx-auto w-full max-w-5xl px-4 py-8">
+          <PatchNotesCarousel posts={recentPosts} />
         </div>
         <div className="@container/bot mx-auto w-full max-w-5xl space-y-8 px-4 py-8">
           <CreateAccountBanner />
