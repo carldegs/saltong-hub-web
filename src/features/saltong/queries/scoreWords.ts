@@ -9,7 +9,7 @@ export async function scoreWords(words: string[]): Promise<WordScore[]> {
     return [];
   }
 
-  const BATCH_SIZE = 30;
+  const BATCH_SIZE = 20;
   const batches: string[][] = [];
 
   // Split into batches
@@ -17,29 +17,45 @@ export async function scoreWords(words: string[]): Promise<WordScore[]> {
     batches.push(words.slice(i, i + BATCH_SIZE));
   }
 
-  // Process all batches in parallel
+  // Process all batches in parallel, collecting errors without stopping
   const batchPromises = batches.map(async (batch) => {
-    const response = await fetch("/api/admin/saltong/score-words", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ words: batch }),
-    });
+    try {
+      const response = await fetch("/api/admin/saltong/score-words", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ words: batch }),
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.details || error.error || "Failed to score words");
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        console.warn(
+          `Batch failed (${batch.length} words):`,
+          error.details || error.error || response.statusText
+        );
+        return { scores: [], failed: batch };
+      }
+
+      const data = await response.json();
+      return { scores: data.scores as WordScore[], failed: [] };
+    } catch (err) {
+      console.warn(`Batch failed (${batch.length} words):`, err);
+      return { scores: [], failed: batch };
     }
-
-    const data = await response.json();
-    return data.scores as WordScore[];
   });
 
   const results = await Promise.all(batchPromises);
 
-  // Flatten results
-  return results.flat();
+  const failedWords = results.flatMap((r) => r.failed);
+  if (failedWords.length > 0) {
+    console.warn(
+      `${failedWords.length} words could not be scored and will be skipped:`,
+      failedWords
+    );
+  }
+
+  return results.flatMap((r) => r.scores);
 }
 
 /**
