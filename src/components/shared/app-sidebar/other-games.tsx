@@ -7,9 +7,9 @@ import Image from "next/image";
 
 export const OTHER_GAMES = [
   {
-    href: "https://balitaoftheweek.com",
-    icon: "/botw.png",
-    name: "Balita of the Week",
+    href: "https://singtonado.com/",
+    icon: "/singtonado.png",
+    name: "Singtonado",
   },
 ];
 

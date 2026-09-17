@@ -16,6 +16,7 @@ import Link from "next/link";
 import { NavbarBrand } from "../navbar";
 import NavUser from "./nav-user";
 import { GroupsSidebarMenu } from "./groups";
+import { OtherGamesSidebarMenu } from "./other-games";
 
 export async function AppSidebar() {
   return (
@@ -48,10 +49,10 @@ export async function AppSidebar() {
           </SidebarGroupAction>
           <GamesSidebarMenu />
         </SidebarGroup>
-        {/* <SidebarGroup>
+        <SidebarGroup>
           <SidebarGroupLabel>OTHER GAMES</SidebarGroupLabel>
           <OtherGamesSidebarMenu />
-        </SidebarGroup> */}
+        </SidebarGroup>
         <GroupsSidebarMenu />
         <SidebarGroup>
           <SidebarGroupLabel>MORE</SidebarGroupLabel>
