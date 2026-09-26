@@ -1,6 +1,7 @@
 "use client";
 
 import { changePassword } from "@/features/auth/change-password";
+import { signOutAfterPasswordChange } from "@/features/auth/sign-out-after-password-change";
 import { useSupabaseClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
@@ -34,13 +35,11 @@ export function ChangePasswordForm() {
       return;
     }
 
-    const { error: signOutError } = await supabase.auth.signOut({
-      scope: "global",
-    });
+    const signOutResult = await signOutAfterPasswordChange(supabase);
 
-    if (signOutError) {
+    if (!signOutResult.localSessionCleared) {
       setFormError(
-        "Password changed, but we could not sign you out. Please sign out now."
+        "Password changed, but this device could not be signed out. Please close this browser and sign in again."
       );
       setIsSubmitting(false);
       return;
@@ -50,7 +49,11 @@ export function ChangePasswordForm() {
     setPassword("");
     setConfirmPassword("");
     toast.success("Password changed. Please sign in again.");
-    router.replace("/auth?passwordChanged=1");
+    router.replace(
+      signOutResult.globalRevocationFailed
+        ? "/auth?passwordChanged=1&sessionRevocationIncomplete=1"
+        : "/auth?passwordChanged=1"
+    );
   }
 
   return (

@@ -19,10 +19,12 @@ export default function AuthForm({
   showSignup = false,
   returnTo = "/",
   passwordChanged = false,
+  sessionRevocationIncomplete = false,
 }: {
   showSignup?: boolean;
   returnTo?: string;
   passwordChanged?: boolean;
+  sessionRevocationIncomplete?: boolean;
 }) {
   const [step, setStep] = useState<
     "email" | "password" | "signup" | "forgot-password"
@@ -52,6 +54,8 @@ export default function AuthForm({
         {passwordChanged && (
           <p className="text-center text-sm text-green-600">
             Password changed. Please sign in with your new password.
+            {sessionRevocationIncomplete &&
+              " Other active sessions may still be signed in."}
           </p>
         )}
         {step === "email" && (

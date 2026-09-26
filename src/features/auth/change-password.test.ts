@@ -46,7 +46,7 @@ describe("changePassword", () => {
     const client = createClient(
       vi.fn().mockResolvedValue({
         error: {
-          code: "current_password_mismatch",
+          code: "current_password_invalid",
           message: "Current password required when setting new password.",
         },
       })

@@ -38,7 +38,10 @@ export async function changePassword(
     return { error: null };
   }
 
-  if (error.code === "current_password_mismatch") {
+  if (
+    error.code === "current_password_invalid" ||
+    error.code === "current_password_mismatch"
+  ) {
     return { error: "Current password is incorrect." };
   }
 
