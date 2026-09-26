@@ -18,22 +18,25 @@ type DirectiveNode = {
   };
 };
 
+type UnistNode = { type: string; children?: UnistNode[] };
+
 function isDirectiveNode(node: unknown): node is DirectiveNode {
   return typeof node === "object" && node !== null && "type" in node;
 }
 
 function remarkPlayGamesDirective() {
-  return (tree: Parameters<typeof visit>[0]) => {
-    visit(tree, "containerDirective", (node) => {
-      if (!isDirectiveNode(node)) return;
+  return (tree: UnistNode) => {
+    visit(tree, (node) => {
+      if (!isDirectiveNode(node) || node.type !== "containerDirective") return;
+      const directiveNode = node as unknown as DirectiveNode;
 
       const games = parsePlayGamesDirective(
-        node.name ?? "",
-        node.attributes ?? {}
+        directiveNode.name ?? "",
+        directiveNode.attributes ?? {}
       );
       if (!games) return;
 
-      node.data = {
+      directiveNode.data = {
         hName: "play-games",
         hProperties: { games: games.join(" ") },
       };
@@ -51,7 +54,7 @@ const sanitizeSchema = {
 };
 
 const markdownComponents = {
-  "play-games": ({ games }) => {
+  "play-games": ({ games }: { games?: unknown }) => {
     const requestedGames =
       typeof games === "string" ? games.split(/\s+/).filter(Boolean) : [];
     const validGames = requestedGames.filter((game) =>
@@ -60,7 +63,7 @@ const markdownComponents = {
 
     return validGames.length > 0 ? <PlayGames games={validGames} /> : null;
   },
-} as Components;
+} as unknown as Components;
 
 export function ArticleMarkdown({ content }: { content: string }) {
   return (

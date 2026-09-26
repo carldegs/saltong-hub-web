@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const state = vi.hoisted(() => ({
   authResult: {
-    data: { claims: { sub: "admin-1" } },
+    data: { claims: { sub: "admin-1" } as { sub: string } | null },
     error: null as { message: string } | null,
   },
   allowed: true,
