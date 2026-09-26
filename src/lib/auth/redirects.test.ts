@@ -22,7 +22,7 @@ describe("createAuthCallbackUrl", () => {
   it("provides the site base for recovery templates that append auth confirmation", () => {
     expect(
       createPasswordRecoveryRedirectUrl("https://preview.saltong.com/")
-    ).toBe("https://preview.saltong.com/");
+    ).toBe("https://preview.saltong.com");
   });
 
   it("accepts the confirmation template's next parameter", () => {

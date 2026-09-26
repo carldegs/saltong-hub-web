@@ -12,7 +12,7 @@ export function createAuthCallbackUrl(
 }
 
 export function createPasswordRecoveryRedirectUrl(baseUrl = getRedirectURL()) {
-  return new URL("/", baseUrl).toString();
+  return new URL(baseUrl).origin;
 }
 
 export function getAuthReturnTo(searchParams: URLSearchParams) {
