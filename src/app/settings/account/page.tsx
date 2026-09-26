@@ -16,6 +16,7 @@ import CompleteProfileDialog from "@/features/profiles/components/complete-profi
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { getProfileFormData } from "@/features/profiles/utils";
+import { ChangePasswordForm } from "../components/change-password-form";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -28,6 +29,10 @@ export default async function SettingsPage() {
 
   const { profile, isTemporaryProfile, avatarOptions, identitiesData } =
     (await getProfileFormData(supabase, claimsData.claims)) ?? {};
+  const hasEmailPasswordIdentity =
+    identitiesData?.identities?.some(
+      (identity) => identity.provider === "email"
+    ) ?? false;
 
   return (
     <>
@@ -74,6 +79,16 @@ export default async function SettingsPage() {
                 </Alert>
               )}
             </section>
+            {hasEmailPasswordIdentity && (
+              <section className="mt-8">
+                <h3 className="text-xl font-semibold">Password</h3>
+                <span className="text-muted-foreground mb-4 block text-sm">
+                  Change your password. You&apos;ll be signed out on all devices
+                  afterwards.
+                </span>
+                <ChangePasswordForm />
+              </section>
+            )}
             <section className="mt-8">
               <h3 className="text-xl font-semibold">Providers</h3>
               <span className="text-muted-foreground mb-4 block text-sm">

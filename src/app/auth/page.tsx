@@ -24,9 +24,16 @@ export default async function LoginPage({
 
   const params = await searchParams;
   const showSignup = params?.signup === "1";
+  const passwordChanged = params?.passwordChanged === "1";
   const returnTo = validateRedirect(
     typeof params?.returnTo === "string" ? params.returnTo : undefined
   );
 
-  return <AuthForm showSignup={showSignup} returnTo={returnTo} />;
+  return (
+    <AuthForm
+      showSignup={showSignup}
+      returnTo={returnTo}
+      passwordChanged={passwordChanged}
+    />
+  );
 }

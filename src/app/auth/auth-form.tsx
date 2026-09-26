@@ -18,9 +18,11 @@ import { getRedirectURL } from "@/lib/utils";
 export default function AuthForm({
   showSignup = false,
   returnTo = "/",
+  passwordChanged = false,
 }: {
   showSignup?: boolean;
   returnTo?: string;
+  passwordChanged?: boolean;
 }) {
   const [step, setStep] = useState<
     "email" | "password" | "signup" | "forgot-password"
@@ -47,6 +49,11 @@ export default function AuthForm({
     <div className="bg-secondary flex min-h-screen w-full grid-rows-[auto_1fr] items-center justify-center">
       <Particles className="absolute top-0 left-0 z-0 h-full w-full" />
       <AuthCard className="relative">
+        {passwordChanged && (
+          <p className="text-center text-sm text-green-600">
+            Password changed. Please sign in with your new password.
+          </p>
+        )}
         {step === "email" && (
           <>
             <EmailCard

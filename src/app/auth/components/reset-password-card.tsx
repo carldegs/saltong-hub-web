@@ -22,7 +22,6 @@ export function ResetPasswordCard() {
     special: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
   const router = useRouter();
 
   function handlePasswordChange(value: string) {
@@ -61,17 +60,17 @@ export function ResetPasswordCard() {
       setIsSubmitting(false);
       return;
     }
-    setShowSuccess(true);
-    setIsSubmitting(false);
-    router.push("/");
-  }
-
-  if (showSuccess) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-0 p-6">
-        <p className="text-lg font-bold">Password updated!</p>
-      </div>
-    );
+    const { error: signOutError } = await supabase.auth.signOut({
+      scope: "global",
+    });
+    if (signOutError) {
+      setFormError(
+        "Password updated, but we could not sign you out. Please sign out now."
+      );
+      setIsSubmitting(false);
+      return;
+    }
+    router.replace("/auth?passwordChanged=1");
   }
 
   return (
