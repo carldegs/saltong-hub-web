@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useSupabaseClient } from "@/lib/supabase/client";
-import { createAuthCallbackUrl } from "@/lib/auth/redirects";
+import { createPasswordRecoveryRedirectUrl } from "@/lib/auth/redirects";
 
 interface ForgotPasswordCardProps {
   onBack: () => void;
@@ -23,7 +23,7 @@ export function ForgotPasswordCard({
     setLoading(true);
     setError(null);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: createAuthCallbackUrl("/auth/reset"),
+      redirectTo: createPasswordRecoveryRedirectUrl(),
     });
     setLoading(false);
     if (error) {
