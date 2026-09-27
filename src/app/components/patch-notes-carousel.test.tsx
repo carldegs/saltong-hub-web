@@ -1,18 +1,22 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import type { BlogPost } from "@/app/patch-notes/utils";
+import type { Article } from "@/features/articles/types";
 import PatchNotesCarousel from "./patch-notes-carousel";
 
-const posts: BlogPost[] = Array.from({ length: 6 }, (_, index) => ({
+const posts: Article[] = Array.from({ length: 6 }, (_, index) => ({
+  id: `post-${index + 1}`,
   slug: `post-${index + 1}`,
-  content: "",
-  metadata: {
-    title: `Patch note ${index + 1}`,
-    summary: `Summary ${index + 1}`,
-    publishedAt: "2026-09-01",
-    tags: index === 0 ? ["guide", "saltong"] : undefined,
-    ...(index === 0 ? { heroImage: "/patch-notes/saltong-hub-cover.jpg" } : {}),
-  },
+  title: `Patch note ${index + 1}`,
+  summary: `Summary ${index + 1}`,
+  tags: index === 0 ? ["guide", "saltong"] : [],
+  contentMarkdown: "",
+  status: "published",
+  scheduledFor: null,
+  publishedAt: "2026-09-01",
+  legacyHeroImage: index === 0 ? "/patch-notes/saltong-hub-cover.jpg" : null,
+  createdBy: null,
+  createdAt: "2026-09-01",
+  updatedAt: "2026-09-01",
 }));
 
 describe("PatchNotesCarousel", () => {

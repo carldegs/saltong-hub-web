@@ -24,6 +24,12 @@ vi.mock("@/components/shared/navbar", () => ({
   Navbar: ({ children }: { children: ReactNode }) =>
     createElement("div", null, children),
 }));
+vi.mock("@/lib/supabase/server", () => ({
+  createClient: vi.fn(async () => ({})),
+}));
+vi.mock("@/features/articles/repository", () => ({
+  listPublicArticles: vi.fn(async () => []),
+}));
 
 import HomePage from "./page";
 

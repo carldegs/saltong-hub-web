@@ -15,8 +15,6 @@ const PUBLIC_SOURCE_FILES = [
   "src/app/play/sudoku/page.tsx",
   "src/app/play/sudoku/vault/page.tsx",
   "src/app/play/mathinik/vault/page.tsx",
-  "src/app/patch-notes/posts/introducing-saltong-hub.mdx",
-  "src/app/patch-notes/posts/leaderboards-valentines-update.mdx",
   "src/app/policies/cookies/page.mdx",
   "src/app/policies/privacy/page.mdx",
 ] as const;

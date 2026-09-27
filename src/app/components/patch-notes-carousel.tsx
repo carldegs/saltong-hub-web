@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import type { BlogPost } from "@/app/patch-notes/utils";
+import type { Article } from "@/features/articles/types";
 import { BlogDate } from "@/app/patch-notes/components/blog-date";
 import {
   Carousel,
@@ -12,7 +12,7 @@ import {
 const MAX_RECENT_POSTS = 5;
 const FALLBACK_IMAGE = "/patch-notes/bg.jpg";
 
-export default function PatchNotesCarousel({ posts }: { posts: BlogPost[] }) {
+export default function PatchNotesCarousel({ posts }: { posts: Article[] }) {
   const recentPosts = posts.slice(0, MAX_RECENT_POSTS);
 
   if (recentPosts.length === 0) {
@@ -47,8 +47,7 @@ export default function PatchNotesCarousel({ posts }: { posts: BlogPost[] }) {
       <Carousel opts={{ align: "start", dragFree: true }}>
         <CarouselContent>
           {recentPosts.map((post) => {
-            const image =
-              post.metadata.heroImage ?? post.metadata.image ?? FALLBACK_IMAGE;
+            const image = post.legacyHeroImage ?? FALLBACK_IMAGE;
 
             return (
               <CarouselItem
@@ -71,11 +70,15 @@ export default function PatchNotesCarousel({ posts }: { posts: BlogPost[] }) {
                   <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                     <div className="mb-2 flex flex-wrap items-center gap-2">
                       <BlogDate
-                        date={post.metadata.publishedAt}
+                        date={
+                          post.publishedAt ??
+                          post.scheduledFor ??
+                          post.createdAt
+                        }
                         showIcon={false}
                         className="text-xs font-medium text-white/75"
                       />
-                      {post.metadata.tags?.slice(0, 3).map((tag) => (
+                      {post.tags.slice(0, 3).map((tag) => (
                         <span
                           key={tag}
                           className="rounded-full bg-white/15 px-2 py-0.5 text-[0.65rem] font-semibold tracking-wide text-white/90 uppercase"
@@ -85,10 +88,10 @@ export default function PatchNotesCarousel({ posts }: { posts: BlogPost[] }) {
                       ))}
                     </div>
                     <h3 className="line-clamp-2 text-lg leading-tight font-bold tracking-tight text-white sm:text-xl">
-                      {post.metadata.title}
+                      {post.title}
                     </h3>
                     <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-white/80">
-                      {post.metadata.summary}
+                      {post.summary}
                     </p>
                   </div>
                 </Link>

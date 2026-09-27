@@ -13,7 +13,8 @@ import { pageIndexingMetadata } from "@/lib/seo";
 import NumbersGamesBanner from "@/components/banners/numbers-games-banner";
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteJsonLd } from "@/lib/structured-data";
-import { getBlogPosts } from "./patch-notes/utils";
+import { listPublicArticles } from "@/features/articles/repository";
+import { createClient } from "@/lib/supabase/server";
 import PatchNotesCarousel from "./components/patch-notes-carousel";
 
 const GAME_LIST = [
@@ -44,13 +45,10 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const recentPosts = getBlogPosts(false)
-    .sort(
-      (a, b) =>
-        new Date(b.metadata.publishedAt).getTime() -
-        new Date(a.metadata.publishedAt).getTime()
-    )
-    .slice(0, 5);
+  const recentPosts = (await listPublicArticles(await createClient())).slice(
+    0,
+    5
+  );
 
   return (
     <div className="grid min-h-screen w-full grid-rows-[auto_1fr]">
