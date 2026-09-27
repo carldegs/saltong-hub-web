@@ -70,7 +70,7 @@ Words to evaluate:
 ${words.map((w: string, i: number) => `${i + 1}. ${w}`).join("\n")}`;
 
     const response = await openai.responses.parse({
-      model: "gpt-5-nano",
+      model: "gpt-5.4-nano",
       input: [
         {
           role: "system",
