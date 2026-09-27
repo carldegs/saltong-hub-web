@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { ArticleEditorForm } from "@/features/articles/editor/article-editor-form";
 import { listAdminArticles } from "@/features/articles/repository";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceRoleClient } from "@/lib/supabase/admin-server";
 
 export default async function EditPatchNotePage({
   params,
@@ -10,7 +10,7 @@ export default async function EditPatchNotePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const article = (await listAdminArticles(await createClient())).find(
+  const article = (await listAdminArticles(createServiceRoleClient())).find(
     (item) => item.id === id
   );
   if (!article) notFound();

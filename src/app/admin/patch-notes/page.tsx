@@ -3,7 +3,7 @@ import { formatInTimeZone } from "date-fns-tz";
 
 import { Button } from "@/components/ui/button";
 import { listAdminArticles } from "@/features/articles/repository";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceRoleClient } from "@/lib/supabase/admin-server";
 import { PH_TIMEZONE } from "@/utils/time";
 
 function displayDate(value: string | null) {
@@ -13,7 +13,7 @@ function displayDate(value: string | null) {
 }
 
 export default async function AdminPatchNotesPage() {
-  const articles = await listAdminArticles(await createClient());
+  const articles = await listAdminArticles(createServiceRoleClient());
 
   return (
     <main className="container mx-auto max-w-5xl space-y-6 p-6">

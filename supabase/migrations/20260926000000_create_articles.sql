@@ -16,8 +16,8 @@ create table public.articles (
   constraint articles_slug_format_check check (slug ~ '^[a-z0-9]+(?:-[a-z0-9]+)*$'),
   constraint articles_status_check check (status in ('draft', 'scheduled', 'published')),
   constraint articles_publication_state_check check (
-    (status = 'draft' and scheduled_for is null and published_at is null)
-    or (status = 'scheduled' and scheduled_for is not null and published_at is null)
+    (status = 'draft' and scheduled_for is null)
+    or (status = 'scheduled' and scheduled_for is not null)
     or (status = 'published' and published_at is not null)
   )
 );
