@@ -1,5 +1,5 @@
 import { Calendar } from "lucide-react";
-import { formatDate } from "../utils";
+import { format, formatDistanceToNow, differenceInDays } from "date-fns";
 
 interface BlogDateProps {
   date: string;
@@ -14,7 +14,15 @@ export function BlogDate({
   className = "",
   iconSize = 14,
 }: BlogDateProps) {
-  const { display, full } = formatDate(date, true);
+  const targetDate = new Date(date);
+  const full = format(targetDate, "MMMM d, yyyy");
+  const display =
+    differenceInDays(new Date(), targetDate) <= 7
+      ? formatDistanceToNow(targetDate, {
+          addSuffix: true,
+          includeSeconds: true,
+        })
+      : full;
 
   return (
     <time

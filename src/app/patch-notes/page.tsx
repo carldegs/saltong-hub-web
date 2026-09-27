@@ -3,25 +3,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { Navbar } from "@/components/shared/navbar";
 import HomeNavbarBrand from "../components/home-navbar-brand";
-import { getBlogPosts, isAdmin } from "./utils";
+import { listPublicArticles } from "@/features/articles/repository";
 import { ArrowRight } from "lucide-react";
 import { BlogDate } from "./components/blog-date";
-import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
   title: "Patch Notes | Saltong Hub",
   description: "Read the latest updates and announcements from Saltong Hub",
 };
+export const revalidate = 60;
 
 export default async function BlogPage() {
   const supabase = await createClient();
-  const isAdminUser = await isAdmin(supabase);
-  const posts = getBlogPosts(isAdminUser).sort(
-    (a, b) =>
-      new Date(b.metadata.publishedAt).getTime() -
-      new Date(a.metadata.publishedAt).getTime()
-  );
+  const posts = await listPublicArticles(supabase);
 
   return (
     <>
@@ -53,17 +48,17 @@ export default async function BlogPage() {
             <div className="space-y-12">
               {posts.map((post, index) => (
                 <Link
-                  key={post.slug}
+                  key={post.id}
                   href={`/patch-notes/${post.slug}`}
                   className="group decoration-none block"
                 >
                   <article className="bg-card border-muted hover:border-primary/50 flex flex-col gap-6 rounded-lg border p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg sm:flex-row sm:gap-8">
                     {/* Image */}
-                    {post.metadata.heroImage && (
+                    {post.legacyHeroImage && (
                       <div className="relative aspect-[20/9] w-full shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 sm:w-80 dark:from-gray-800 dark:to-gray-900">
                         <Image
-                          src={post.metadata.heroImage}
-                          alt={post.metadata.title}
+                          src={post.legacyHeroImage}
+                          alt={post.title}
                           fill
                           className="object-cover transition-all duration-500 group-hover:scale-105 group-hover:brightness-105"
                           sizes="(max-width: 720px) 100vw, 320px"
@@ -77,48 +72,46 @@ export default async function BlogPage() {
                     <div className="flex flex-1 flex-col justify-between gap-3">
                       {/* Meta */}
                       <div className="text-muted-foreground flex flex-wrap items-center gap-3 text-sm">
-                        <BlogDate date={post.metadata.publishedAt} />
-                        {post.metadata.draft && (
-                          <Badge variant="secondary" className="text-xs">
-                            DRAFT
-                          </Badge>
-                        )}
+                        <BlogDate
+                          date={
+                            post.publishedAt ??
+                            post.scheduledFor ??
+                            post.createdAt
+                          }
+                        />
                       </div>
 
                       {/* Title & Summary */}
                       <div>
                         <h3 className="group-hover:text-primary mb-2 text-xl leading-tight font-bold transition-colors sm:text-3xl">
-                          {post.metadata.title}
+                          {post.title}
                         </h3>
-                        {post.metadata.summary && (
+                        {post.summary && (
                           <p className="text-muted-foreground mt-0 line-clamp-2 text-base leading-relaxed">
-                            {post.metadata.summary}
+                            {post.summary}
                           </p>
                         )}
                       </div>
 
                       {/* Tags & Read More */}
                       <div className="flex flex-wrap items-center justify-between gap-4">
-                        {post.metadata.tags &&
-                          post.metadata.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                              {post.metadata.tags
-                                .slice(0, 3)
-                                .map((tag: string) => (
-                                  <span
-                                    key={tag}
-                                    className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 rounded-full border px-3 py-1 text-xs font-semibold tracking-wide uppercase transition-all"
-                                  >
-                                    {tag}
-                                  </span>
-                                ))}
-                              {post.metadata.tags.length > 3 && (
-                                <span className="text-muted-foreground rounded-full px-2 py-1 text-xs font-medium">
-                                  +{post.metadata.tags.length - 3} more
-                                </span>
-                              )}
-                            </div>
-                          )}
+                        {post.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {post.tags.slice(0, 3).map((tag: string) => (
+                              <span
+                                key={tag}
+                                className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 rounded-full border px-3 py-1 text-xs font-semibold tracking-wide uppercase transition-all"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                            {post.tags.length > 3 && (
+                              <span className="text-muted-foreground rounded-full px-2 py-1 text-xs font-medium">
+                                +{post.tags.length - 3} more
+                              </span>
+                            )}
+                          </div>
+                        )}
                         <div className="group-hover:text-primary text-muted-foreground flex items-center gap-0.5 text-sm font-medium transition-colors">
                           <span>Read article</span>
                           <ArrowRight

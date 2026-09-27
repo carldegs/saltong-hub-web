@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
-import { getBlogPosts } from "./patch-notes/utils";
+import { listPublicArticles } from "@/features/articles/repository";
+import { createClient } from "@/lib/supabase/server";
 import { SITE_URL } from "@/lib/seo";
 import { GAME_GUIDES } from "@/features/game-guides/config";
 
@@ -11,14 +12,16 @@ const GAME_ROUTES_LAST_MODIFIED = new Date("2026-08-21T00:00:00.000Z");
 // Play game variants
 const playVariants = ["", "mini", "max", "hex", "sudoku", "mathinik"];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Get all published blog posts
-  const blogPosts = getBlogPosts(false); // false = exclude drafts
+  const blogPosts = await listPublicArticles(await createClient());
 
   // Map blog posts to sitemap entries
   const blogs = blogPosts.map((post) => ({
     url: `${baseUrl}/patch-notes/${post.slug}`,
-    lastModified: new Date(post.metadata.publishedAt),
+    lastModified: new Date(
+      post.publishedAt ?? post.scheduledFor ?? post.createdAt
+    ),
     changeFrequency: "monthly" as const,
     priority: 0.7,
   }));
