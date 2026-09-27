@@ -8,6 +8,7 @@ import { useSupabaseClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { AuthCard } from "./auth-card";
 import { getRedirectURL } from "@/lib/utils";
+import { signOutAfterPasswordChange } from "@/features/auth/sign-out-after-password-change";
 
 export function ResetPasswordCard() {
   const supabase = useSupabaseClient();
@@ -22,7 +23,6 @@ export function ResetPasswordCard() {
     special: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
   const router = useRouter();
 
   function handlePasswordChange(value: string) {
@@ -61,16 +61,18 @@ export function ResetPasswordCard() {
       setIsSubmitting(false);
       return;
     }
-    setShowSuccess(true);
-    setIsSubmitting(false);
-    router.push("/");
-  }
-
-  if (showSuccess) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-0 p-6">
-        <p className="text-lg font-bold">Password updated!</p>
-      </div>
+    const signOutResult = await signOutAfterPasswordChange(supabase);
+    if (!signOutResult.localSessionCleared) {
+      setFormError(
+        "Password updated, but this device could not be signed out. Please close this browser and sign in again."
+      );
+      setIsSubmitting(false);
+      return;
+    }
+    router.replace(
+      signOutResult.globalRevocationFailed
+        ? "/auth?passwordChanged=1&sessionRevocationIncomplete=1"
+        : "/auth?passwordChanged=1"
     );
   }
 

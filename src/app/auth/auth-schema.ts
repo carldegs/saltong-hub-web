@@ -24,3 +24,16 @@ export const signupSchema = z
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z
+      .string()
+      .min(1, { message: "Current password is required" }),
+    password: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });

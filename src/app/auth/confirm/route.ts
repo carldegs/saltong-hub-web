@@ -1,15 +1,17 @@
 import { createClient } from "@/lib/supabase/server";
 import { type EmailOtpType } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
-import { validateRedirect } from "@/lib/auth/validate-redirect";
+import {
+  createAuthConfirmationRedirectUrl,
+  getAuthReturnTo,
+} from "@/lib/auth/redirects";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
-  const returnTo = validateRedirect(searchParams.get("returnTo") ?? "/");
-  const redirectTo = request.nextUrl.clone();
-  redirectTo.pathname = returnTo;
+  const returnTo = getAuthReturnTo(searchParams);
+  const redirectTo = createAuthConfirmationRedirectUrl(request.url, returnTo);
 
   if (token_hash && type) {
     const supabase = await createClient();
