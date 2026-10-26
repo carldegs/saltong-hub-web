@@ -25,7 +25,7 @@ export async function changePassword(
 
   if (!result.success) {
     return {
-      error: result.error.errors[0]?.message ?? "Invalid password details",
+      error: result.error.issues[0]?.message ?? "Invalid password details",
     };
   }
 

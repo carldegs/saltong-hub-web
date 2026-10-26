@@ -43,7 +43,7 @@ export function PasswordCard({
     setError(null);
     const result = passwordSchema.safeParse(password);
     if (!result.success) {
-      setPasswordError(result.error.errors[0].message);
+      setPasswordError(result.error.issues[0].message);
       setLoading(false);
       return;
     }
