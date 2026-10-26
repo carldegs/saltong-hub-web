@@ -40,7 +40,7 @@ export function ResetPasswordCard() {
     setIsSubmitting(true);
     const result = passwordSchema.safeParse(password);
     if (!result.success) {
-      setFormError(result.error.errors[0].message);
+      setFormError(result.error.issues[0].message);
       setIsSubmitting(false);
       return;
     }

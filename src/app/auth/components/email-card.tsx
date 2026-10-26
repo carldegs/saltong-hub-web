@@ -17,7 +17,7 @@ export function EmailCard({ onNext, onForgotPassword }: EmailCardProps) {
     setLoading(true);
     const result = emailSchema.safeParse({ email });
     if (!result.success) {
-      setEmailError(result.error.errors[0].message);
+      setEmailError(result.error.issues[0].message);
       setLoading(false);
       return;
     }

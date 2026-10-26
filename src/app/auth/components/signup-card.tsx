@@ -44,7 +44,7 @@ export function SignupCard({ onBack }: SignupCardProps) {
     setIsSubmitting(true);
     const result = signupSchema.safeParse({ email, password, confirmPassword });
     if (!result.success) {
-      setFormError(result.error.errors[0].message);
+      setFormError(result.error.issues[0].message);
       setIsSubmitting(false);
       return;
     }

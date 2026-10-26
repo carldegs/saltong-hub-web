@@ -109,7 +109,7 @@ ${words.map((w: string, i: number) => `${i + 1}. ${w}`).join("\n")}`;
       return NextResponse.json(
         {
           error: "Invalid response format from OpenAI",
-          details: error.errors,
+          details: error.issues,
         },
         { status: 500 }
       );
